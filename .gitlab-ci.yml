@@ -1,0 +1,29 @@
+image: eguerin/antlr4cpp
+
+build:
+    stage: build
+    script:
+        - cd compiler
+        - make ANTLR4_INCDIR=/usr/include/antlr4-runtime ANTLR4_BINDIR=/bin ANTLR4_LIBDIR=/lib/x86_64-linux-gnu
+    artifacts:
+        paths:
+            - compiler/ifcc
+        name: artifact:build
+        when: on_success
+        expire_in: 1 weeks
+
+test:
+    stage: test
+    dependencies:
+        - build
+    script:
+        - chmod 755 compiler/ifcc
+        - cd tests/
+        - chmod 755 pld-wrapper.sh
+        - python3 pld-test.py tests/Init/
+    artifacts:
+        paths:
+            - tests/pld-test-output
+        name: artifact:test
+        when: on_success
+        expire_in: 1 weeks
