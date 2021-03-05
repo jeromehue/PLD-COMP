@@ -28,17 +28,21 @@ public:
            "	pushq %rbp\n"
            "	movq %rsp, %rbp\n"
            "\n"
-           "	#body\n"
-           "	movl	$"<<retval<<", %eax\n"
-           "\n"
-           "	#epilogue\n"
-           "	popq %rbp\n"
-           " 	ret\n";
+           "	#body\n";
+    visitChildren(ctx);
+     std::cout <<   
+            "	movl	$"<<retval<<", %eax\n"
+            "\n"
+            "	#epilogue\n"
+            "   popq %rbp\n"
+            " 	ret\n";
 
      return 0;
   }
 
   virtual antlrcpp::Any visitAffectation(ifccParser::AffectationContext *ctx) override {
+      std::cout << "        movl    $" << ctx->CONST()->getText() << 
+          ", -4(%rbp)\n";
     return visitChildren(ctx);
   }
 
