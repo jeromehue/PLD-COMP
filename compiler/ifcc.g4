@@ -5,7 +5,7 @@ axiom : prog
 
 prog : 'int' 'main' '(' ')' '{' affectation? RETURN CONST ';' '}' ;
 
-affectation : TYPE ID ';';
+affectation : TYPE ID '=' CONST ';';
 
 RETURN : 'return' ;
 TYPE : 'int32_t';
