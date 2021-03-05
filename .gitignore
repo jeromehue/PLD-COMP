@@ -1,2 +1,3 @@
 compiler/Makefile
-compiler/anlr4-generated
+compiler/antlr4-generated
+compiler/output
