@@ -1,1 +1,6 @@
 compiler/Makefile
+compiler/antlr4-generated
+compiler/output
+
+tests/pld-test-output
+tests/tests
