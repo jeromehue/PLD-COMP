@@ -20,7 +20,7 @@ public:
   }
 
   virtual antlrcpp::Any visitProg(ifccParser::ProgContext *ctx) override {
-
+    val_ptr = -4;
      int retval = stoi(ctx->CONST()->getText()); //gérer erreurs
      std::cout<<".global main\n"
            " main: \n"
@@ -42,9 +42,12 @@ public:
 
   virtual antlrcpp::Any visitAffectation(ifccParser::AffectationContext *ctx) override {
       std::cout << "        movl    $" << ctx->CONST()->getText() << 
-          ", -4(%rbp)\n";
+          ", " << val_ptr <<  "(%rbp)\n";
+      val_ptr = val_ptr -4;
     return visitChildren(ctx);
   }
 
+protected: 
+  int val_ptr;
 };
 
