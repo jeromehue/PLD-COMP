@@ -32,6 +32,11 @@ int main(int argn, const char **argv) {
 
   Visitor visitor;
   visitor.visit(tree);
+  
+  if (parser.getNumberOfSyntaxErrors()!=0)
+  {
+  	return 1;
+  }
 
   return 0;
 }
