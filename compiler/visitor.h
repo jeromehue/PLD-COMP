@@ -21,6 +21,9 @@ public:
 
   virtual antlrcpp::Any visitAffectation
       (ifccParser::AffectationContext *ctx) override;
+
+  virtual antlrcpp::Any visitValue
+      (ifccParser::ValueContext *ctx) override;
 protected: 
     Symboltable symboltable;
 };

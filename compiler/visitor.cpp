@@ -8,7 +8,7 @@ antlrcpp::Any Visitor::visitAxiom(ifccParser::AxiomContext *ctx)
 
 
 antlrcpp::Any Visitor::visitProg(ifccParser::ProgContext *ctx) {
-    int retval = stoi(ctx->CONST()->getText()); //gérer erreurs
+    
     std::cout<<".global main\n"
            " main: \n"
            "	#prologue\n"
@@ -17,8 +17,19 @@ antlrcpp::Any Visitor::visitProg(ifccParser::ProgContext *ctx) {
            "\n"
            "	#body\n";
     visitChildren(ctx);
+    int retval = 12;
+    std::string retstr;
+    if (ctx->value()->CONST() != nullptr) {
+        retval = std::stoi(ctx->value()->CONST()->getText());
+        retstr = "$" + std::to_string(retval);
+    } else {
+        //etstr = std::to_string(symboltable.symbols["a"]);
+        int retval =  symboltable.getAdress(ctx->value()->ID()->getText());
+        retstr = std::to_string(retval) + "(%rbp)";
+        retval = -1;
+    }
     std::cout <<   
-            "	movl	$"<<retval<<", %eax\n"
+            "	movl	"<<retstr<<", %eax\n"
             "\n"
             "	#epilogue\n"
             "   popq %rbp\n"
@@ -42,5 +53,10 @@ antlrcpp::Any Visitor::visitAffectation(ifccParser::AffectationContext *ctx){
             << ", " 
             << symboltable.store(ctx->ID()->getText()) 
             <<  "(%rbp)\n";
+    return visitChildren(ctx);
+}
+
+
+antlrcpp::Any Visitor::visitValue(ifccParser::ValueContext *ctx) {
     return visitChildren(ctx);
 }

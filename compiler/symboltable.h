@@ -34,10 +34,14 @@ public:
             return true;
         return false;
     } 
-        
+    
+    int getAdress(std::string name) {
+        auto it = symbols.find(name);
+        return it->second;
+    }    
 
+    std::map<std::string, int> symbols;
     protected:
     int var_addr;
-    std::map<std::string, int> symbols;
 };
 

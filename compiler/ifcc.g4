@@ -3,9 +3,13 @@ grammar ifcc;
 axiom : prog       
       ;
 
-prog : 'int' 'main' '(' ')' '{' affectation* RETURN CONST ';' '}' ;
+prog : 'int' 'main' '(' ')' '{' affectation* RETURN value ';' '}' ;
 
 affectation : TYPE ID '=' CONST ';';
+
+value   : CONST 
+        | ID
+        ;
 
 RETURN : 'return' ;
 TYPE : 'int32_t';
