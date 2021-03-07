@@ -10,7 +10,10 @@ affectation : TYPE ID '=' CONST ';';
 expr_affectation : ID '=' expression ';';
 
 expression  : CONST                                             # number
-            | left=expression op=('+'|'-'|'/'|'*') right=expression # Expr 
+            | left=expression op='*' right=expression # Expr 
+            | left=expression op='/' right=expression # Expr 
+            | left=expression op='+' right=expression # Expr 
+            | left=expression op='-' right=expression # Expr 
             ;
             
 

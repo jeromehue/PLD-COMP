@@ -60,6 +60,7 @@ antlrcpp::Any Visitor::visitExpr(ifccParser::ExprContext *ctx)
 {
     int left = visit(ctx->left);
     int right = visit(ctx->right);
+ //std::cout << "left : " << left << " - right : " << right << std::endl;
     std::string  op_string = ctx->op->getText();
     char op = op_string.at(0);
     switch(op) {
