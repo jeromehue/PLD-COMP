@@ -15,15 +15,27 @@
 class  Visitor : public ifccVisitor {
 public:
 
-  virtual antlrcpp::Any visitAxiom(ifccParser::AxiomContext *ctx) override;
+  virtual antlrcpp::Any visitAxiom
+      (ifccParser::AxiomContext *ctx) override;
 
-  virtual antlrcpp::Any visitProg(ifccParser::ProgContext *ctx) override; 
+  virtual antlrcpp::Any visitProg
+      (ifccParser::ProgContext *ctx) override; 
 
   virtual antlrcpp::Any visitAffectation
       (ifccParser::AffectationContext *ctx) override;
 
   virtual antlrcpp::Any visitValue
       (ifccParser::ValueContext *ctx) override;
+
+  virtual antlrcpp::Any visitExpr 
+      (ifccParser::ExprContext *ctx) override;
+
+  virtual antlrcpp::Any visitNumber
+      (ifccParser::NumberContext *ctx) override ;
+  
+  virtual antlrcpp::Any visitExpr_affectation
+      (ifccParser::Expr_affectationContext *ctx) override ;
+
 protected: 
     Symboltable symboltable;
 };

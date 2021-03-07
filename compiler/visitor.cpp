@@ -32,7 +32,7 @@ antlrcpp::Any Visitor::visitProg(ifccParser::ProgContext *ctx) {
             "	movl	"<<retstr<<", %eax\n"
             "\n"
             "	#epilogue\n"
-            "   popq %rbp\n"
+            "\tpopq %rbp\n"
             " 	ret\n";
 
      return 0;
@@ -56,7 +56,52 @@ antlrcpp::Any Visitor::visitAffectation(ifccParser::AffectationContext *ctx){
     return visitChildren(ctx);
 }
 
+antlrcpp::Any Visitor::visitExpr(ifccParser::ExprContext *ctx)
+{
+    int left = visit(ctx->left);
+    int right = visit(ctx->right);
+    std::string  op_string = ctx->op->getText();
+    char op = op_string.at(0);
+    switch(op) {
+        case '+': 
+            return left + right;
+            break;
+        case '-': 
+            return left - right;
+            break;
+        case '*': 
+            return left * right;
+            break;
+        case '/': 
+            return left / right;
+            break;
+        default:
+            std::cout << "Unknow operator" << std::endl;
+            exit(EXIT_FAILURE);
+            break;
+    }
+    return 0;
+}
 
-antlrcpp::Any Visitor::visitValue(ifccParser::ValueContext *ctx) {
+antlrcpp::Any Visitor::visitExpr_affectation 
+(ifccParser::Expr_affectationContext *ctx) {
+    int a =visit(ctx->expression());
+    std::string name = ctx->ID()->getText();
+    int retval =  symboltable.getAdress(ctx->ID()->getText());
+    std::string retstr = std::to_string(retval) + "(%rbp)";
+    std::cout << "        movl    $" 
+            << a
+            << ", " 
+            << retstr
+            <<  "\n";
+    return 0;
+}
+
+antlrcpp::Any Visitor::visitValue(ifccParser::ValueContext *ctx) { 
     return visitChildren(ctx);
+}
+
+
+antlrcpp::Any Visitor::visitNumber(ifccParser::NumberContext *ctx) {
+    return stoi(ctx->CONST()->getText());
 }
