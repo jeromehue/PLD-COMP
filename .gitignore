@@ -1,6 +1,8 @@
 compiler/Makefile
 compiler/antlr4-generated
 compiler/output
+compiler/ifcc
+compiler/main.c
 
 tests/pld-test-output
 tests/tests
