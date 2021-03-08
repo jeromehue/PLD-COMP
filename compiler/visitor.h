@@ -24,8 +24,8 @@ public:
   virtual antlrcpp::Any visitAffectation
       (ifccParser::AffectationContext *ctx) override;
 
-  virtual antlrcpp::Any visitValue
-      (ifccParser::ValueContext *ctx) override;
+  virtual antlrcpp::Any visitRetval
+      (ifccParser::RetvalContext *ctx) override;
 
   virtual antlrcpp::Any visitExpr 
       (ifccParser::ExprContext *ctx) override;
@@ -35,6 +35,9 @@ public:
   
   virtual antlrcpp::Any visitExpr_affectation
       (ifccParser::Expr_affectationContext *ctx) override ;
+  
+  virtual antlrcpp::Any visitVar
+      (ifccParser::VarContext *ctx) override ;
 
 protected: 
     Symboltable symboltable;

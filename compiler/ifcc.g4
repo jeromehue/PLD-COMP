@@ -3,22 +3,27 @@ grammar ifcc;
 axiom : prog       
       ;
 
-prog : 'int' 'main' '(' ')' '{' affectation* expr_affectation* RETURN value ';' '}' ;
+prog : 
+'int' 'main' '(' ')' '{' 
+    affectation* expr_affectation* 
+    RETURN retval ';' 
+    '}' ;
 
 affectation : TYPE ID '=' CONST ';';
 
 expr_affectation : ID '=' expression ';';
 
 expression  : CONST                                             # number
-            | left=expression op='*' right=expression # Expr 
-            | left=expression op='/' right=expression # Expr 
-            | left=expression op='+' right=expression # Expr 
-            | left=expression op='-' right=expression # Expr 
+            | ID                                                # var
+            | left=expression op='*' right=expression           # Expr 
+            | left=expression op='/' right=expression           # Expr 
+            | left=expression op='+' right=expression           # Expr 
+            | left=expression op='-' right=expression           # Expr 
             ;
             
 
 
-value   : CONST 
+retval   : CONST 
         | ID
         ;
 
