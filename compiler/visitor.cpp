@@ -1,9 +1,9 @@
-
 // Generated from ifcc.g4 by ANTLR 4.7.2
 
 #include "visitor.h"
 #include "decl.h"
 #include <string>
+
 antlrcpp::Any Visitor::visitAxiom(ifccParser::AxiomContext *ctx) 
  {return visitChildren(ctx);}
 
@@ -63,18 +63,16 @@ antlrcpp::Any Visitor::visitExpr(ifccParser::ExprContext *ctx)
             return ret;
             break;
         case '-': 
-            //return left - right;
-            return 1;
+            ret = cgsub(left, right);
+            return ret;
             break;
         case '*': 
             ret  = cgmul(left, right);
             return ret;
             break;
-            break;
         case '/': 
-            // Resutl of div goes to eax
-            // edx should be free
-            return 1;
+            ret  = cgdiv(left, right); 
+            return ret;
             break;
         default:
             std::cout << "Unknow operator" << std::endl;

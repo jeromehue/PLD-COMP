@@ -85,12 +85,33 @@ int cgadd(int r1, int r2) {
     return(r2);
 }
 
+int cgsub(int r1, int r2) {
+    // r1 - r2
+    std::cout << "\tsubl\t" << reglist[r2] << ", " << reglist[r1]<< "\n";
+    free_register(r2);
+    return(r1);
+}
+
+
 int cgmul(int r1, int r2) {
     std::cout << "\tmovl    "<< reglist[r1] <<", %eax\n"; 
     std::cout << "\tmull\t" << reglist[r2]<< "\n";
     std::cout << "\tmovl    %eax" <<", " << reglist[r2] << "\n"; 
     free_register(r1);
     return(r2);
+}
+
+int cgdiv(int r1, int r2) {
+    // Division de r1 par r2
+    // TODO Eviter les divisions par 0
+    // Voir la doc de div
+    std::cout << "\tmovl    $0, %edx\n";  
+    std::cout << "\tmovl    "<< reglist[r1] <<", %eax\n"; 
+    std::cout << "\tdivl\t  "<< reglist[r2]<< "\n";
+    std::cout << "\tmovl    %eax" <<", " << reglist[r2] << "\n"; 
+    free_register(r1);
+    return(r2);
+
 }
 
 // load a register into a variable

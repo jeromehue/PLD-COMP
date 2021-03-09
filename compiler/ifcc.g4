@@ -15,10 +15,8 @@ expr_affectation : ID '=' expression ';';
 
 expression  : CONST                                             # number
             | ID                                                # var
-            | left=expression op='*' right=expression           # Expr 
-            | left=expression op='/' right=expression           # Expr 
-            | left=expression op='+' right=expression           # Expr 
-            | left=expression op='-' right=expression           # Expr 
+            | left=expression op=('*'|'/') right=expression     # Expr 
+            | left=expression op=('+'|'-') right=expression     # Expr 
             ;
             
 
