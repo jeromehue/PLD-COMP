@@ -4,10 +4,14 @@ axiom : prog
       ;
 
 prog : 
-'int' 'main' '(' ')' '{' 
-    affectation* expr_affectation* 
-    RETURN retval ';' 
+    'int' 'main' '(' ')' '{' 
+        declaration*
+        affectation* 
+        expr_affectation* 
+        RETURN retval ';' 
     '}' ;
+
+declaration : TYPE ID (',' ID)* ';';
 
 affectation : TYPE ID '=' CONST ';';
 
@@ -21,7 +25,7 @@ expression  : CONST                                             # number
             
 
 
-retval   : CONST 
+retval  : CONST 
         | ID
         ;
 
