@@ -26,7 +26,7 @@ retval   : CONST
         ;
 
 RETURN : 'return' ;
-TYPE : 'int32_t';
+TYPE : 'int';
 CONST : [0-9]+ ;
 ID : [a-z]+ ;
 COMMENT : '/*' .*? '*/' -> skip ;
