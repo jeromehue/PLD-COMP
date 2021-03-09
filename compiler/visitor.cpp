@@ -24,9 +24,9 @@ antlrcpp::Any Visitor::visitProg(ifccParser::ProgContext *ctx) {
         // return a var
         int retval =symboltable.getAdress(ctx->retval()->ID()->getText());
         retstr = std::to_string(retval) + "(%rbp)";
-        cgreturnvar(retstr);
     }
    
+    cgreturnvar(retstr);
     std::cout << "\n" << std::endl;
     cgepilogue();
         
@@ -93,7 +93,9 @@ antlrcpp::Any Visitor::visitExpr_affectation
 }
 
 antlrcpp::Any Visitor::visitRetval(ifccParser::RetvalContext *ctx) { 
-    return visitChildren(ctx);
+    //int r  = visitChildren(ctx);
+    //cgloadeax(r);
+    return 0;
 }
 
 
@@ -105,8 +107,10 @@ antlrcpp::Any Visitor::visitNumber(ifccParser::NumberContext *ctx) {
 
 antlrcpp::Any Visitor::visitVar(ifccParser::VarContext* ctx) {
     // We have reached var in an expresion
-//    std::cout << "reading var" << std::endl;
     int addr =  symboltable.getAdress(ctx->ID()->getText());
     int r = cgvartoreg(addr);
     return r;
 }
+
+
+

@@ -114,6 +114,11 @@ int cgdiv(int r1, int r2) {
 
 }
 
+void cgloadeax(int r) {
+    std::cout << "\tmovl    "<< reglist[r] <<", %eax\n"; 
+}
+
+
 // load a register into a variable
 void cgloadvar(int r, int addr) {
 
