@@ -133,19 +133,22 @@ antlrcpp::Any Visitor::visitBlockItem(ifccParser::BlockItemContext *ctx) {
 
 
 antlrcpp::Any Visitor::visitInitDeclarator(ifccParser::InitDeclaratorContext* ctx) {
-    int value  = 0;
-    if (ctx->CONST() != NULL) {
-        value = stoi(ctx->CONST()->getText());
-    }
     std::string name = ctx->ID()->getText();
-    if (!symboltable.find(name)) { 
+        if (!symboltable.find(name)) { 
             std::cout << "La variable a déjà été déclarée" << std::endl;
             exit(EXIT_FAILURE);
+        }
+        std::cout << "\t# variable " << name << std::endl;    
+        int value  = 0;
+    if (ctx->expression() == NULL) {
+        
+        int addr = symboltable.store(ctx->ID()->getText());
+        cgstorevar(value, addr);
+    }  else  {
+        int reg = visit(ctx->expression());
+        int addr = symboltable.store(ctx->ID()->getText());
+        cgloadvar(reg, addr); 
     }
-    std::cout << "\t# variable " << name << std::endl;    
-    int addr = symboltable.store(ctx->ID()->getText());
-    cgstorevar(value, addr);
-
-
+    
     return 0;
 }

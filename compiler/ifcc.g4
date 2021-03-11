@@ -28,7 +28,7 @@ initDeclaratorList
 
 initDeclarator  
     : ID 
-    | ID '=' CONST 
+    | ID '=' expression
     ;
 
 statement       
