@@ -41,11 +41,8 @@ antlrcpp::Any Visitor::visitAffectation(ifccParser::AffectationContext *ctx){
         std::cout << "La variable a déjà été déclarée" << std::endl;
         exit(EXIT_FAILURE);
     }
-    std::cout << "        movl    $" 
-            << ctx->CONST()->getText() 
-            << ", " 
-            << symboltable.store(ctx->ID()->getText()) 
-            <<  "(%rbp)\n";
+    int adress = symboltable.store(ctx->ID()->getText()); 
+    cgstorevar(stoi(ctx->CONST()->getText()), adress) ;
     return visitChildren(ctx);
 }
 
@@ -121,11 +118,9 @@ antlrcpp::Any Visitor::visitDeclaration(ifccParser::DeclarationContext *ctx) {
             std::cout << "La variable a déjà été déclarée" << std::endl;
             exit(EXIT_FAILURE);
         }
-
-        std::cout << "        movl    $0, " 
-            << symboltable.store(ctx->ID(i)->getText()) 
-            <<  "(%rbp)\n";
-
+        
+        int adr = symboltable.store(ctx->ID(i)->getText());
+        cgstorevar(0, adr);
     }
     return 0;
 }

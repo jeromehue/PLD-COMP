@@ -143,3 +143,10 @@ int cgvartoreg (int addr) {
             <<  "\n";
     return r;
 }
+
+// Store a variable 
+void cgstorevar(int value, int addr) {
+    std::string var_register = std::to_string(addr) + "(%rbp)";
+    std::cout << 
+    "\tmovl     $" << value << "," << var_register << "\n";
+}

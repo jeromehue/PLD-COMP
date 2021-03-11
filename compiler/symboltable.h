@@ -42,6 +42,7 @@ public:
 
     std::map<std::string, int> symbols;
     protected:
+    // address of the last variable declared on the rbp stack
     int var_addr;
 };
 
