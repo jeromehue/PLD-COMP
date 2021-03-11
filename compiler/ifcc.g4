@@ -1,38 +1,63 @@
 grammar ifcc;
 
-axiom : prog       
-      ;
+axiom           
+    : prog       
+    ;
 
-prog : 
-    'int' 'main' '(' ')' '{' 
-        declaration*
-        affectation* 
-        expr_affectation* 
-        RETURN retval ';' 
-    '}' ;
+prog            
+    : 
+        'int' 'main' '(' ')' '{' 
+            blockItem*
+            RETURN retval ';' 
+        '}' 
+    ;
 
-declaration : TYPE ID (',' ID)* ';';
+blockItem       
+    : declaration
+    | statement
+    ;
 
-affectation : TYPE ID '=' CONST ';';
+declaration     
+    : TYPE initDeclaratorList ';'
+    ;
 
-expr_affectation : ID '=' expression ';';
+initDeclaratorList
+    :   initDeclarator
+    |   initDeclaratorList ',' initDeclarator
+    ;
 
-expression  : CONST                                             # number
-            | ID                                                # var
-            | left=expression op=('*'|'/') right=expression     # Expr 
-            | left=expression op=('+'|'-') right=expression     # Expr 
-            ;
+initDeclarator  
+    : ID 
+    | ID '=' CONST 
+    ;
+
+statement       
+    : assignmentExpr ';' 
+    ;
+
+assignmentExpr  : 
+    ID '=' expression 
+    ;
+                 
+
+expression      
+    : CONST     # number
+    | ID        # var
+    | left=expression op=('*'|'/') right=expression     # Expr 
+    | left=expression op=('+'|'-') right=expression     # Expr 
+    ;
             
+retval  
+    : CONST 
+    | ID
+    ;
 
 
-retval  : CONST 
-        | ID
-        ;
 
-RETURN : 'return' ;
-TYPE : 'int';
-CONST : [0-9]+ ;
-ID : [a-z]+ ;
-COMMENT : '/*' .*? '*/' -> skip ;
-DIRECTIVE : '#' .*? '\n' -> skip ;
-WS    : [ \t\r\n] -> channel(HIDDEN);
+RETURN      : 'return' ;
+TYPE        : 'int';
+CONST       : [0-9]+ ;
+ID          : [a-z]+ ;
+COMMENT     : '/*' .*? '*/' -> skip ;
+DIRECTIVE   : '#' .*? '\n' -> skip ;
+WS          : [ \t\r\n] -> channel(HIDDEN);

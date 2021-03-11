@@ -11,7 +11,6 @@ antlrcpp::Any Visitor::visitProg(ifccParser::ProgContext *ctx) {
     freeall_registers();
     cgprologue();    
     visitChildren(ctx);
-    
     int retval = 12;
     std::string retstr;
     
@@ -33,8 +32,10 @@ antlrcpp::Any Visitor::visitProg(ifccParser::ProgContext *ctx) {
 
  }
 
-
-antlrcpp::Any Visitor::visitAffectation(ifccParser::AffectationContext *ctx){
+/*
+antlrcpp::Any Visitor::visitAssignmentExpr
+    (ifccParser::AssignmentExprContext *ctx)
+{
     // Checking if variable already exist
     std::string name = ctx->ID()->getText();
     if (!symboltable.find(name)) { 
@@ -44,7 +45,7 @@ antlrcpp::Any Visitor::visitAffectation(ifccParser::AffectationContext *ctx){
     int adress = symboltable.store(ctx->ID()->getText()); 
     cgstorevar(stoi(ctx->CONST()->getText()), adress) ;
     return visitChildren(ctx);
-}
+}*/
 
 antlrcpp::Any Visitor::visitExpr(ifccParser::ExprContext *ctx)
 {
@@ -78,8 +79,8 @@ antlrcpp::Any Visitor::visitExpr(ifccParser::ExprContext *ctx)
     return 0;
 }
 
-antlrcpp::Any Visitor::visitExpr_affectation 
-(ifccParser::Expr_affectationContext *ctx) {
+antlrcpp::Any Visitor::visitAssignmentExpr
+(ifccParser::AssignmentExprContext *ctx) {
     int r =visit(ctx->expression());
     std::string name = ctx->ID()->getText();
     int retval =  symboltable.getAdress(ctx->ID()->getText());
@@ -109,6 +110,7 @@ antlrcpp::Any Visitor::visitVar(ifccParser::VarContext* ctx) {
 }
 
 antlrcpp::Any Visitor::visitDeclaration(ifccParser::DeclarationContext *ctx) {
+    /*
     auto v = ctx->ID();
     for (int i = 0; i< v.size(); ++i) {
         
@@ -121,6 +123,29 @@ antlrcpp::Any Visitor::visitDeclaration(ifccParser::DeclarationContext *ctx) {
         
         int adr = symboltable.store(ctx->ID(i)->getText());
         cgstorevar(0, adr);
+    }*/
+    return visitChildren(ctx);
+}
+
+antlrcpp::Any Visitor::visitBlockItem(ifccParser::BlockItemContext *ctx) {
+    return visitChildren(ctx);
+}
+
+
+antlrcpp::Any Visitor::visitInitDeclarator(ifccParser::InitDeclaratorContext* ctx) {
+    int value  = 0;
+    if (ctx->CONST() != NULL) {
+        value = stoi(ctx->CONST()->getText());
     }
+    std::string name = ctx->ID()->getText();
+    if (!symboltable.find(name)) { 
+            std::cout << "La variable a déjà été déclarée" << std::endl;
+            exit(EXIT_FAILURE);
+    }
+    std::cout << "\t# variable " << name << std::endl;    
+    int addr = symboltable.store(ctx->ID()->getText());
+    cgstorevar(value, addr);
+
+
     return 0;
 }
