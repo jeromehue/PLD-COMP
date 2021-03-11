@@ -132,7 +132,7 @@ void cgloadvar(int r, int addr) {
 }
 
 
-// load a varibale into a register
+// load a varibale into a register and return that register
 int cgvartoreg (int addr) {
     int r = alloc_register();
     std::string var_register = std::to_string(addr) + "(%rbp)";

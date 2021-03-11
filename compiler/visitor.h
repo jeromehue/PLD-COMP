@@ -40,6 +40,8 @@ public:
   virtual antlrcpp::Any visitVar
       (ifccParser::VarContext *ctx) override ;
 
+  virtual antlrcpp::Any visitDeclaration
+      (ifccParser::DeclarationContext *ctx) override ;
 protected: 
     Symboltable symboltable;
 };

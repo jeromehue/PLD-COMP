@@ -1,7 +1,6 @@
-// Generated from ifcc.g4 by ANTLR 4.7.2
-
 #include "visitor.h"
 #include "decl.h"
+#include <vector>
 #include <string>
 
 antlrcpp::Any Visitor::visitAxiom(ifccParser::AxiomContext *ctx) 
@@ -112,5 +111,21 @@ antlrcpp::Any Visitor::visitVar(ifccParser::VarContext* ctx) {
     return r;
 }
 
+antlrcpp::Any Visitor::visitDeclaration(ifccParser::DeclarationContext *ctx) {
+    auto v = ctx->ID();
+    for (int i = 0; i< v.size(); ++i) {
+        
+        // Checking if variable already exist
+        std::string name = ctx->ID(i)->getText();
+        if (!symboltable.find(name)) { 
+            std::cout << "La variable a déjà été déclarée" << std::endl;
+            exit(EXIT_FAILURE);
+        }
 
+        std::cout << "        movl    $0, " 
+            << symboltable.store(ctx->ID(i)->getText()) 
+            <<  "(%rbp)\n";
 
+    }
+    return 0;
+}

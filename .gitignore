@@ -6,3 +6,9 @@ compiler/main.c
 
 tests/pld-test-output
 tests/tests
+
+a.out
+temp.*
+main.c
+main.s
+test.s
