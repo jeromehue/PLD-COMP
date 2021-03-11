@@ -1,16 +1,5 @@
 # C compiler with antlr4/c++
 
-## Instructions
-
-This minimal example shows how to build a basic C compiler using Antlr4 for C++. The only file the compiler can deal with is:
-
-```
-int main() {
-   return n;
-}
-```
-where `n` is a positive integer. 
-
 ## Source Files
 - `ifcc.g4` contains the grammar in antlr4 format
 - `main.cpp` contains the C++ code to call the antlr4-generated parser on the  file name provided in the command line.
