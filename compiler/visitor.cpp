@@ -81,7 +81,7 @@ antlrcpp::Any Visitor::visitExpr(ifccParser::ExprContext *ctx)
 
 antlrcpp::Any Visitor::visitAssignmentExpr
 (ifccParser::AssignmentExprContext *ctx) {
-    int r =visit(ctx->expression());
+    int r =visit(ctx->arithExpr());
     std::string name = ctx->ID()->getText();
     int retval =  symboltable.getAdress(ctx->ID()->getText());
     
@@ -140,12 +140,12 @@ antlrcpp::Any Visitor::visitInitDeclarator(ifccParser::InitDeclaratorContext* ct
         }
         std::cout << "\t# variable " << name << std::endl;    
         int value  = 0;
-    if (ctx->expression() == NULL) {
+    if (ctx->arithExpr() == NULL) {
         
         int addr = symboltable.store(ctx->ID()->getText());
         cgstorevar(value, addr);
     }  else  {
-        int reg = visit(ctx->expression());
+        int reg = visit(ctx->arithExpr());
         int addr = symboltable.store(ctx->ID()->getText());
         cgloadvar(reg, addr); 
     }

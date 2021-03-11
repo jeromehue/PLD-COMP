@@ -28,23 +28,23 @@ initDeclaratorList
 
 initDeclarator  
     : ID 
-    | ID '=' expression
+    | ID '=' arithExpr
     ;
 
 statement       
     : assignmentExpr ';' 
     ;
 
-assignmentExpr  : 
-    ID '=' expression 
+assignmentExpr  
+    : ID '=' arithExpr
     ;
                  
 
-expression      
+arithExpr    
     : CONST     # number
     | ID        # var
-    | left=expression op=('*'|'/') right=expression     # Expr 
-    | left=expression op=('+'|'-') right=expression     # Expr 
+    | left=arithExpr op=('*'|'/') right=arithExpr     # Expr 
+    | left=arithExpr op=('+'|'-') right=arithExpr     # Expr 
     ;
             
 retval  
