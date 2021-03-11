@@ -46,6 +46,19 @@ public:
   virtual antlrcpp::Any visitAssignmentExpr 
       (ifccParser::AssignmentExprContext *ctx) override ;
 
+  virtual antlrcpp::Any visitEqualityExpression 
+      (ifccParser::EqualityExpressionContext *ctx) override ;
+    
+
+  virtual antlrcpp::Any visitRelExpr
+      (ifccParser::RelExprContext *ctx) override;
+
+  virtual antlrcpp::Any visitRe_number
+      (ifccParser::Re_numberContext *ctx) override;
+
+  virtual antlrcpp::Any visitRe_var
+      (ifccParser::Re_varContext *ctx) override;
+
 protected: 
     Symboltable symboltable;
 };

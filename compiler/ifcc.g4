@@ -1,5 +1,10 @@
 grammar ifcc;
 
+/*
+    C standard available here :
+    http://port70.net/~nsz/c/c11/
+*/
+
 axiom           
     : prog       
     ;
@@ -20,6 +25,21 @@ blockItem
 declaration     
     : TYPE initDeclaratorList ';'
     ;
+
+relationalExpression
+    : CONST     #re_number
+    | ID        #re_var
+    | relationalExpression '<' relationalExpression    #RelExpr
+    | relationalExpression '>' relationalExpression    #RelExpr
+    | relationalExpression '<=' relationalExpression   #RelExpr
+    | relationalExpression '>=' relationalExpression   #RelExpr
+    ;
+
+equalityExpression 
+    : relationalExpression
+    | equalityExpression '==' relationalExpression     
+    | equalityExpression '!=' relationalExpression 
+    ;    
 
 initDeclaratorList
     :   initDeclarator

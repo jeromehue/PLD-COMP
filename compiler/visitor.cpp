@@ -152,3 +152,20 @@ antlrcpp::Any Visitor::visitInitDeclarator(ifccParser::InitDeclaratorContext* ct
     
     return 0;
 }
+
+
+antlrcpp::Any Visitor::visitEqualityExpression(ifccParser::EqualityExpressionContext *ctx) {
+    return visitChildren(ctx);
+}
+
+
+antlrcpp::Any Visitor::visitRelExpr(ifccParser::RelExprContext *ctx) {
+    return visitChildren(ctx);
+}
+antlrcpp::Any Visitor::visitRe_var(ifccParser::Re_varContext *ctx) {
+    return visitChildren(ctx);
+}
+
+antlrcpp::Any Visitor::visitRe_number(ifccParser::Re_numberContext *ctx) {
+    return visitChildren(ctx);
+}
