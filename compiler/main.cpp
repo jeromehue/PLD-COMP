@@ -35,6 +35,7 @@ int main(int argn, const char **argv) {
   
   if (parser.getNumberOfSyntaxErrors()!=0)
   {
+    cout<<"erreur of syntax";
   	return 1;
   }
 
