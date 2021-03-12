@@ -1,23 +1,21 @@
+# Output and local files
+compiler/ifcc
 compiler/Makefile.local
 compiler/antlr4-generated
 compiler/output
-compiler/ifcc
 compiler/main.c
 
-tests/out
+# Intermediate files
+*.out
+*.s
+*.o
 
-.vscode
-
-a.out
-ifcc
-temp.*
-main.c
-main.s
-test.s
-ifcc
-
+# Tests
 tests/gui/*.class
 tests/gui/*.java
 tests/gui/*.interp
 tests/gui/*.tokens
-tests/pld-test-output
+tests/out
+
+# Custom settings for VSCode
+.vscode
