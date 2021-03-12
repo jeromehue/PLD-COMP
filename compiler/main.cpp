@@ -29,15 +29,16 @@ int main(int argn, const char **argv) {
 
   ifccParser parser(&tokens);
   tree::ParseTree* tree = parser.axiom();
-
-  Visitor visitor;
-  visitor.visit(tree);
-  
+      
+    
   if (parser.getNumberOfSyntaxErrors()!=0)
   {
     cout<<"erreur of syntax";
   	return 1;
   }
 
+  Visitor visitor;
+  visitor.visit(tree);
+  
   return 0;
 }

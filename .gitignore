@@ -1,6 +1,19 @@
 compiler/Makefile
 compiler/antlr4-generated
 compiler/output
+compiler/ifcc
+compiler/main.c
 
 tests/pld-test-output
-tests/tests
+
+a.out
+temp.*
+main.c
+main.s
+test.s
+
+
+tests/gui/*.class
+tests/gui/*.java
+tests/gui/*.interp
+tests/gui/*.tokens

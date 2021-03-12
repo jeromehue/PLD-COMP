@@ -6,45 +6,60 @@
 
 #include "antlr4-runtime.h"
 #include "antlr4-generated/ifccVisitor.h"
-
+#include "antlr4-generated/ifccBaseVisitor.h"
+#include "symboltable.h"
 
 /**
  * This class provides an empty implementation of ifccVisitor, which can be
  * extended to create a visitor which only needs to handle a subset of the available methods.
  */
-class  Visitor : public ifccVisitor {
+class  Visitor : public ifccBaseVisitor {
 public:
 
-  virtual antlrcpp::Any visitAxiom(ifccParser::AxiomContext *ctx) override {
-    return visitChildren(ctx);
-  }
+  virtual antlrcpp::Any visitAxiom
+      (ifccParser::AxiomContext *ctx) override;
 
-  virtual antlrcpp::Any visitProg(ifccParser::ProgContext *ctx) override {
+  virtual antlrcpp::Any visitProg
+      (ifccParser::ProgContext *ctx) override; 
 
-     int retval = stoi(ctx->CONST()->getText()); //gérer erreurs
-     std::cout<<".global main\n"
-           " main: \n"
-           "	#prologue\n"
-           "	pushq %rbp\n"
-           "	movq %rsp, %rbp\n"
-           "\n"
-           "	#body\n";
-    visitChildren(ctx);
-     std::cout <<   
-            "	movl	$"<<retval<<", %eax\n"
-            "\n"
-            "	#epilogue\n"
-            "   popq %rbp\n"
-            " 	ret\n";
+  virtual antlrcpp::Any visitRetval
+      (ifccParser::RetvalContext *ctx) override;
 
-     return 0;
-  }
+  virtual antlrcpp::Any visitExpr 
+      (ifccParser::ExprContext *ctx) override;
 
-  virtual antlrcpp::Any visitAffectation(ifccParser::AffectationContext *ctx) override {
-      std::cout << "        movl    $" << ctx->CONST()->getText() << 
-          ", -4(%rbp)\n";
-    return visitChildren(ctx);
-  }
+  virtual antlrcpp::Any visitNumber
+      (ifccParser::NumberContext *ctx) override ;
 
+  virtual antlrcpp::Any visitVar
+      (ifccParser::VarContext *ctx) override ;
+
+  virtual antlrcpp::Any visitDeclaration
+      (ifccParser::DeclarationContext *ctx) override ;
+
+  virtual antlrcpp::Any visitBlockItem 
+      (ifccParser::BlockItemContext *ctx) override ;
+
+  virtual antlrcpp::Any visitInitDeclarator 
+      (ifccParser::InitDeclaratorContext *ctx) override ;
+
+  virtual antlrcpp::Any visitAssignmentExpr 
+      (ifccParser::AssignmentExprContext *ctx) override ;
+
+  virtual antlrcpp::Any visitEqualityExpression 
+      (ifccParser::EqualityExpressionContext *ctx) override ;
+    
+
+  virtual antlrcpp::Any visitRelExpr
+      (ifccParser::RelExprContext *ctx) override;
+
+  virtual antlrcpp::Any visitRe_number
+      (ifccParser::Re_numberContext *ctx) override;
+
+  virtual antlrcpp::Any visitRe_var
+      (ifccParser::Re_varContext *ctx) override;
+
+protected: 
+    Symboltable symboltable;
 };
 
