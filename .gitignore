@@ -14,7 +14,7 @@ temp.*
 main.c
 main.s
 test.s
-
+ifcc
 
 tests/gui/*.class
 tests/gui/*.java
