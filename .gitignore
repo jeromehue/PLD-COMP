@@ -11,3 +11,9 @@ temp.*
 main.c
 main.s
 test.s
+
+
+tests/gui/*.class
+tests/gui/*.java
+tests/gui/*.interp
+tests/gui/*.tokens
