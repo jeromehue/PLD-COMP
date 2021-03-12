@@ -9,6 +9,7 @@ tests/pld-test-output
 .vscode
 
 a.out
+ifcc
 temp.*
 main.c
 main.s
