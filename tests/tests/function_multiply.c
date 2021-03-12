@@ -4,5 +4,6 @@ int multiply(int a, int b) {
 
 int main() {
     int a = 2;
-    return multiply(a, 5);
+    int b = multiply(a, 5);
+    return b;
 }
