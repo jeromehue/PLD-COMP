@@ -104,8 +104,14 @@ antlrcpp::Any Visitor::visitNumber(ifccParser::NumberContext *ctx) {
 
 antlrcpp::Any Visitor::visitVar(ifccParser::VarContext* ctx) {
     // We have reached var in an expresion
+    std::string nom= ctx->ID()->getText();
+    if(!symboltable.find(nom)){
+        std::cout << "Undeclared Variable" << std::endl;
+        exit(EXIT_FAILURE);
+    }
     int addr =  symboltable.getAdress(ctx->ID()->getText());
     int r = cgvartoreg(addr);
+    
     return r;
 }
 
@@ -134,7 +140,7 @@ antlrcpp::Any Visitor::visitBlockItem(ifccParser::BlockItemContext *ctx) {
 
 antlrcpp::Any Visitor::visitInitDeclarator(ifccParser::InitDeclaratorContext* ctx) {
     std::string name = ctx->ID()->getText();
-        if (!symboltable.find(name)) { 
+        if (symboltable.find(name)) { 
             std::cout << "La variable a déjà été déclarée" << std::endl;
             exit(EXIT_FAILURE);
         }

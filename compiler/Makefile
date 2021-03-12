@@ -2,14 +2,9 @@ OUTPUT=output
 GENERATED=antlr4-generated
 GRAMMAR=ifcc.g4
 
-#override with your local installation
-#ANTLR4_BINDIR=/usr/bin
-#ANTLR4_INCDIR=/shares/public/tp/ANTLR4-CPP/antlr4-runtime
-#ANTLR4_LIBDIR=/shares/public/tp/ANTLR4-CPP/lib
+ #override with your local installation
 
-ANTLR4_BINDIR=/usr/bin
-ANTLR4_INCDIR=/usr/include/antlr4-runtime
-ANTLR4_LIBDIR=/usr/lib
+include Makefile.local
 
 CC=clang++
 CCARGS=-g -c -I $(ANTLR4_INCDIR) -I $(GENERATED) -std=c++17 -Wno-defaulted-function-deleted -Wno-unknown-warning-option
@@ -25,7 +20,7 @@ ifcc: dirs antlr  main.cpp visitor.cpp visitor.h cgen.cpp
 	$(CC) $(CCARGS) $(GENERATED)/ifccParser.cpp -o $(OUTPUT)/ifccParser.o 
 	$(CC) $(CCARGS) visitor.cpp -o $(OUTPUT)/visitor.o 
 	$(CC) $(CCARGS) cgen.cpp -o $(OUTPUT)/cgen.o 
-	$(CC) $(LDARGS) $(OUTPUT)/main.o $(OUTPUT)/ifccBaseVisitor.o $(OUTPUT)/ifccLexer.o $(OUTPUT)/ifccVisitor.o $(OUTPUT)/ifccParser.o $(OUTPUT)/visitor.o $(OUTPUT)/cgen.o $(ANTLR4_LIBDIR)/libantlr4-runtime.so -o ifcc
+	$(CC) $(LDARGS) $(OUTPUT)/main.o $(OUTPUT)/ifccBaseVisitor.o $(OUTPUT)/ifccLexer.o $(OUTPUT)/ifccVisitor.o $(OUTPUT)/ifccParser.o $(OUTPUT)/visitor.o $(OUTPUT)/cgen.o $(ANTLR4_LIBDIR)/libantlr4-runtime.a -o ifcc
 
 antlr: $(GRAMMAR)
 	$(ANTLR4_BINDIR)/antlr4 -visitor -no-listener -Dlanguage=Cpp -o $(GENERATED) $(GRAMMAR)

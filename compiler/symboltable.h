@@ -31,8 +31,8 @@ public:
     bool find(std::string variable) {
         auto it = symbols.find(variable);
         if (it == symbols.end()) 
-            return true;
-        return false;
+            return false;
+        return true;
     } 
     
     int getAdress(std::string name) {
