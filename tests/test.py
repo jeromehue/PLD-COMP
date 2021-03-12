@@ -10,7 +10,7 @@ import subprocess
 def command(string, logfile=None):
     """execute `string` as a shell command, optionnaly logging stdout+stderr to a file. return exit status.)"""
     if args.verbose:
-        print("pld-test.py: "+string)
+        print("test.py: "+string)
     try:
         output=subprocess.check_output(string,stderr=subprocess.STDOUT,shell=True)
         ret= 0
@@ -45,7 +45,7 @@ argparser.add_argument('-d','--debug',action="count",default=0,
 argparser.add_argument('-v','--verbose',action="count",default=0,
                        help='Increase verbosity level. You can use this option multiple times.')
 argparser.add_argument('-w','--wrapper',metavar='PATH',
-                       help='Invoke the PLD compiler through the shell script at PATH. (default: use `pld-wrapper.sh` from the same directory as pld-test.py)')
+                       help='Invoke the PLD compiler through the shell script at PATH. (default: use `wrapper.sh` from the same directory as test.py)')
 
 
 
@@ -56,10 +56,10 @@ if args.debug >=2:
     print('debug: command-line arguments '+str(args))
 
 orig_cwd=os.getcwd()
-if "pld-test-output" in orig_cwd:
+if 'out' in orig_cwd:
     ## we are invoked from within a preexisting DEST subtree => let's use it in place
     DEST="./"
-    while os.path.basename(os.path.realpath('.')) != 'pld-test-output':
+    while os.path.basename(os.path.realpath('.')) != 'out':
         os.chdir('..')
         DEST="../"+DEST
     os.chdir(orig_cwd)
@@ -68,9 +68,9 @@ if "pld-test-output" in orig_cwd:
         print('debug: DEST tree is at `'+DEST+"'")
 else:
     ## create a new DEST subtree if required
-    if not os.path.isdir('pld-test-output'):
-        os.mkdir('pld-test-output')
-    DEST='pld-test-output'
+    if not os.path.isdir('out'):
+        os.mkdir('out')
+    DEST='out'
     
 ## Then we process the inputs arguments i.e. filenames or subtrees
 inputfilenames=[]
@@ -116,7 +116,7 @@ for inputfilename in inputfilenames:
 if args.wrapper:
     wrapper=os.path.realpath(os.getcwd()+"/"+ args.wrapper)
 else:
-    wrapper=os.path.dirname(os.path.realpath(__file__))+"/pld-wrapper.sh"
+    wrapper=os.path.dirname(os.path.realpath(__file__))+"/wrapper.sh"
 
 if not os.path.isfile(wrapper):
     print("error: cannot find "+os.path.basename(wrapper)+" in directory: "+os.path.dirname(wrapper))
@@ -134,13 +134,13 @@ for inputfilename in inputfilenames:
     if args.debug>=2:
         print("debug: PREPARING "+inputfilename)
 
-    if ('pld-test-output' in os.path.realpath(inputfilename)
+    if ('out' in os.path.realpath(inputfilename)
         and inputfilename[-7:] == 'input.c' ) :
         # print("ALREADY PREPARED")
         jobs.append(os.path.dirname(inputfilename))
     else:
         ## each test-case gets copied and processed in its own subdirectory:
-        ## ../somedir/subdir/file.c becomes ./pld-test-output/somedir-subdir-file/input.c
+        ## ../somedir/subdir/file.c becomes ./test-output/somedir-subdir-file/input.c
         subdir=DEST+'/'+inputfilename.strip("./")[:-2].replace('/','-')
         if not os.path.isdir(subdir):
             os.mkdir(subdir)
@@ -183,7 +183,7 @@ for jobname in jobs:
             dumpfile("gcc-execute.txt")
             
     ## PADAWAN compiler
-    pldstatus=command(wrapper+" asm-pld.s input.c", "pld-compile.txt")
+    pldstatus=command(wrapper+" asm-pld.s input.c", "compile.txt")
     
     if gccstatus != 0 and pldstatus != 0:
         ## padawan correctly rejects invalid program -> test-case ok
@@ -197,28 +197,28 @@ for jobname in jobs:
         ## padawan wrongly rejects valid program -> error
         print("TEST FAIL (your compiler rejects a valid program)")
         if args.verbose:
-            dumpfile("pld-compile.txt")
+            dumpfile("compile.txt")
         continue
     else:
         ## padawan accepts to compile valid program -> let's link it
-        ldstatus=command("gcc -o exe-pld asm-pld.s", "pld-link.txt")
+        ldstatus=command("gcc -o exe-pld asm-pld.s", "link.txt")
         if ldstatus:
             print("TEST FAIL (your compiler produces incorrect assembly)")
             if args.verbose:
-                dumpfile("pld-link.txt")
+                dumpfile("link.txt")
             continue
 
     ## both compilers  did produce an  executable, so now we  run both
     ## these executables and compare the results.
         
-    exepldstatus=command("./exe-pld","pld-execute.txt")
-    if open("gcc-execute.txt").read() != open("pld-execute.txt").read() :
+    exepldstatus=command("./exe-pld","execute.txt")
+    if open("gcc-execute.txt").read() != open("execute.txt").read() :
         print("TEST FAIL (different results at execution)")
         if args.verbose:
             print("GCC:")
             dumpfile("gcc-execute.txt")
             print("you:")
-            dumpfile("pld-execute.txt")
+            dumpfile("execute.txt")
         continue
 
     ## last but not least

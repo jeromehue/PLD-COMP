@@ -4,7 +4,7 @@ compiler/output
 compiler/ifcc
 compiler/main.c
 
-tests/pld-test-output
+tests/out
 
 .vscode
 
