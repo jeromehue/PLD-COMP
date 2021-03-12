@@ -77,7 +77,7 @@ retval
 RETURN      : 'return' ;
 TYPE        : 'int';
 CONST       : [0-9]+ ;
-ID          : [a-z]+ ;
+ID          : [_a-zA-Z][_a-zA-Z0-9]* ;
 COMMENT     : '/*' .*? '*/' -> skip ;
 DIRECTIVE   : '#' .*? '\n' -> skip ;
 WS          : [ \t\r\n] -> channel(HIDDEN);
