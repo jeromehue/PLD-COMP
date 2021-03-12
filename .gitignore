@@ -9,6 +9,7 @@ tests/out
 .vscode
 
 a.out
+ifcc
 temp.*
 main.c
 main.s
