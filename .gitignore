@@ -20,3 +20,4 @@ tests/gui/*.class
 tests/gui/*.java
 tests/gui/*.interp
 tests/gui/*.tokens
+tests/pld-test-output
