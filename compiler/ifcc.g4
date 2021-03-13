@@ -12,7 +12,8 @@ axiom
 prog            
     : 
         'int' 'main' '(' ')' '{' 
-            blockItem*
+            declaration*
+            statement*
             RETURN retval ';' 
         '}' 
     ;
