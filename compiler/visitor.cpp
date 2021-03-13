@@ -20,7 +20,7 @@ antlrcpp::Any Visitor::visitProg(ifccParser::ProgContext *ctx) {
         retstr = "$" + std::to_string(retval);
     } else {
         // return a var
-        int retval =symboltable.getAdress(ctx->retval()->ID()->getText());
+        int retval =symboltable.getAddress(ctx->retval()->ID()->getText());
         retstr = std::to_string(retval) + "(%rbp)";
     }
    
@@ -42,8 +42,8 @@ antlrcpp::Any Visitor::visitAssignmentExpr
         std::cout << "La variable a déjà été déclarée" << std::endl;
         exit(EXIT_FAILURE);
     }
-    int adress = symboltable.store(ctx->ID()->getText()); 
-    cgstorevar(stoi(ctx->CONST()->getText()), adress) ;
+    int address = symboltable.store(ctx->ID()->getText()); 
+    cgstorevar(stoi(ctx->CONST()->getText()), address) ;
     return visitChildren(ctx);
 }*/
 
@@ -83,7 +83,7 @@ antlrcpp::Any Visitor::visitAssignmentExpr
 (ifccParser::AssignmentExprContext *ctx) {
     int r =visit(ctx->arithExpr());
     std::string name = ctx->ID()->getText();
-    int retval =  symboltable.getAdress(ctx->ID()->getText());
+    int retval =  symboltable.getAddress(ctx->ID()->getText());
     
     cgloadvar(r, retval);
     return 0;
@@ -109,7 +109,7 @@ antlrcpp::Any Visitor::visitVar(ifccParser::VarContext* ctx) {
         std::cout << "Undeclared Variable" << std::endl;
         exit(EXIT_FAILURE);
     }
-    int addr =  symboltable.getAdress(ctx->ID()->getText());
+    int addr =  symboltable.getAddress(ctx->ID()->getText());
     int r = cgvartoreg(addr);
     
     return r;

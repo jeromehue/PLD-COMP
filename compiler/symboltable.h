@@ -8,7 +8,7 @@
 // trucs dans le futur
 /*
 struct Variable {
-    int adress;
+    int address;
     int value;
 }*/
 
@@ -35,7 +35,7 @@ public:
         return true;
     } 
     
-    int getAdress(std::string name) {
+    int getAddress(std::string name) {
         auto it = symbols.find(name);
         return it->second;
     }    

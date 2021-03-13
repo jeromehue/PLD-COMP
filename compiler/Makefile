@@ -1,10 +1,9 @@
+# Create this file locally and put your 3 Antlr paths in it.
+include Makefile.local
+
 OUTPUT=output
 GENERATED=antlr4-generated
 GRAMMAR=ifcc.g4
-
- #override with your local installation
-
-include Makefile.local
 
 CC=clang++
 CCARGS=-g -c -I $(ANTLR4_INCDIR) -I $(GENERATED) -std=c++17 -Wno-defaulted-function-deleted -Wno-unknown-warning-option
@@ -12,7 +11,7 @@ LDARGS=-g
 
 all: ifcc
 
-ifcc: dirs antlr  main.cpp visitor.cpp visitor.h cgen.cpp
+ifcc: dirs antlr main.cpp visitor.cpp visitor.h cgen.cpp
 	$(CC) $(CCARGS) main.cpp  -o $(OUTPUT)/main.o 
 	$(CC) $(CCARGS) $(GENERATED)/ifccBaseVisitor.cpp -o $(OUTPUT)/ifccBaseVisitor.o 
 	$(CC) $(CCARGS) $(GENERATED)/ifccLexer.cpp -o $(OUTPUT)/ifccLexer.o 
