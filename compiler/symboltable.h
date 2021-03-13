@@ -6,11 +6,25 @@
 // Stocke l'adresse de la variable, 
 // sa valeur et peut être d'autres
 // trucs dans le futur
+
+
 /*
+A stocker dans la table :
+    - Noms des variables (et constantes)
+    - Fonctions et procédures
+    - Variables temporaires générées par le compilateur
+    
+Pour toute variabe, garder en mémoire :
+    - Nom
+    - Type
+    - Portée(pas forcément un attribut, à voir à l'implémentation)
+
+*/
+
 struct Variable {
     int address;
     int value;
-}*/
+};
 
 class Symboltable {
 public:
@@ -39,8 +53,13 @@ public:
         auto it = symbols.find(name);
         return it->second;
     }    
+    
+    void createEntry(std::string name) {
+        vardeclarations.push_back(name);        
+    }
 
     std::map<std::string, int> symbols;
+    std::vector<std::string> vardeclarations;
     protected:
     // address of the last variable declared on the rbp stack
     int var_addr;
