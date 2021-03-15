@@ -4,10 +4,16 @@
 #pragma once
 
 static void asmprint(ASTNode* n) {
-    std::cout << "bonjour" << std::endl;
+    std::cout << "call to asmprint" << std::endl;
     ASTNode* current  = n;
-    while(current->hasNext()) {
-        std::cout << "hasnext" << std::endl;
-        current = current.getNext();
+    current->display();
+    while(current->hasFirst()) {
+        current = current->getFirst();
+        current->display();
+        ASTNode* c = current;
+        while(c->hasNext()) {
+            c = c->getNext();
+            c->display();
+        }
     }
 }

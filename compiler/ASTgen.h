@@ -29,7 +29,7 @@ public:
     virtual antlrcpp::Any visitProg
       (ifccParser::ProgContext *ctx) override
     {
-        std::cout << "Call to visitProg" << std::endl;
+        //std::cout << "Call to visitProg" << std::endl;
         std::cout << ctx->getText() << std::endl;
         ASTNode* return_node = visit(ctx->retval()); 
         visitChildren(ctx); 
@@ -42,22 +42,57 @@ public:
       (ifccParser::RetvalContext *ctx) override
         {
 
-            std::cout << "visit retval" << std::endl;
+            //std::cout << "visit retval" << std::endl;
             if(ctx->CONST() != NULL ) {
                 int val = stoi(ctx->CONST()->getText());
                 // Création d'un noeud de type const
+                ASTNode* retNode = new RETURN(NULL, NULL, NULL);
+                Expr* expr = new CONST(NULL, NULL, NULL, NULL, 1);
                 ASTNode* n = new CONST(NULL, NULL, NULL, NULL, 1);
-                //std::cout <<n->getValue() << std::endl;
-                return n;
+                retNode->setExpr(expr);
+                retNode->setFirst(expr);
+                return retNode;
             } else {
               std::cout << "return a variable" << std::endl;
             }
             return 0;
       }
   
+  
+    virtual antlrcpp::Any visitExpr 
+      (ifccParser::ExprContext *ctx) override 
+    {
+         
+    //int left = visit(ctx->left);
+    //int right = visit(ctx->right);
+   
+        //TODO Create the node recursibely
+
+        char op = ctx->op->getText().at(0);
+        int ret; 
+        switch(op) {
+        case '+':
+            return ret;
+            break;
+        case '-': 
+            return ret;
+            break;
+        case '*': 
+            return ret;
+            break;
+        case '/': 
+            return ret;
+            break;
+        default:
+            std::cout << "Unknow operator : " << op << std::endl;
+            exit(EXIT_FAILURE);
+            break;
+    }
+    return 0;
+
+      
+    } 
   /*
-  virtual antlrcpp::Any visitExpr 
-      (ifccParser::ExprContext *ctx) override;
   virtual antlrcpp::Any visitNumber
       (ifccParser::NumberContext *ctx) override ;
 

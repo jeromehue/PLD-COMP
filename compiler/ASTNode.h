@@ -14,14 +14,22 @@
 
 using namespace std;
 
+enum nodeType {
+    N_CONST, N_IDENT
+};
+
+class Expr;
+
 class ASTNode {
 
 public:
     ASTNode(ASTNode* first, ASTNode* next) :
         next(next), first(first) {};
 
-    void display() { std::cout << "Node " << std::endl; }
-    
+    virtual void display() { std::cout << "Node " << std::endl; }
+
+    virtual void setExpr(Expr* expr) {}
+
     void setFirst(ASTNode * n) {
         this->first = n;
     }
@@ -61,6 +69,7 @@ class Expr : public ASTNode {
                 ASTNode* left,ASTNode* right) : 
             ASTNode(first, next), left(left), right(right) {};
 
+    virtual void display() { std::cout << "Expr Node " << std::endl; }
     protected:
         ASTNode* left;
         ASTNode* right;
@@ -81,17 +90,44 @@ class BinOp : public Expr {
 
 class CONST : public Expr {
     
-    public:
-        CONST(ASTNode* first, ASTNode* next, ASTNode* left,ASTNode* right, int value) : 
-            Expr(first, next, left, right) ,value(value) {};
-        void display() {std::cout << "CONST(" << value << ")" << std::endl;}
+public:
+    CONST(  ASTNode* first, ASTNode* next, 
+            ASTNode* left,  ASTNode* right, 
+            int value) : 
+        Expr(first, next, left, right) ,value(value) {};
+        
+    void display() {
+        std::cout << "CONST(" << value << ")" << std::endl;
+    }
 
-    int getValue() {return this->value;}
+    int getValue() {
+        return this->value;
+    }
     protected:
         int value;
 
 };
 
+class RETURN : public ASTNode {
+    
+    public:
+        RETURN(  ASTNode* first, ASTNode* next, 
+            Expr* retExpr) : 
+        ASTNode(first, next), retExpr(retExpr) {};
+        
+        void display() {
+            std::cout << "RETURN Node" << std::endl;
+        }
 
+        void setExpr(Expr* expr) {
+            this->retExpr = expr;
+        }
+
+    protected:
+        Expr* retExpr;
+
+
+
+};
 
 
