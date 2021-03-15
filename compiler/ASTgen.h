@@ -17,11 +17,12 @@ public:
     virtual antlrcpp::Any visitAxiom
       (ifccParser::AxiomContext *ctx) override 
     {
-        std::cout << "Bonjour" << std::endl;
+        std::cout << "call to visitAxiom" << std::endl;
         // Création de notre premier noeud : prog
         ASTNode* prog  = new Prog(nullptr);
-        
-        visitChildren(ctx);
+        ASTNode* content = visit(ctx->prog());
+        std::cout << "correct return from visitAxiom" << std::endl;
+        prog->setFirst(content);
         return prog;
     }
   
@@ -29,31 +30,34 @@ public:
       (ifccParser::ProgContext *ctx) override
     {
         std::cout << "Call to visitProg" << std::endl;
-        // Création de la définition de la fonction main
+        std::cout << ctx->getText() << std::endl;
+        ASTNode* return_node = visit(ctx->retval()); 
         visitChildren(ctx); 
-        return 0;      
+        return return_node;      
       
     }
 
   
   virtual antlrcpp::Any visitRetval
       (ifccParser::RetvalContext *ctx) override
-      {
-          std::cout << "visit retval" << std::endl;
-          if(ctx->CONST() != NULL ) {
-              std::cout << "return a const" << std::endl;
+        {
 
-          } else {
+            std::cout << "visit retval" << std::endl;
+            if(ctx->CONST() != NULL ) {
+                int val = stoi(ctx->CONST()->getText());
+                // Création d'un noeud de type const
+                ASTNode* n = new CONST(NULL, NULL, NULL, NULL, 1);
+                //std::cout <<n->getValue() << std::endl;
+                return n;
+            } else {
               std::cout << "return a variable" << std::endl;
-          }
-          
-          return 0;
+            }
+            return 0;
       }
   
   /*
   virtual antlrcpp::Any visitExpr 
       (ifccParser::ExprContext *ctx) override;
-
   virtual antlrcpp::Any visitNumber
       (ifccParser::NumberContext *ctx) override ;
 
@@ -94,7 +98,9 @@ public:
           if(ctx->arithExpr() != NULL){
               std::cout << "assignement" << std::endl;
           } else {
-              std::cout << "simple declaration" << std::endl;
+                std::cout << "simple declaration" << std::endl;
+                std::cout << "new entry in symbol table " 
+                    << ctx->ID()->getText() << std::endl; 
           }
           return 0;
       }

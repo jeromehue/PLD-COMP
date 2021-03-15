@@ -12,12 +12,36 @@
 
 // Les différents types de noeuds
 
+using namespace std;
 
 class ASTNode {
 
-    public:
+public:
     ASTNode(ASTNode* first, ASTNode* next) :
         next(next), first(first) {};
+
+    void display() { std::cout << "Node " << std::endl; }
+    
+    void setFirst(ASTNode * n) {
+        this->first = n;
+    }
+
+    bool hasNext() {
+        return(this->next != NULL);
+    }
+
+    bool hasFirst() {
+        return(this->first != NULL);
+    }
+
+    ASTNode* getNext() {
+        return this->next;
+    }
+
+    ASTNode* getFirst() {
+        return this->first;
+    }
+
 
     protected:
         ASTNode* next;
@@ -25,8 +49,10 @@ class ASTNode {
 };
 
 class Prog : public  ASTNode {
-    public:
+public:
     Prog(ASTNode* first) : ASTNode(first, NULL) {};
+
+protected:
 };
 
 class Expr : public ASTNode {
@@ -53,12 +79,14 @@ class BinOp : public Expr {
         char op;
 };
 
-class IDENT : public Expr {
+class CONST : public Expr {
     
     public:
-        IDENT(ASTNode* first, ASTNode* next, ASTNode* left,ASTNode* right, int value) : 
+        CONST(ASTNode* first, ASTNode* next, ASTNode* left,ASTNode* right, int value) : 
             Expr(first, next, left, right) ,value(value) {};
-    
+        void display() {std::cout << "CONST(" << value << ")" << std::endl;}
+
+    int getValue() {return this->value;}
     protected:
         int value;
 
