@@ -146,8 +146,7 @@ class Ident_n : public Expr_n {
 // rvalue : expression
 class Assign_n : public ASTNode {
     public:
-        Assign_n(ASTNode* first, ASTNode* next,
-        Expr_n* rvalue, Ident_n* lvalue) :
+        Assign_n(ASTNode* first, ASTNode* next, Expr_n* rvalue, Ident_n* lvalue) :
             ASTNode(first, next), rvalue(rvalue), lvalue(lvalue) {};
         
         void display() {

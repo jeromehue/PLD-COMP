@@ -41,15 +41,10 @@ int main(int argn, const char **argv) {
   	    return 1;
     }
 
-    Visitor visitor;
-    visitor.visit(tree);
-
-    /* 
-    ASTgen generator;
-    ASTNode* n = generator.visit(tree);
-    std::cout << "Génération de l'arbre correcte" << std::endl;
-    asmprint(n);
-    */
-
+    
+    //Visitor visitor;visitor.visit(tree);
+    
+    ASTgen generator;ASTNode* n = generator.visit(tree);std::cout << "Génération de l'arbre correcte" << std::endl;asmprint(n);
+    
     return 0;
 }

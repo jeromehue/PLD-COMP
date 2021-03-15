@@ -43,8 +43,7 @@ equalityExpression
     ;    
 
 initDeclaratorList
-    :   initDeclarator
-    |   initDeclaratorList ',' initDeclarator
+    :   initDeclarator*
     ;
 
 initDeclarator  
@@ -59,7 +58,13 @@ statement
 assignmentExpr  
     : ID '=' arithExpr
     ;
-                 
+
+
+// To be used in expressions and return 
+primaryExpression
+    : CONST
+    | ID
+    ;
 
 arithExpr    
     : CONST     # number

@@ -104,7 +104,10 @@ public:
     {
         std::cout << "visitDeclaration" << std::endl;      
         std::cout << "Type : " << ctx->TYPE()->getText() << std::endl;
-        visitChildren(ctx);
+        ASTNode* n = visit(ctx->initDeclaratorList());
+        std::cout << "returned from visit declarator" << std::endl;
+        if (n != nullptr) 
+            n->display();
         return 0;
     }
     
@@ -119,26 +122,59 @@ public:
     virtual antlrcpp::Any visitInitDeclaratorList
         (ifccParser::InitDeclaratorListContext * ctx) override 
     {
+       /* 
         std::cout << "List of declarators" << std::endl;
         auto v = ctx->initDeclarator()->getText();
         std::cout << "variable : " << v<< std::endl;
-        visitChildren(ctx);
-        return 0;
+        std::cout << "temp to be initialized" << std::endl;
+        
+        // recursively parse trough declarations
+        if (ctx->initDeclaratorList() != NULL )  {
+            ASTNode* n = visit(ctx->initDeclaratorList());
+            if(n != nullptr) {
+                //std::cout << "add node to temp one" << std::endl;
+            }
+        }
+        
+        ASTNode * node = visit(ctx->initDeclarator());
+        if (node == nullptr) {
+                std::cout << "déclaration sans affectation" << std::endl;
+        } else {
+            std::cout<<"retour d'une affectation " << std::endl;
+        }
+
+        return node;
+*/
+        auto v = ctx->initDeclarator();
+        std::cout << typeid(v).name() << std::endl;
+        std::cout << v.size() << std::endl;
+        ASTNode* n = nullptr;
+        return n;
     }
 
     virtual antlrcpp::Any visitInitDeclarator 
       (ifccParser::InitDeclaratorContext *ctx) override 
-      {
-          std::cout << "Init declarator" << std::endl;
-          if(ctx->arithExpr() != NULL){
-              std::cout << "assignement" << std::endl;
-          } else {
-                std::cout << "simple declaration" << std::endl;
-                std::cout << "new entry in symbol table " 
-                    << ctx->ID()->getText() << std::endl; 
-          }
-          return 0;
-      }
+    {
+        std::cout << "new entry in symbol table " << std::endl; 
+        if(ctx->arithExpr() != NULL){
+            std::cout << "assignement" << std::endl;
+            //ASTNode* rvalue = visit(ctx->arithExpr());
+            std::cout <<"left value = "<<ctx->ID()->getText()<<std::endl;
+           
+            // For testing purpose 
+            Ident_n* lvalue = new Ident_n(NULL, NULL, "a");
+            Expr_n* rvalue = new Const_n(NULL, NULL, NULL, NULL, 5);
+            ASTNode* assign = new Assign_n(NULL, NULL, rvalue, lvalue);
+            return assign;
+        } else {
+            std::cout << "Declaration without assignment" << std::endl;
+            // Nothing to do here except creating a new entry
+            // to symbol table
+            std::cout  << ctx->ID()->getText() << std::endl; 
+            ASTNode* a = nullptr;
+            return a;
+        }
+    }
 
   /*
   virtual antlrcpp::Any visitAssignmentExpr 
