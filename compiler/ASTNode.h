@@ -18,7 +18,7 @@ enum nodeType {
     N_CONST, N_IDENT
 };
 
-class Expr;
+class Expr_n;
 
 class ASTNode {
 
@@ -28,7 +28,7 @@ public:
 
     virtual void display() { std::cout << "Node " << std::endl; }
 
-    virtual void setExpr(Expr* expr) {}
+    virtual void setExpr(Expr_n* expr) {}
 
     void setFirst(ASTNode * n) {
         this->first = n;
@@ -63,9 +63,9 @@ public:
 protected:
 };
 
-class Expr : public ASTNode {
+class Expr_n : public ASTNode {
     public:
-        Expr(ASTNode* first,   ASTNode* next,
+        Expr_n(ASTNode* first,   ASTNode* next,
                 ASTNode* left,ASTNode* right) : 
             ASTNode(first, next), left(left), right(right) {};
 
@@ -77,24 +77,24 @@ class Expr : public ASTNode {
 };
 
 // Opérateur binaire : +, -, *, (/)
-class BinOp : public Expr {
+class BinOp_n : public Expr_n {
 
     public:
-        BinOp(ASTNode* first,   ASTNode* next,
+        BinOp_n(ASTNode* first,   ASTNode* next,
                 ASTNode* left,ASTNode* right, char op) : 
-            Expr(first, next, left, right),op(op) {};
+            Expr_n(first, next, left, right),op(op) {};
     
     protected:
         char op;
 };
 
-class CONST : public Expr {
+class Const_n : public Expr_n {
     
 public:
-    CONST(  ASTNode* first, ASTNode* next, 
+    Const_n(  ASTNode* first, ASTNode* next, 
             ASTNode* left,  ASTNode* right, 
             int value) : 
-        Expr(first, next, left, right) ,value(value) {};
+        Expr_n(first, next, left, right) ,value(value) {};
         
     void display() {
         std::cout << "CONST(" << value << ")" << std::endl;
@@ -108,26 +108,53 @@ public:
 
 };
 
-class RETURN : public ASTNode {
+class Return_n : public ASTNode {
     
     public:
-        RETURN(  ASTNode* first, ASTNode* next, 
-            Expr* retExpr) : 
+        Return_n(  ASTNode* first, ASTNode* next, 
+            Expr_n* retExpr) : 
         ASTNode(first, next), retExpr(retExpr) {};
         
         void display() {
             std::cout << "RETURN Node" << std::endl;
         }
 
-        void setExpr(Expr* expr) {
+        void setExpr(Expr_n* expr) {
             this->retExpr = expr;
         }
 
     protected:
-        Expr* retExpr;
-
-
+        Expr_n* retExpr;
 
 };
 
+class Ident_n : public Expr_n {
+    public:
+        Ident_n(ASTNode* first, ASTNode* next, std::string name) :
+            Expr_n(first, next, NULL, NULL), name(name) {};
+        
+        void display() {
+            std::cout << "Ident(" << name << ")" << std::endl;
+        }
 
+    protected:
+        std::string name;
+};
+
+// Assign node
+// lvalue : ident 
+// rvalue : expression
+class Assign_n : public ASTNode {
+    public:
+        Assign_n(ASTNode* first, ASTNode* next,
+        Expr_n* rvalue, Ident_n* lvalue) :
+            ASTNode(first, next), rvalue(rvalue), lvalue(lvalue) {};
+        
+        void display() {
+            std::cout << "ASSIGN"  << std::endl;
+        }
+        
+    private:
+        Expr_n* rvalue;
+        Ident_n* lvalue;
+};

@@ -46,9 +46,9 @@ public:
             if(ctx->CONST() != NULL ) {
                 int val = stoi(ctx->CONST()->getText());
                 // Création d'un noeud de type const
-                ASTNode* retNode = new RETURN(NULL, NULL, NULL);
-                Expr* expr = new CONST(NULL, NULL, NULL, NULL, 1);
-                ASTNode* n = new CONST(NULL, NULL, NULL, NULL, 1);
+                ASTNode* retNode = new Return_n(NULL, NULL, NULL);
+                Expr_n* expr = new Const_n(NULL, NULL, NULL, NULL, 1);
+                ASTNode* n = new Const_n(NULL, NULL, NULL, NULL, 1);
                 retNode->setExpr(expr);
                 retNode->setFirst(expr);
                 return retNode;

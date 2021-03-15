@@ -51,6 +51,5 @@ int main(int argn, const char **argv) {
     asmprint(n);
     */
 
-
     return 0;
 }
