@@ -12,7 +12,7 @@ axiom
 prog            
     : 
         'int' 'main' '(' ')' '{' 
-            declaration*
+            declaration?
             statement*
             RETURN retval ';' 
         '}' 
@@ -43,7 +43,7 @@ equalityExpression
     ;    
 
 initDeclaratorList
-    :   initDeclarator*
+    :   initDeclarator (',' initDeclarator)*
     ;
 
 initDeclarator  

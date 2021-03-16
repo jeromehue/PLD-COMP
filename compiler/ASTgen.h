@@ -32,8 +32,12 @@ public:
         //std::cout << "Call to visitProg" << std::endl;
         std::cout << ctx->getText() << std::endl;
         ASTNode* return_node = visit(ctx->retval()); 
-        visitChildren(ctx); 
-        return return_node;      
+        ASTNode* declaration_node = visit(ctx->declaration());
+        std::cout << "display of declaration" << std::endl;
+        declaration_node->displayLinked();
+        declaration_node->setEndNext(return_node);   
+        std::cout << "end of visit prog" << std::endl;
+        return declaration_node;      
       
     }
 
@@ -108,7 +112,7 @@ public:
         std::cout << "returned from visit declarator" << std::endl;
         if (n != nullptr) 
             n->display();
-        return 0;
+        return n;
     }
     
     virtual antlrcpp::Any visitBlockItem 
@@ -146,9 +150,25 @@ public:
         return node;
 */
         auto v = ctx->initDeclarator();
-        std::cout << typeid(v).name() << std::endl;
+        //std::cout << typeid(v).name() << std::endl;
         std::cout << v.size() << std::endl;
         ASTNode* n = nullptr;
+        for (int i = 0; i< v.size(); ++i){
+            ASTNode * node = visit(ctx->initDeclarator(i));
+            if (node == NULL) {
+                std::cout << "déclaration sans affectation" << std::endl;
+            } else {
+                std::cout<<"retour d'une affectation " << std::endl;
+                if (n== NULL) {
+                    // Première affectation
+                    n = node;
+                } else {
+                    // nième affectation
+                    n->setEndNext(node);
+                }
+            }
+
+        }
         return n;
     }
 
@@ -171,7 +191,7 @@ public:
             // Nothing to do here except creating a new entry
             // to symbol table
             std::cout  << ctx->ID()->getText() << std::endl; 
-            ASTNode* a = nullptr;
+            ASTNode* a = NULL;
             return a;
         }
     }

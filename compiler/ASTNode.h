@@ -33,10 +33,32 @@ public:
     void setFirst(ASTNode * n) {
         this->first = n;
     }
-
+    void setNext(ASTNode * n) {
+        this->next = n;
+    }
     bool hasNext() {
         return(this->next != NULL);
     }
+
+    void displayLinked() {
+        std::cout << "->";
+        this->display();
+        ASTNode* n =this;
+        while(n->hasNext())
+        { 
+            std::cout << "->";
+            n = n->next; 
+            n->display();
+        }
+    }
+
+    void setEndNext(ASTNode* last) {
+        ASTNode* n = this;
+        while(n->hasNext() )
+        { n = n->next; }
+        n->setNext(last); 
+    }
+
 
     bool hasFirst() {
         return(this->first != NULL);

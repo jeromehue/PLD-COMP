@@ -9,11 +9,6 @@ static void asmprint(ASTNode* n) {
     current->display();
     while(current->hasFirst()) {
         current = current->getFirst();
-        current->display();
-        ASTNode* c = current;
-        while(c->hasNext()) {
-            c = c->getNext();
-            c->display();
-        }
+    current->displayLinked();
     }
 }
