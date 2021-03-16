@@ -2,7 +2,7 @@
 #include <iostream>
 // List of available registers
 // and their names
-static int freereg[4];
+static int freereg[5];
 static std::string reglist[5]= { 
     "%r8d", "%r9d", "%r10d", "%r11d", "%r12d" };
 
@@ -64,6 +64,13 @@ void cgreturnvar(std::string reg) {
         <<", %eax\n";
 }
 
+void cgreturnreg(int r) {
+    std::cout << "	movl    " 
+        << reglist[r]
+        <<", %eax\n";
+        free_register(r);
+
+}
 
 
 // Load a value into a register and return register

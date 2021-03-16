@@ -5,6 +5,7 @@
 void freeall_registers(void);
 void cgprologue();
 void cgreturnvar(std::string ret);
+void cgreturnreg(int r);
 void cgepilogue();
 int cgloadint(int value);
 void cgloadvar(int r, int addr);

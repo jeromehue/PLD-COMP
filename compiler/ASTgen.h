@@ -31,7 +31,7 @@ public:
     {
         //std::cout << "Call to visitProg" << std::endl;
         std::cout << ctx->getText() << std::endl;
-        ASTNode* return_node = visit(ctx->retval()); 
+        ASTNode* return_node = visit(ctx->primaryExpression()); 
         if(ctx->declaration()) {
         ASTNode* declaration_node = visit(ctx->declaration());
         std::cout << "display of declaration" << std::endl;
@@ -46,13 +46,10 @@ public:
     }
 
   
-  virtual antlrcpp::Any visitRetval
-      (ifccParser::RetvalContext *ctx) override
-        {
-
+            /*
             //std::cout << "visit retval" << std::endl;
-            if(ctx->CONST() != NULL ) {
-                int val = stoi(ctx->CONST()->getText());
+            if(ctx->primaryExpression()->CONST() != NULL ) {
+            int val = stoi(ctx->primaryExpression()->CONST()->getText());
                 // Création d'un noeud de type const
                 ASTNode* retNode = new Return_n(NULL, NULL, NULL);
                 Expr_n* expr = new Const_n(NULL, NULL, NULL, NULL, 1);
@@ -63,20 +60,23 @@ public:
             } else {
               std::cout << "return a variable" << std::endl;
             }
-            return 0;
-      }
-  
-  
+            return n;
+ */ 
     virtual antlrcpp::Any visitExpr 
       (ifccParser::ExprContext *ctx) override 
     {
          
     //int left = visit(ctx->left);
     //int right = visit(ctx->right);
+        char op = ctx->op->getText().at(0);
    
+        ASTNode* left = visit(ctx->left);
+        ASTNode* right = visit(ctx->right);
+         
+        Expr_n* n = new BinOp_n(NULL, NULL, left, right, op);
+
         //TODO Create the node recursibely
 
-        char op = ctx->op->getText().at(0);
         int ret; 
         switch(op) {
         case '+':
@@ -100,13 +100,19 @@ public:
 
       
     } 
-  /*
+  
   virtual antlrcpp::Any visitNumber
-      (ifccParser::NumberContext *ctx) override ;
+      (ifccParser::NumberContext *ctx) override {
+          ASTNode* n = new Const_n(NULL, NULL, NULL, NULL, 1);
+          return n;
+      }
 
   virtual antlrcpp::Any visitVar
-      (ifccParser::VarContext *ctx) override ;
-*/
+      (ifccParser::VarContext *ctx) override {
+          ASTNode* n = new Ident_n(NULL, NULL, "a");
+          return n;
+      }
+
     virtual antlrcpp::Any visitDeclaration
       (ifccParser::DeclarationContext *ctx) override 
     {

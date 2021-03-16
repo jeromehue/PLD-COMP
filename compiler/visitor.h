@@ -22,9 +22,6 @@ public:
   virtual antlrcpp::Any visitProg
       (ifccParser::ProgContext *ctx) override; 
 
-  virtual antlrcpp::Any visitRetval
-      (ifccParser::RetvalContext *ctx) override;
-
   virtual antlrcpp::Any visitExpr 
       (ifccParser::ExprContext *ctx) override;
 
@@ -48,7 +45,10 @@ public:
 
   virtual antlrcpp::Any visitEqualityExpression 
       (ifccParser::EqualityExpressionContext *ctx) override ;
-    
+
+
+//  virtual antlrcpp::Any visitPrimaryExpression
+//      (ifccParser::PrimaryExpressionContext *ctx) override;
 
   virtual antlrcpp::Any visitRelExpr
       (ifccParser::RelExprContext *ctx) override;

@@ -13,18 +13,20 @@ antlrcpp::Any Visitor::visitProg(ifccParser::ProgContext *ctx) {
     visitChildren(ctx);
     int retval = 12;
     std::string retstr;
-    
-    if (ctx->retval()->CONST() != nullptr) {
+   /* 
+    if (ctx->primaryExpression()->CONST() != nullptr) {
         // Return an int
-        retval = std::stoi(ctx->retval()->CONST()->getText());
+        retval = visi(ctx->primaryExpression);
         retstr = "$" + std::to_string(retval);
     } else {
         // return a var
-        int retval =symboltable.getAddress(ctx->retval()->ID()->getText());
+        int retval =symboltable.getAddress(ctx->primaryExpression()->ID()->getText());
         retstr = std::to_string(retval) + "(%rbp)";
-    }
-   
-    cgreturnvar(retstr);
+    }*/
+    int a  = visit(ctx->primaryExpression());
+
+      
+    cgreturnreg(a);
     std::cout << "\n" << std::endl;
     cgepilogue();
         
@@ -90,11 +92,11 @@ antlrcpp::Any Visitor::visitAssignmentExpr
     return 0;
 }
 
-antlrcpp::Any Visitor::visitRetval(ifccParser::RetvalContext *ctx) { 
+//antlrcpp::Any Visitor::visitRetval(ifccParser::RetvalContext *ctx) { 
     //int r  = visitChildren(ctx);
     //cgloadeax(r);
-    return 0;
-}
+//    return 0;
+//}
 
 
 antlrcpp::Any Visitor::visitNumber(ifccParser::NumberContext *ctx) {
@@ -164,6 +166,10 @@ antlrcpp::Any Visitor::visitInitDeclarator(ifccParser::InitDeclaratorContext* ct
 antlrcpp::Any Visitor::visitEqualityExpression(ifccParser::EqualityExpressionContext *ctx) {
     return visitChildren(ctx);
 }
+/*
+antlrcpp::Any Visitor::visitPrimaryExpression(ifccParser::PrimaryExpressionContext* ctx) {
+    return visitChildren(ctx);
+}*/
 
 
 antlrcpp::Any Visitor::visitRelExpr(ifccParser::RelExprContext *ctx) {

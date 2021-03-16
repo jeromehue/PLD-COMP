@@ -14,7 +14,7 @@ prog
         'int' 'main' '(' ')' '{' 
             declaration?
             statement*
-            RETURN retval ';' 
+            RETURN primaryExpression ';' 
         '}' 
     ;
 
@@ -26,6 +26,12 @@ blockItem
 declaration     
     : TYPE initDeclaratorList ';'
     ;
+
+primaryExpression
+    : CONST # number
+    | ID    # var
+    ;
+
 
 relationalExpression
     : CONST     #re_number
@@ -60,23 +66,13 @@ assignmentExpr
     ;
 
 
-// To be used in expressions and return 
-primaryExpression
-    : CONST
-    | ID
-    ;
-
 arithExpr    
-    : CONST     # number
-    | ID        # var
-    | left=arithExpr op=('*'|'/') right=arithExpr     # Expr 
-    | left=arithExpr op=('+'|'-') right=arithExpr     # Expr 
+    : primaryExpression                                 # prExpr
+    | left=arithExpr op=('*'|'/') right=arithExpr       # Expr 
+    | left=arithExpr op=('+'|'-') right=arithExpr       # Expr 
     ;
             
-retval  
-    : CONST 
-    | ID
-    ;
+   
 
 
 
