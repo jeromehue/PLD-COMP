@@ -32,13 +32,17 @@ public:
         //std::cout << "Call to visitProg" << std::endl;
         std::cout << ctx->getText() << std::endl;
         ASTNode* return_node = visit(ctx->retval()); 
+        if(ctx->declaration()) {
         ASTNode* declaration_node = visit(ctx->declaration());
         std::cout << "display of declaration" << std::endl;
         declaration_node->displayLinked();
         declaration_node->setEndNext(return_node);   
         std::cout << "end of visit prog" << std::endl;
         return declaration_node;      
-      
+        }
+        else {
+            return return_node;
+        }
     }
 
   

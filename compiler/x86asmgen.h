@@ -9,6 +9,7 @@ static void asmprint(ASTNode* n) {
     current->display();
     while(current->hasFirst()) {
         current = current->getFirst();
-    current->displayLinked();
+        std::cout << "|" << std::endl;
+        current->displayLinked();
     }
 }
