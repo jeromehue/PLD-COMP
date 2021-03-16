@@ -159,6 +159,10 @@ class Ident_n : public Expr_n {
             std::cout << "Ident(" << name << ")" << std::endl;
         }
 
+        std::string getName() {
+            return name;
+        }
+
     protected:
         std::string name;
 };
@@ -172,7 +176,8 @@ class Assign_n : public ASTNode {
             ASTNode(first, next), rvalue(rvalue), lvalue(lvalue) {};
         
         void display() {
-            std::cout << "ASSIGN"  << std::endl;
+            std::cout << "ASSIGN : " <<  
+                lvalue->getName() << std::endl;
         }
         
     private:

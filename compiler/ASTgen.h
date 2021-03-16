@@ -103,13 +103,14 @@ public:
   
   virtual antlrcpp::Any visitNumber
       (ifccParser::NumberContext *ctx) override {
-          ASTNode* n = new Const_n(NULL, NULL, NULL, NULL, 1);
+          ASTNode* n = new Const_n(NULL, NULL, NULL, NULL,
+                                    stoi(ctx->CONST()->getText()));
           return n;
       }
 
   virtual antlrcpp::Any visitVar
       (ifccParser::VarContext *ctx) override {
-          ASTNode* n = new Ident_n(NULL, NULL, "a");
+          ASTNode* n = new Ident_n(NULL, NULL, ctx->ID()->getText());
           return n;
       }
 
