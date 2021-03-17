@@ -1,9 +1,12 @@
 # Create this file locally and put your 3 Antlr paths in it.
 include Makefile.local
 
+SRC=src
 OUTPUT=output
 GENERATED=antlr4-generated
 GRAMMAR=ifcc.g4
+
+SOURCES  := $(wildcard $(SRCDIR)/*.c)
 
 CC=clang++
 CCARGS=-g -c -I $(ANTLR4_INCDIR) -I $(GENERATED) -std=c++17 -Wno-defaulted-function-deleted -Wno-unknown-warning-option
@@ -11,14 +14,14 @@ LDARGS=-g
 
 all: ifcc
 
-ifcc: dirs antlr main.cpp visitor.cpp visitor.h cgen.cpp
-	$(CC) $(CCARGS) main.cpp  -o $(OUTPUT)/main.o 
+ifcc: dirs antlr $(SOURCES) $(SRC)/visitor.h
+	$(CC) $(CCARGS) $(SRC)/main.cpp  -o $(OUTPUT)/main.o 
 	$(CC) $(CCARGS) $(GENERATED)/ifccBaseVisitor.cpp -o $(OUTPUT)/ifccBaseVisitor.o 
 	$(CC) $(CCARGS) $(GENERATED)/ifccLexer.cpp -o $(OUTPUT)/ifccLexer.o 
 	$(CC) $(CCARGS) $(GENERATED)/ifccVisitor.cpp -o $(OUTPUT)/ifccVisitor.o 
 	$(CC) $(CCARGS) $(GENERATED)/ifccParser.cpp -o $(OUTPUT)/ifccParser.o 
-	$(CC) $(CCARGS) visitor.cpp -o $(OUTPUT)/visitor.o 
-	$(CC) $(CCARGS) cgen.cpp -o $(OUTPUT)/cgen.o 
+	$(CC) $(CCARGS) $(SRC)/visitor.cpp -o $(OUTPUT)/visitor.o 
+	$(CC) $(CCARGS) $(SRC)/cgen.cpp -o $(OUTPUT)/cgen.o 
 	$(CC) $(LDARGS) $(OUTPUT)/main.o $(OUTPUT)/ifccBaseVisitor.o $(OUTPUT)/ifccLexer.o $(OUTPUT)/ifccVisitor.o $(OUTPUT)/ifccParser.o $(OUTPUT)/visitor.o $(OUTPUT)/cgen.o $(ANTLR4_LIBDIR)/$(ANTLR4_RUNTIME) -o ifcc
 
 antlr: $(GRAMMAR)

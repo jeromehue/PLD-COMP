@@ -5,8 +5,8 @@
 
 
 #include "antlr4-runtime.h"
-#include "antlr4-generated/ifccVisitor.h"
-#include "antlr4-generated/ifccBaseVisitor.h"
+#include "ifccVisitor.h"
+#include "ifccBaseVisitor.h"
 #include "symboltable.h"
 
 /**
