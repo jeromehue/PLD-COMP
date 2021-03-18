@@ -35,7 +35,10 @@ public:
         ASTNode* declaration_node = visit(ctx->declaration());
         std::cout << "Display of declaration" << std::endl;
         declaration_node->displayLinked();
-        declaration_node->setEndNext(return_node);   
+        declaration_node->setEndNext(return_node);
+        for(int i=0; i< ctx->statement().size(); ++i){
+            visit(ctx->statement(i));   
+        }
         std::cout << "End of visitProg()" << std::endl;
         return declaration_node;      
         }
@@ -65,8 +68,7 @@ public:
       (ifccParser::ExprContext *ctx) override 
     {
          
-    //int left = visit(ctx->left);
-    //int right = visit(ctx->right);
+        std::cout << "Call to visitExpr" << std::endl;
         char op = ctx->op->getText().at(0);
    
         ASTNode* left = visit(ctx->left);
@@ -94,11 +96,16 @@ public:
             std::cout << "Unknow operator : " << op << std::endl;
             exit(EXIT_FAILURE);
             break;
-    }
-    return 0;
-
-      
+        }
+        return 0; 
     } 
+
+/*
+    virtual antlrcpp::Any visitArithExpr
+      (ifccParser::ArithExprContext *ctx) override {
+        visitChildren(ctx);
+        return 0;
+    }*/
   
   virtual antlrcpp::Any visitNumber
       (ifccParser::NumberContext *ctx) override {
@@ -198,7 +205,15 @@ public:
         std::cout << "return a number" << std::endl;
         return 0;
     }
-  
+ 
+    virtual antlrcpp::Any visitAssignmentExpr
+       (ifccParser::AssignmentExprContext * ctx) override
+    {
+        std::cout << "Call to visitAssignmentExpr" << std::endl;
+        std::cout << "Variable : " << ctx->ID()->getText() << std::endl;
+        auto a = visit(ctx->arithExpr());
+        return 0;       
+    } 
 /*
 protected: 
     Symboltable symboltable;*/
