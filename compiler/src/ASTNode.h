@@ -176,7 +176,7 @@ class Assign_n : public ASTNode {
             ASTNode(first, next), rvalue(rvalue), lvalue(lvalue) {};
         
         void display() {
-            std::cout << "ASSIGN : " <<  
+            std::cout << "creating node ASSIGN : " <<  
                 lvalue->getName() << std::endl;
         }
         

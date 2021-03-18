@@ -16,7 +16,7 @@ public:
     virtual antlrcpp::Any visitAxiom
       (ifccParser::AxiomContext *ctx) override 
     {
-        std::cout << "call to visitAxiom" << std::endl;
+        std::cout << "Call to visitAxiom()" << std::endl;
         // Création de notre premier noeud : prog
         ASTNode* prog  = new Prog(nullptr);
         ASTNode* content = visit(ctx->prog());
@@ -28,15 +28,15 @@ public:
     virtual antlrcpp::Any visitProg
       (ifccParser::ProgContext *ctx) override
     {
-        //std::cout << "Call to visitProg" << std::endl;
-        std::cout << ctx->getText() << std::endl;
+        std::cout << "Call to visitProg()" << std::endl;
+        std::cout << "Programme \n" << ctx->getText() << std::endl;
         ASTNode* return_node = visit(ctx->primaryExpression()); 
         if(ctx->declaration()) {
         ASTNode* declaration_node = visit(ctx->declaration());
-        std::cout << "display of declaration" << std::endl;
+        std::cout << "Display of declaration" << std::endl;
         declaration_node->displayLinked();
         declaration_node->setEndNext(return_node);   
-        std::cout << "end of visit prog" << std::endl;
+        std::cout << "End of visitProg()" << std::endl;
         return declaration_node;      
         }
         else {
@@ -116,10 +116,10 @@ public:
     virtual antlrcpp::Any visitDeclaration
       (ifccParser::DeclarationContext *ctx) override 
     {
-        std::cout << "visitDeclaration" << std::endl;      
-        std::cout << "Type : " << ctx->TYPE()->getText() << std::endl;
+        std::cout << "Call to visitDeclaration()" << std::endl;      
+        std::cout << "Type of declarator: " 
+            << ctx->TYPE()->getText() << std::endl;
         ASTNode* n = visit(ctx->initDeclaratorList());
-        std::cout << "returned from visit declarator" << std::endl;
         if (n != nullptr) 
             n->display();
         return n;
@@ -128,7 +128,7 @@ public:
     virtual antlrcpp::Any visitBlockItem 
       (ifccParser::BlockItemContext *ctx) override 
     {
-          std::cout << "visitBlockItem" << std::endl;
+          std::cout << "Call to visitBlockItem()" << std::endl;
           visitChildren(ctx);
           return 0;
     }
@@ -136,44 +136,27 @@ public:
     virtual antlrcpp::Any visitInitDeclaratorList
         (ifccParser::InitDeclaratorListContext * ctx) override 
     {
-       /* 
-        std::cout << "List of declarators" << std::endl;
-        auto v = ctx->initDeclarator()->getText();
-        std::cout << "variable : " << v<< std::endl;
-        std::cout << "temp to be initialized" << std::endl;
-        
-        // recursively parse trough declarations
-        if (ctx->initDeclaratorList() != NULL )  {
-            ASTNode* n = visit(ctx->initDeclaratorList());
-            if(n != nullptr) {
-                //std::cout << "add node to temp one" << std::endl;
-            }
-        }
-        
-        ASTNode * node = visit(ctx->initDeclarator());
-        if (node == nullptr) {
-                std::cout << "déclaration sans affectation" << std::endl;
-        } else {
-            std::cout<<"retour d'une affectation " << std::endl;
-        }
-
-        return node;
-*/
+       
+        std::cout << "Call to visitInitDeclaratorList()" << std::endl;
+       
+        // On récupère un vector avec tous les éléments déclarés 
         auto v = ctx->initDeclarator();
-        //std::cout << typeid(v).name() << std::endl;
-        std::cout << v.size() << std::endl;
+
+        // Et on affiche sa taille (i.e. le nombre d'éléments déclarés)
+        std::cout << "Nombre de déclarations " <<v.size() << std::endl;
+        
         ASTNode* n = nullptr;
         for (int i = 0; i< v.size(); ++i){
             ASTNode * node = visit(ctx->initDeclarator(i));
             if (node == NULL) {
-                std::cout << "déclaration sans affectation" << std::endl;
+                //std::cout << "Déclaration sans affectation " << std::endl;
             } else {
-                std::cout<<"retour d'une affectation " << std::endl;
+                //std::cout<<"Déclaration avec affectation " << std::endl;
                 if (n== NULL) {
                     // Première affectation
                     n = node;
                 } else {
-                    // nième affectation
+                    // n-ième affectation
                     n->setEndNext(node);
                 }
             }
@@ -185,20 +168,22 @@ public:
     virtual antlrcpp::Any visitInitDeclarator 
       (ifccParser::InitDeclaratorContext *ctx) override 
     {
-        std::cout << "new entry in symbol table " << std::endl; 
+        std::cout << "Nouvelle entrée dans la table des symboles" 
+            << std::endl; 
         if(ctx->arithExpr() != NULL){
-            std::cout << "assignement" << std::endl;
-            //ASTNode* rvalue = visit(ctx->arithExpr());
-            std::cout <<"left value = "<<ctx->ID()->getText()<<std::endl;
+            std::cout << "Affectation :"  <<
+                " left value = " << ctx->ID()->getText()<<std::endl;
           
             std::string id = ctx->ID()->getText(); 
+            
             // For testing purpose 
             Ident_n* lvalue = new Ident_n(NULL, NULL, id);
             Expr_n* rvalue = new Const_n(NULL, NULL, NULL, NULL, 5);
             ASTNode* assign = new Assign_n(NULL, NULL, rvalue, lvalue);
+            
             return assign;
         } else {
-            std::cout << "Declaration without assignment" << std::endl;
+            std::cout << "Declaration sans affectation ";
             // Nothing to do here except creating a new entry
             // to symbol table
             std::cout  << ctx->ID()->getText() << std::endl; 
@@ -207,17 +192,6 @@ public:
         }
     }
 
-  /*
-  virtual antlrcpp::Any visitAssignmentExpr 
-      (ifccParser::AssignmentExprContext *ctx) override ;
-
-  virtual antlrcpp::Any visitEqualityExpression 
-      (ifccParser::EqualityExpressionContext *ctx) override ;
-    
-
-  virtual antlrcpp::Any visitRelExpr
-      (ifccParser::RelExprContext *ctx) override;
-*/
     virtual antlrcpp::Any visitRe_number
       (ifccParser::Re_numberContext *ctx) override
     {
@@ -225,10 +199,7 @@ public:
         return 0;
     }
   
-  /*
-  virtual antlrcpp::Any visitRe_var
-      (ifccParser::Re_varContext *ctx) override;
-
+/*
 protected: 
     Symboltable symboltable;*/
 };
