@@ -29,3 +29,17 @@ static void asmgen(ASTNode * n) {
  
     } while (current->hasFirst());
 }
+
+static bool IsConst(ASTNode* n) {
+    return (dynamic_cast<Const_n* > (n));
+}
+
+static void genBinOp(BinOp_n * node) {
+    // Generating ASM for binary operators :
+    // +, -, *
+    if ( IsConst(node->getLeft()) && IsConst(node->getRight() )) {
+        std::cout << "both operands are constant" << std::endl;  
+    }
+
+
+}

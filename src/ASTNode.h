@@ -108,6 +108,14 @@ class BinOp_n : public Expr_n {
                 std::cout << "Creating node binop "<< op  << std::endl;
             };
     
+        ASTNode* getLeft() {
+            return left;
+        }
+        
+        ASTNode* getRight() {
+            return right;
+        }
+
     protected:
         char op;
 };
@@ -118,7 +126,9 @@ public:
     Const_n(  ASTNode* first, ASTNode* next, 
             ASTNode* left,  ASTNode* right, 
             int value) : 
-        Expr_n(first, next, left, right) ,value(value) {};
+        Expr_n(first, next, left, right) ,value(value) {
+            std::cout << "Creating const node" << std::endl;
+        };
         
     void display() {
         std::cout << "CONST(" << value << ")" << std::endl;
