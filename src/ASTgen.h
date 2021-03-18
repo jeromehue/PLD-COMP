@@ -1,9 +1,8 @@
 #pragma once
 
 #include "antlr4-runtime.h"
-#include "../build/antlr4-generated/grammar/ifccVisitor.h"
-#include "../build/antlr4-generated/grammar/ifccBaseVisitor.h"
-
+#include "generated/grammar/ifccVisitor.h"
+#include "generated/grammar/ifccBaseVisitor.h"
 
 #include "symboltable.h"
 #include "ASTNode.h"
