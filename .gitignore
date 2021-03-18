@@ -9,7 +9,7 @@ ifcc
 *.c
 
 # Generated during compilation
-srd/generated
+src/generated
 src/out
 
 # Tests
