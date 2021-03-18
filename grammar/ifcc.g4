@@ -58,11 +58,11 @@ initDeclarator
     ;
 
 statement       
-    : assignmentExpr ';' 
+    : assignmentExpr+ 
     ;
 
 assignmentExpr  
-    : ID '=' arithExpr
+    : ID '=' arithExpr ';'
     ;
 
 
