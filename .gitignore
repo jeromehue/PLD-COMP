@@ -8,6 +8,10 @@ ifcc
 *.o
 *.c
 
+# Generated during compilation
+srd/generated
+src/out
+
 # Tests
 tests/gui/*.class
 tests/gui/*.java
