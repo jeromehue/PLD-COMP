@@ -3,8 +3,8 @@ include Makefile.local
 
 SRC=src
 BUILD=build
-OUTPUT=$(BUILD)/output
-GENERATED=$(BUILD)/antlr4-generated
+OUTPUT=$(SRC)/out
+GENERATED=$(SRC)/generated
 GRAMMAR=grammar/ifcc.g4
 
 SOURCES  := $(wildcard $(SRCDIR)/*.c)
@@ -32,5 +32,9 @@ dirs:
 	mkdir -p $(OUTPUT) 
 	mkdir -p $(GENERATED) 
 
+test:
+	@cd tests && ./test.sh
+
 clean:
-	rm -rf $(BUILD)/*
+	rm -rf $(OUTPUT)
+	rm -rf $(GENERATED)
