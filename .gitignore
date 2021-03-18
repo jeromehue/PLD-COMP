@@ -1,7 +1,6 @@
 # Output and local files
-build/
-ifcc
 Makefile.local
+ifcc
 
 # Intermediate files
 *.out
