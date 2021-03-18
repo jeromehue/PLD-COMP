@@ -34,10 +34,15 @@ public:
         ASTNode* declaration_node = visit(ctx->declaration());
         std::cout << "Display of declaration" << std::endl;
         declaration_node->displayLinked();
-        declaration_node->setEndNext(return_node);
         for(int i=0; i< ctx->statement().size(); ++i){
-            visit(ctx->statement(i));   
+            std::cout << "ANDL1" << std::endl;
+            auto  st = visit(ctx->statement(i));   
+            std::cout << typeid(st).name() << std::endl;
+            //visit(ctx->statement(i));
+            std::cout << "ANDL2" << std::endl;
+            declaration_node->setEndNext(st);
         }
+        declaration_node->setEndNext(return_node);
         std::cout << "End of visitProg()" << std::endl;
         return declaration_node;      
         }
@@ -62,7 +67,20 @@ public:
               std::cout << "return a variable" << std::endl;
             }
             return n;
- */ 
+ */
+    virtual antlrcpp::Any visitStatement 
+        (ifccParser::StatementContext* ctx) override {
+            std::cout << "call to visitStatemet" << std::endl;
+            int nbAssign = ctx->assignmentExpr().size();
+            // Create the first node and 
+            ASTNode* first = new ASTNode(NULL, NULL);
+            for(int i=0; i<nbAssign; ++i) {
+                ASTNode* a =  visit(ctx->assignmentExpr(0));
+                first->setEndNext(a);
+            }
+            ASTNode * final_node = first->getNext(); 
+            return final_node;
+        } 
     virtual antlrcpp::Any visitExpr 
       (ifccParser::ExprContext *ctx) override 
     {
@@ -73,23 +91,29 @@ public:
         ASTNode* left = visit(ctx->left);
         ASTNode* right = visit(ctx->right);
          
-        Expr_n* n = new BinOp_n(NULL, NULL, left, right, op);
+        ASTNode* n = new BinOp_n(NULL, NULL, left, right, op);
 
         //TODO Create the node recursibely
-
+        return n;
+}
+        /*
         int ret; 
         switch(op) {
         case '+':
-            return ret;
+            n= new BinOp_n(NULL, NULL, left, right, op);
+            return n;
             break;
         case '-': 
             return ret;
+            n= new BinOp_n(NULL, NULL, left, right, op);
             break;
         case '*': 
-            return ret;
+            n= new BinOp_n(NULL, NULL, left, right, op);
+            return n;
             break;
         case '/': 
-            return ret;
+            n= new BinOp_n(NULL, NULL, left, right, op);
+            return n;
             break;
         default:
             std::cout << "Unknow operator : " << op << std::endl;
@@ -97,7 +121,8 @@ public:
             break;
         }
         return 0; 
-    } 
+        
+    } */
 
 /*
     virtual antlrcpp::Any visitArithExpr
@@ -108,6 +133,7 @@ public:
   
   virtual antlrcpp::Any visitNumber
       (ifccParser::NumberContext *ctx) override {
+          std::cout << "Call to visitNumber" << std::endl;
           ASTNode* n = new Const_n(NULL, NULL, NULL, NULL,
                                     stoi(ctx->CONST()->getText()));
           return n;
@@ -115,6 +141,7 @@ public:
 
   virtual antlrcpp::Any visitVar
       (ifccParser::VarContext *ctx) override {
+          std::cout << "Call to visitVar" << std::endl;
           ASTNode* n = new Ident_n(NULL, NULL, ctx->ID()->getText());
           return n;
       }
@@ -147,7 +174,6 @@ public:
        
         // On récupère un vector avec tous les éléments déclarés 
         auto v = ctx->initDeclarator();
-
         // Et on affiche sa taille (i.e. le nombre d'éléments déclarés)
         std::cout << "Nombre de déclarations " <<v.size() << std::endl;
         
@@ -210,8 +236,13 @@ public:
     {
         std::cout << "Call to visitAssignmentExpr" << std::endl;
         std::cout << "Variable : " << ctx->ID()->getText() << std::endl;
-        auto a = visit(ctx->arithExpr());
-        return 0;       
+        ASTNode* lvalue = new Ident_n(NULL, NULL, ctx->ID()->getText());
+        std::cout << "????" << std::endl;
+        ASTNode* a = visit(ctx->arithExpr());
+        a->display();
+        std::cout << typeid(a).name() << std::endl;
+        std::cout << "ANLD" << std::endl;
+        return a;       
     } 
 /*
 protected: 

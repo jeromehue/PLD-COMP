@@ -2,7 +2,7 @@
                            ASTNode  -  description
                              -------------------
     début                : 2021-02-27
-    copyright            : (C) 2021 par Jerome Hue et Charly Poirier
+    copyright            : (C) 2021 par H4244 
 *************************************************************************/
 
 
@@ -104,7 +104,9 @@ class BinOp_n : public Expr_n {
     public:
         BinOp_n(ASTNode* first,   ASTNode* next,
                 ASTNode* left,ASTNode* right, char op) : 
-            Expr_n(first, next, left, right),op(op) {};
+            Expr_n(first, next, left, right),op(op) {
+                std::cout << "Creating node binop "<< op  << std::endl;
+            };
     
     protected:
         char op;
@@ -153,7 +155,9 @@ class Return_n : public ASTNode {
 class Ident_n : public Expr_n {
     public:
         Ident_n(ASTNode* first, ASTNode* next, std::string name) :
-            Expr_n(first, next, NULL, NULL), name(name) {};
+            Expr_n(first, next, NULL, NULL), name(name) {
+                std::cout << "Creating node ident" << std::endl;
+            };
         
         void display() {
             std::cout << "Ident(" << name << ")" << std::endl;
@@ -176,7 +180,7 @@ class Assign_n : public ASTNode {
             ASTNode(first, next), rvalue(rvalue), lvalue(lvalue) {};
         
         void display() {
-            std::cout << "creating node ASSIGN : " <<  
+            std::cout << "ASSIGN : " <<  
                 lvalue->getName() << std::endl;
         }
         

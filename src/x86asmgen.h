@@ -13,3 +13,19 @@ static void asmprint(ASTNode* n) {
         current->displayLinked();
     }
 }
+
+
+static void asmgen(ASTNode * n) {
+    ASTNode* current  = n;
+    do  {
+        current = current->getFirst();
+        ASTNode *temp = current;
+        do {
+            temp = temp->getNext();
+            if( dynamic_cast<BinOp_n*>(temp)) {
+                std::cout << "We have expr node" << std::endl;
+            }
+        } while(temp->hasNext());
+ 
+    } while (current->hasFirst());
+}
