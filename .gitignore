@@ -3,7 +3,7 @@ compiler/ifcc
 compiler/Makefile.local
 compiler/antlr4-generated
 compiler/output
-compiler/main.c
+compiler/*.c
 
 # Intermediate files
 *.out
