@@ -1,9 +1,10 @@
 # C compiler with antlr4/c++
-H4424 - Projet longue durée de 4IF à l'INSA Lyon.
+H4424 - Long term project of 4th year of computer science at INSA Lyon.
 
 ## Folders
-- `compiler` : the source code
-- `tests` : the tests
+- `src` : the source code (.cpp and .h files)
+- `tests` : the tests (see below)
+- `grammar` : our grammar for antlr4 
 
 ## Important files
 - `ifcc.g4` contains the grammar in antlr4 format
