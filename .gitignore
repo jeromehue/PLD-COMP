@@ -1,14 +1,13 @@
 # Output and local files
-compiler/ifcc
-compiler/Makefile.local
-compiler/antlr4-generated
-compiler/output
-compiler/*.c
+build/
+ifcc
+Makefile.local
 
 # Intermediate files
 *.out
 *.s
 *.o
+*.c
 
 # Tests
 tests/gui/*.class

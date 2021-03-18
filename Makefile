@@ -2,9 +2,10 @@
 include Makefile.local
 
 SRC=src
-OUTPUT=output
-GENERATED=antlr4-generated
-GRAMMAR=ifcc.g4
+BUILD=build
+OUTPUT=$(BUILD)/output
+GENERATED=$(BUILD)/antlr4-generated
+GRAMMAR=grammar/ifcc.g4
 
 SOURCES  := $(wildcard $(SRCDIR)/*.c)
 
@@ -16,10 +17,10 @@ all: ifcc
 
 ifcc: dirs antlr $(SOURCES) $(SRC)/visitor.h
 	$(CC) $(CCARGS) $(SRC)/main.cpp  -o $(OUTPUT)/main.o 
-	$(CC) $(CCARGS) $(GENERATED)/ifccBaseVisitor.cpp -o $(OUTPUT)/ifccBaseVisitor.o 
-	$(CC) $(CCARGS) $(GENERATED)/ifccLexer.cpp -o $(OUTPUT)/ifccLexer.o 
-	$(CC) $(CCARGS) $(GENERATED)/ifccVisitor.cpp -o $(OUTPUT)/ifccVisitor.o 
-	$(CC) $(CCARGS) $(GENERATED)/ifccParser.cpp -o $(OUTPUT)/ifccParser.o 
+	$(CC) $(CCARGS) $(GENERATED)/grammar/ifccBaseVisitor.cpp -o $(OUTPUT)/ifccBaseVisitor.o 
+	$(CC) $(CCARGS) $(GENERATED)/grammar/ifccLexer.cpp -o $(OUTPUT)/ifccLexer.o 
+	$(CC) $(CCARGS) $(GENERATED)/grammar/ifccVisitor.cpp -o $(OUTPUT)/ifccVisitor.o 
+	$(CC) $(CCARGS) $(GENERATED)/grammar/ifccParser.cpp -o $(OUTPUT)/ifccParser.o 
 	$(CC) $(CCARGS) $(SRC)/visitor.cpp -o $(OUTPUT)/visitor.o 
 	$(CC) $(CCARGS) $(SRC)/cgen.cpp -o $(OUTPUT)/cgen.o 
 	$(CC) $(LDARGS) $(OUTPUT)/main.o $(OUTPUT)/ifccBaseVisitor.o $(OUTPUT)/ifccLexer.o $(OUTPUT)/ifccVisitor.o $(OUTPUT)/ifccParser.o $(OUTPUT)/visitor.o $(OUTPUT)/cgen.o $(ANTLR4_LIBDIR)/$(ANTLR4_RUNTIME) -o ifcc
@@ -32,5 +33,4 @@ dirs:
 	mkdir -p $(GENERATED) 
 
 clean:
-	rm -rf $(OUTPUT)
-	rm -rf $(GENERATED)
+	rm -rf $(BUILD)/*
