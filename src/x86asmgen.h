@@ -140,8 +140,10 @@ static int genBinOp(BinOp_n * node) {
 
         switch(node->getOp()){
             case '+':
-                output << "\taddl\t" << leftadr << "(%rbp)," 
-            << rightadr <<"(%rbp)\n" ;
+                output << "\tmovl\t" <<  leftadr << "(%rbp), %edx\n";
+                output << "\tmovl\t" <<  rightadr << "(%rbp), %eax\n";
+                output << "\taddl\t%edx, %eax\n";
+                output << "\tmovl\t%eax," <<  rightadr << "(%rbp)\n";
                return rightadr; 
                 break;
             case '-':
@@ -215,8 +217,8 @@ static void asmgen(ASTNode * n) {
                     // Generate assembly
                     int adr = genBinOp(b);
                     int var_adr = st->getAddress("b");
-                    output << "\tmovl\t"<< adr << "%(rbp),"
-                        << var_adr << "%(rbp)\n" ;
+                    output << "\tmovl\t" << adr << "(%rbp), %eax\n";
+                    output << "\tmovl\t%eax," << var_adr << "(%rbp)\n" ;
                 }
             } else if (dynamic_cast<Return_n* >(temp)) {
                 std::cout << "Instruction de retour " << std::endl;
