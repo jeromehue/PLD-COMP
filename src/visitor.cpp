@@ -160,11 +160,11 @@ antlrcpp::Any Visitor::visitInitDeclarator(ifccParser::InitDeclaratorContext* ct
         int value  = 0;
     if (ctx->arithExpr() == NULL) {
         
-        int addr = symboltable.store(ctx->ID()->getText());
+        int addr = symboltable.store(ctx->ID()->getText(), 0);
         cgstorevar(value, addr);
     }  else  {
         int reg = visit(ctx->arithExpr());
-        int addr = symboltable.store(ctx->ID()->getText());
+        int addr = symboltable.store(ctx->ID()->getText(), 0);
         cgloadvar(reg, addr); 
     }
     

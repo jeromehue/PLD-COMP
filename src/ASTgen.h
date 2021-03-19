@@ -1,8 +1,8 @@
 #pragma once
 
 #include "antlr4-runtime.h"
-#include "generated/grammar/ifccVisitor.h"
-#include "generated/grammar/ifccBaseVisitor.h"
+#include "ifccVisitor.h"
+#include "ifccBaseVisitor.h"
 
 #include "symboltable.h"
 #include "ASTNode.h"
@@ -18,6 +18,8 @@ public:
         std::cout << "Call to visitAxiom()" << std::endl;
         // Création de notre premier noeud : prog
         ASTNode* prog  = new Prog(nullptr);
+        prog->setST(new Symboltable());
+        symboltable = (prog->getST());
         ASTNode* content = visit(ctx->prog());
         std::cout << "correct return from visitAxiom" << std::endl;
         prog->setFirst(content);
@@ -201,7 +203,12 @@ public:
       (ifccParser::InitDeclaratorContext *ctx) override 
     {
         std::cout << "Nouvelle entrée dans la table des symboles" 
-            << std::endl; 
+            << std::endl;
+        std::string var_name = ctx->ID()->getText();
+        symboltable->store(var_name, 0);
+        symboltable->printSymbols();
+
+
         if(ctx->arithExpr() != NULL){
             std::cout << "Affectation :"  <<
                 " left value = " << ctx->ID()->getText()<<std::endl;
@@ -244,8 +251,8 @@ public:
         std::cout << "ANLD" << std::endl;
         return a;       
     } 
-/*
+
 protected: 
-    Symboltable symboltable;*/
+    Symboltable* symboltable;
 };
 

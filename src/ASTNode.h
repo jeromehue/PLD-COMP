@@ -71,7 +71,9 @@ public:
     ASTNode* getFirst() {
         return this->first;
     }
-
+    
+    virtual void setST(Symboltable* st) {};
+    virtual Symboltable*  getST() {return NULL;};
 
     protected:
         ASTNode* next;
@@ -82,7 +84,17 @@ class Prog : public  ASTNode {
 public:
     Prog(ASTNode* first) : ASTNode(first, NULL) {};
 
+    void setST(Symboltable* st) {
+        this->symbolTable = st;
+    }
+    
+    virtual Symboltable*  getST() {
+        std::cout << "get ST" << std::endl;
+        return this->symbolTable;
+    };
+
 protected:
+        Symboltable* symbolTable;
 };
 
 class Expr_n : public ASTNode {
@@ -127,7 +139,8 @@ public:
             ASTNode* left,  ASTNode* right, 
             int value) : 
         Expr_n(first, next, left, right) ,value(value) {
-            std::cout << "Creating const node" << std::endl;
+            std::cout << "Creating const node " 
+                << value <<  std::endl;
         };
         
     void display() {
