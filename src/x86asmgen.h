@@ -12,19 +12,19 @@ void prologue() {
     output <<
         ".global main\n"
         "main:\n"
-        "	# Prologue\n"
-        "	pushq %rbp\n"
-        "	movq %rsp, %rbp\n"
+        "\t# Prologue\n"
+        "\tpushq %rbp\n"
+        "\tmovq %rsp, %rbp\n"
         "\n"
-        "	# Body\n";
+        "\t# Body\n";
 }
 
 void epilogue() {
     output <<
         "\n"
-        "	# Epilogue\n"
-        "   popq %rbp\n"
-        " 	ret\n";
+        "\t# Epilogue\n"
+        "\tpopq %rbp\n"
+        "\tret\n";
 }
 
 
@@ -32,24 +32,34 @@ static void asmprint(ASTNode* n) {
     std::cout << "call to asmprint" << std::endl;
     ASTNode* current  = n;
     current->display();
+    std::string indent;
     while(current->hasFirst()) {
         current = current->getFirst();
         std::cout << "|" << std::endl;
-        current->displayLinked();
+        //current->displayLinked();
+        indent = indent +  "|";
+        ASTNode* cur= current;
+        std::cout << indent << "-";
+        cur->display();
+        while(cur->hasNext()){
+            cur  = cur->getNext();
+            std::cout << indent << "-";
+            cur->display();
+        }
     }
 }
 
-bool IsConst(ASTNode* n) {
+bool isConst(ASTNode* n) {
     return (dynamic_cast<Const_n* > (n));
 }
 
-bool IsIdent(ASTNode* n) {
+bool isIdent(ASTNode* n) {
     return (dynamic_cast<Ident_n* > (n));
 }
 
 
 
-bool IsBinOp(ASTNode* n) {
+bool isBinOp(ASTNode* n) {
     return (dynamic_cast<BinOp_n* > (n));
 }
 
@@ -97,18 +107,18 @@ static int genBinOp(BinOp_n * node) {
 
 
     // Opérande gauche
-    if ( IsBinOp(node->getLeft())   ) {
+    if ( isBinOp(node->getLeft())   ) {
         // Le noeud de gauche est un opérateur
         // on effectue le calcul
         std::cout << "test" << std::endl;
         leftadr = genBinOp(dynamic_cast<BinOp_n*> (node->getLeft()));
-    } else if (IsConst(node->getLeft()) ) {
+    } else if (isConst(node->getLeft()) ) {
         // Le noeud de gauche est une constante
         node->getLeft()->display();
         std::cout << "test2" << std::endl;
         leftadr = genConst(dynamic_cast<Const_n * > (node->getLeft()));
         //genBinOp(dynamic_cast<BinOp_n * > (node->getLeft()));
-    } else if (IsIdent(node->getLeft()) ) {
+    } else if (isIdent(node->getLeft()) ) {
         // Le noeud de gauche est une variable
         
         // Ne marche probablement pas
@@ -117,18 +127,18 @@ static int genBinOp(BinOp_n * node) {
     }
 
     // Opérande droite
-    if ( IsBinOp(node->getRight())   ) {
+    if ( isBinOp(node->getRight())   ) {
         // Le noeud de gauche est un opérateur
         // on effectue le calcul
         std::cout << "test" << std::endl;
         rightadr = genBinOp(dynamic_cast<BinOp_n*> (node->getRight()));
-    } else if (IsConst(node->getRight()) ) {
+    } else if (isConst(node->getRight()) ) {
         // Le noeud de gauche est une constante
         node->getLeft()->display();
         std::cout << "test2" << std::endl;
         rightadr = genConst(dynamic_cast<Const_n * > (node->getRight()));
         //genBinOp(dynamic_cast<BinOp_n * > (node->getLeft()));
-    } else if (IsIdent(node->getRight()) ) {
+    } else if (isIdent(node->getRight()) ) {
         // Le noeud de gauche est une variable
         
         // Ne marche probablement pas
@@ -147,8 +157,12 @@ static int genBinOp(BinOp_n * node) {
                return rightadr; 
                 break;
             case '-':
+                std::cout << "Not implemented" << std::endl;
+                exit(EXIT_FAILURE);
                 break;
             case '*':
+                std::cout << "Not implemented" << std::endl;
+                exit(EXIT_FAILURE);
                 break;
             default:
                 std::cout << "Error : Unknow operator" << std::endl;
@@ -177,35 +191,15 @@ static void asmgen(ASTNode * n) {
         n->getST()->printSymbols();
         st = n->getST();
     }
-    do  {
+    do {
         current = current->getFirst();
         ASTNode *temp = current;
         do {
-            //temp = temp->getNext();
-           /* 
-            if( dynamic_cast<Assign_n *>(temp)) {
-                
-                std::cout << "debug" << std::endl;
-                temp->display();
-                Ident_n* i = (dynamic_cast<Assign_n * >(temp))->getVar();
-                std::string name = i->getName();
-                Expr_n* e  = dynamic_cast<Expr_n * >(temp->getExpr());
-                if(dynamic_cast<Const_n*> (e)) {
-                    std::cout << "assign a const" << std::endl;
-                    Const_n* c = dynamic_cast<Const_n * >(e);
-                    int value = c->getValue();
-                    std::cout << "const : " << value << std::endl;
-                    output << "\tmovl\t$" << value << "," 
-                        << st->getAddress(name) << "%(rbp)\n";
-                }
-
-            
-            } else*/  if( dynamic_cast<BinOp_n*>(temp)) {
+            if( dynamic_cast<BinOp_n*>(temp)) {
                 std::cout << "We have expr node" << std::endl;
                 // Generate assembly from it
                 genBinOp(dynamic_cast<BinOp_n*> (temp));                
             } else if ( dynamic_cast<Assign_n*>(temp)) {
-
                 std::cout << "We have assign node" << std::endl;
                 temp->display();
                 Expr_n* a(temp->getExpr()); 
@@ -228,6 +222,8 @@ static void asmgen(ASTNode * n) {
                     int retconst = n->getValue();
                     output << "\tmovl\t$"  << retconst << ",%eax\n"; 
                 }
+            } else {
+                std::cout << "Error, unknow node" << std::endl;
             }
             temp = temp->getNext();
         } while(temp->hasNext());
@@ -248,6 +244,6 @@ static void asmgen(ASTNode * n) {
 
     } while (current->hasFirst());
     epilogue();
-   output.close();
+    output.close();
 }
 

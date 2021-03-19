@@ -61,24 +61,7 @@ public:
         }
     }
 
-  
-            /*
-            //std::cout << "visit retval" << std::endl;
-            if(ctx->primaryExpression()->CONST() != NULL ) {
-            int val = stoi(ctx->primaryExpression()->CONST()->getText());
-                // Création d'un noeud de type const
-                ASTNode* retNode = new Return_n(NULL, NULL, NULL);
-                Expr_n* expr = new Const_n(NULL, NULL, NULL, NULL, 1);
-                ASTNode* n = new Const_n(NULL, NULL, NULL, NULL, 1);
-                retNode->setExpr(expr);
-                retNode->setFirst(expr);
-                return retNode;
-            } else {
-              std::cout << "return a variable" << std::endl;
-            }
-            return n;
- */
-    virtual antlrcpp::Any visitStatement 
+   virtual antlrcpp::Any visitStatement 
         (ifccParser::StatementContext* ctx) override {
             std::cout << "call to visitStatemet" << std::endl;
             int nbAssign = ctx->assignmentExpr().size();
@@ -107,41 +90,7 @@ public:
         //TODO Create the node recursibely
         return n;
 }
-        /*
-        int ret; 
-        switch(op) {
-        case '+':
-            n= new BinOp_n(NULL, NULL, left, right, op);
-            return n;
-            break;
-        case '-': 
-            return ret;
-            n= new BinOp_n(NULL, NULL, left, right, op);
-            break;
-        case '*': 
-            n= new BinOp_n(NULL, NULL, left, right, op);
-            return n;
-            break;
-        case '/': 
-            n= new BinOp_n(NULL, NULL, left, right, op);
-            return n;
-            break;
-        default:
-            std::cout << "Unknow operator : " << op << std::endl;
-            exit(EXIT_FAILURE);
-            break;
-        }
-        return 0; 
-        
-    } */
-
-/*
-    virtual antlrcpp::Any visitArithExpr
-      (ifccParser::ArithExprContext *ctx) override {
-        visitChildren(ctx);
-        return 0;
-    }*/
-  
+ 
   virtual antlrcpp::Any visitNumber
       (ifccParser::NumberContext *ctx) override {
           std::cout << "Call to visitNumber" << std::endl;
@@ -192,7 +141,6 @@ public:
         for (int i = 0; i< v.size(); ++i){
             ASTNode * node = visit(ctx->initDeclarator(i));
             if (node == NULL) {
-                //std::cout << "Déclaration sans affectation " << std::endl;
             } else {
                 //std::cout<<"Déclaration avec affectation " << std::endl;
                 if (n== NULL) {
