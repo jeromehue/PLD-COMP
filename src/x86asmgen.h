@@ -1,29 +1,13 @@
 #include <iostream>
+#include <fstream>
 #include "ASTNode.h"
 #include "symboltable.h"
 
 #pragma once
 
 static Symboltable* st;
+static std::ofstream output;
 
-void prologue() {
-    std::cout <<
-        ".global main\n"
-        "main:\n"
-        "	# Prologue\n"
-        "	pushq %rbp\n"
-        "	movq %rsp, %rbp\n"
-        "\n"
-        "	# Body\n";
-}
-
-void epilogue() {
-    std::cout <<
-        "\n"
-        "	# Epilogue\n"
-        "   popq %rbp\n"
-        " 	ret\n";
-}
 static void asmprint(ASTNode* n) {
     std::cout << "call to asmprint" << std::endl;
     ASTNode* current  = n;
@@ -73,8 +57,8 @@ static void genBinOp(BinOp_n * node) {
  */
 static void asmgen(ASTNode * n) {
     
-    prologue();
     
+    output.open("output.s");
     ASTNode* current  = n;
     if (dynamic_cast<Prog * > (current)) {
         std::cout << "print symbol" << std::endl;
@@ -95,6 +79,24 @@ static void asmgen(ASTNode * n) {
         } while(temp->hasNext());
  
     } while (current->hasFirst());
-    epilogue();
+   output.close();
 }
 
+void prologue() {
+    output <<
+        ".global main\n"
+        "main:\n"
+        "	# Prologue\n"
+        "	pushq %rbp\n"
+        "	movq %rsp, %rbp\n"
+        "\n"
+        "	# Body\n";
+}
+
+void epilogue() {
+    output <<
+        "\n"
+        "	# Epilogue\n"
+        "   popq %rbp\n"
+        " 	ret\n";
+}

@@ -8,6 +8,7 @@ ifcc
 *.o
 src/*.c
 main.c
+executable
 
 # Generated during compilation
 src/generated
