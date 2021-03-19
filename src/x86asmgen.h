@@ -140,7 +140,7 @@ static int genBinOp(BinOp_n * node) {
 
         switch(node->getOp()){
             case '+':
-                std::cout << "\taddl\t" << leftadr << "(%rbp)," 
+                output << "\taddl\t" << leftadr << "(%rbp)," 
             << rightadr <<"(%rbp)\n" ;
                return rightadr; 
                 break;
@@ -197,8 +197,8 @@ static void asmgen(ASTNode * n) {
                     // Generate assembly
                     int adr = genBinOp(b);
                     int var_adr = st->getAddress("b");
-                    std::cout << "\tmovl\t"<< adr << "%(rbp),"
-                        << var_adr << "%(rbp)" << std::endl;
+                    output << "\tmovl\t"<< adr << "%(rbp),"
+                        << var_adr << "%(rbp)\n" ;
                 }
             } else if (dynamic_cast<Return_n* >(temp)) {
                 std::cout << "Instruction de retour " << std::endl;
@@ -206,7 +206,7 @@ static void asmgen(ASTNode * n) {
                 {   std::cout << "return a const "  << std::endl;
                     Const_n* n  = dynamic_cast<Const_n*>(temp->getFirst());
                     int retconst = n->getValue();
-                    std::cout << "\tmovl\t$"  << retconst << ",%eax\n"; 
+                    output << "\tmovl\t$"  << retconst << ",%eax\n"; 
                 }
             }
         } while(temp->hasNext());
