@@ -230,16 +230,9 @@ public:
             return a;
         }
     }
-
-    virtual antlrcpp::Any visitRe_number
-      (ifccParser::Re_numberContext *ctx) override
-    {
-        std::cout << "return a number" << std::endl;
-        return 0;
-    }
  
-    virtual antlrcpp::Any visitAssignmentExpr
-       (ifccParser::AssignmentExprContext * ctx) override
+    virtual antlrcpp::Any visitAssignArithExpr
+       (ifccParser::AssignArithExprContext * ctx) override
     {
         std::cout << "Call to visitAssignmentExpr" << std::endl;
         std::cout << "Variable : " << ctx->ID()->getText() << std::endl;
