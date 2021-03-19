@@ -1,2 +1,10 @@
-cd ..
-docker run --rm -v $(pwd):/work eguerin/antlr4cpp bash -c "cd /work/tests ; chmod 755 pld-wrapper.sh; python3 pld-test.py tests/Init/"
+# Avoids the "missing folder" error message
+if [ -d "out" ]; then
+    rm -Rf "out";
+fi
+
+# Making sure wrapper.sh is executable
+chmod u+x wrapper.sh
+
+# Run tests
+python3 test.py tests/
