@@ -39,6 +39,9 @@ static void genBinOp(BinOp_n * node) {
 
 }
 
+/**
+ * Generate x86 assembly code
+ */
 static void asmgen(ASTNode * n) {
     ASTNode* current  = n;
     if (dynamic_cast<Prog * > (current)) {
@@ -61,4 +64,21 @@ static void asmgen(ASTNode * n) {
     } while (current->hasFirst());
 }
 
+void prologue() {
+    std::cout <<
+        ".global main\n"
+        "main:\n"
+        "	# Prologue\n"
+        "	pushq %rbp\n"
+        "	movq %rsp, %rbp\n"
+        "\n"
+        "	# Body\n";
+}
 
+void epilogue() {
+    std::cout <<
+        "\n"
+        "	# Epilogue\n"
+        "   popq %rbp\n"
+        " 	ret\n";
+}
