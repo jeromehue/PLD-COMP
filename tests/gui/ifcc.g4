@@ -12,8 +12,9 @@ axiom
 prog            
     : 
         'int' 'main' '(' ')' '{' 
-            blockItem*
-            RETURN retval ';' 
+            declaration?
+            statement*
+            RETURN primaryExpression ';' 
         '}' 
     ;
 
@@ -25,6 +26,12 @@ blockItem
 declaration     
     : TYPE initDeclaratorList ';'
     ;
+
+primaryExpression
+    : CONST # number
+    | ID    # var
+    ;
+
 
 relationalExpression
     : CONST     #re_number
@@ -42,8 +49,7 @@ equalityExpression
     ;    
 
 initDeclaratorList
-    :   initDeclarator
-    |   initDeclaratorList ',' initDeclarator
+    :   initDeclarator (',' initDeclarator)*
     ;
 
 initDeclarator  
@@ -52,32 +58,28 @@ initDeclarator
     ;
 
 statement       
-    : assignmentExpr ';' 
+    : assignmentExpr+ 
     ;
 
 assignmentExpr  
-    : ID '=' arithExpr
+    : ID '=' arithExpr ';'
     ;
-                 
+
 
 arithExpr    
-    : CONST     # number
-    | ID        # var
-    | left=arithExpr op=('*'|'/') right=arithExpr     # Expr 
-    | left=arithExpr op=('+'|'-') right=arithExpr     # Expr 
+    : primaryExpression                                 # prExpr
+    | left=arithExpr op=('*'|'/') right=arithExpr       # Expr 
+    | left=arithExpr op=('+'|'-') right=arithExpr       # Expr 
     ;
             
-retval  
-    : CONST 
-    | ID
-    ;
+   
 
 
 
 RETURN      : 'return' ;
 TYPE        : 'int';
-CONST       : [0-9]+ ;
-ID          : [a-z]+ ;
+CONST       : [-]?[0-9]+ ;
+ID          : [_a-zA-Z][_a-zA-Z0-9]* ;
 COMMENT     : '/*' .*? '*/' -> skip ;
 DIRECTIVE   : '#' .*? '\n' -> skip ;
 WS          : [ \t\r\n] -> channel(HIDDEN);

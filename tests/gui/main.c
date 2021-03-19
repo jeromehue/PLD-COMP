@@ -1,7 +1,5 @@
 int main() {
-    int  a;
-    int b;
-    int c = b = 2;
-    int d = 2;
+    int  a, b, c;
+    b = 1+2+3;
     return c;
 }

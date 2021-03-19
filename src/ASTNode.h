@@ -128,6 +128,10 @@ class BinOp_n : public Expr_n {
             return right;
         }
 
+        char getOp() {
+            return op;
+        }
+
     protected:
         char op;
 };
