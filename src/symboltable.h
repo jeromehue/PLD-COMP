@@ -21,9 +21,14 @@ Pour toute variabe, garder en mémoire :
 
 */
 
+enum TYPE {
+    INT = 0,
+    CHAR = 1
+};
+
 struct Variable {
     int address;
-    int value;
+    int type;
 };
 
 class Symboltable {
@@ -32,9 +37,14 @@ public:
         var_addr = 0;
     }
     
-    int store(std::string name){
+    int store(std::string name,  int type){
         var_addr -= 4;
-        symbols.insert(std::pair<std::string, int>(name, var_addr));
+        
+        Variable v;
+        v.address = var_addr;
+        v.type = type;
+
+        symbols.insert(std::pair<std::string, Variable>(name, v));
         return var_addr;
     }
     
@@ -51,15 +61,10 @@ public:
     
     int getAddress(std::string name) {
         auto it = symbols.find(name);
-        return it->second;
+        return it->second.address;
     }    
     
-    void createEntry(std::string name) {
-        vardeclarations.push_back(name);        
-    }
-
-    std::map<std::string, int> symbols;
-    std::vector<std::string> vardeclarations;
+    std::map<std::string, Variable> symbols;
     protected:
     // address of the last variable declared on the rbp stack
     int var_addr;

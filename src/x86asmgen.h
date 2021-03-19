@@ -14,6 +14,26 @@ static void asmprint(ASTNode* n) {
     }
 }
 
+static bool IsConst(ASTNode* n) {
+    return (dynamic_cast<Const_n* > (n));
+}
+
+static void genBinOp(BinOp_n * node) {
+    // Generating ASM for binary operators :
+    // +, -, *
+    if ( IsConst(node->getLeft()) && IsConst(node->getRight() )) {
+        std::cout << "both operands are constant" << std::endl;  
+        // Create two temps variables and store operands in it
+        std::string temp1 = "!temp1";
+        std::string temp2 = "!temp2";
+
+        /*
+        
+        */
+    }
+
+
+}
 
 static void asmgen(ASTNode * n) {
     ASTNode* current  = n;
@@ -24,22 +44,13 @@ static void asmgen(ASTNode * n) {
             temp = temp->getNext();
             if( dynamic_cast<BinOp_n*>(temp)) {
                 std::cout << "We have expr node" << std::endl;
+                // Generate assembly from it
+                genBinOp(dynamic_cast<BinOp_n*> (temp));
+                
             }
         } while(temp->hasNext());
  
     } while (current->hasFirst());
 }
 
-static bool IsConst(ASTNode* n) {
-    return (dynamic_cast<Const_n* > (n));
-}
 
-static void genBinOp(BinOp_n * node) {
-    // Generating ASM for binary operators :
-    // +, -, *
-    if ( IsConst(node->getLeft()) && IsConst(node->getRight() )) {
-        std::cout << "both operands are constant" << std::endl;  
-    }
-
-
-}
