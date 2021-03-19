@@ -2,12 +2,12 @@
 This is a long term project in 4th year in computer science at INSA Lyon.<br/>
 The goal is to create a compiler for a subset of the C programming language.
 
-`src/` contains the source code (.cpp and .h files)<br/>
 `grammar/` contains the Antlr4 grammar for a subset of C (.g4 files)<br/>
+`src/` contains the source code (.cpp and .h files)<br/>
 `tests/` contains everything related to tests
 
 ## Prerequisites
-Make sure to create a `Makefile.local` file containing your local Antlr4 paths, e.g :
+Make sure to create a `Makefile.local` file containing your local Antlr4 paths, e.g.:
 ```
 ANTLR4_BINDIR=/usr/bin
 ANTLR4_INCDIR=/usr/include/antlr4-runtime
@@ -16,7 +16,7 @@ ANTLR4_RUNTIME=libantlr4-runtime.a
 ```
 
 ## Execution
-Run `make` to compile.<br/>
+Compile the project with `make`.<br/>
 Run `./ifcc main.c` to run our compiler on `main.c`.
 
 ## Tests
