@@ -64,8 +64,11 @@ assignmentExpr
 
 arithExpr    
     : primaryExpression                                 # prExpr
+    | '(' primaryExpression ')'                         # prExpr
     | left=arithExpr op=('*'|'/') right=arithExpr       # Expr 
     | left=arithExpr op=('+'|'-') right=arithExpr       # Expr 
+    | '(' left=arithExpr op=('*'|'/') right=arithExpr   ')'      # Expr 
+    | '(' left=arithExpr op=('+'|'-') right=arithExpr   ')'      # Expr 
     ;
             
    
