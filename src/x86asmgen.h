@@ -4,8 +4,26 @@
 
 #pragma once
 
-static Symboltable symbtab;
+static Symboltable* st;
 
+void prologue() {
+    std::cout <<
+        ".global main\n"
+        "main:\n"
+        "	# Prologue\n"
+        "	pushq %rbp\n"
+        "	movq %rsp, %rbp\n"
+        "\n"
+        "	# Body\n";
+}
+
+void epilogue() {
+    std::cout <<
+        "\n"
+        "	# Epilogue\n"
+        "   popq %rbp\n"
+        " 	ret\n";
+}
 static void asmprint(ASTNode* n) {
     std::cout << "call to asmprint" << std::endl;
     ASTNode* current  = n;
@@ -30,7 +48,18 @@ static void genBinOp(BinOp_n * node) {
         std::string temp1 = "!temp1";
         std::string temp2 = "!temp2";
 
-    
+        int adrtemp1 = st->store(temp1, 0);    
+        int adrtemp2 = st->store(temp2, 0);    
+        int const1 = 
+            (dynamic_cast<Const_n* > (node->getLeft()))->getValue();
+        int const2 = 
+            (dynamic_cast<Const_n* > (node->getRight()))->getValue();
+       
+        std::cout << "\tmovl\t$" << const1 << ","<< adrtemp1 << "(%rbp)\n";
+        std::cout << "\tmovl\t$" << const2 << ","<< adrtemp2 << "(%rbp)\n";
+
+        std::cout << "\taddl\t" << adrtemp1 << "(%rbp)," 
+            << adrtemp2 <<"(%rbp)\n" ; 
         /*
                 
         */
@@ -43,10 +72,14 @@ static void genBinOp(BinOp_n * node) {
  * Generate x86 assembly code
  */
 static void asmgen(ASTNode * n) {
+    
+    prologue();
+    
     ASTNode* current  = n;
     if (dynamic_cast<Prog * > (current)) {
         std::cout << "print symbol" << std::endl;
         n->getST()->printSymbols();
+        st = n->getST();
     }
     do  {
         current = current->getFirst();
@@ -62,23 +95,6 @@ static void asmgen(ASTNode * n) {
         } while(temp->hasNext());
  
     } while (current->hasFirst());
+    epilogue();
 }
 
-void prologue() {
-    std::cout <<
-        ".global main\n"
-        "main:\n"
-        "	# Prologue\n"
-        "	pushq %rbp\n"
-        "	movq %rsp, %rbp\n"
-        "\n"
-        "	# Body\n";
-}
-
-void epilogue() {
-    std::cout <<
-        "\n"
-        "	# Epilogue\n"
-        "   popq %rbp\n"
-        " 	ret\n";
-}
