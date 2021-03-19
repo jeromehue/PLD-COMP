@@ -1,7 +1,10 @@
 #include <iostream>
 #include "ASTNode.h"
+#include "symboltable.h"
 
 #pragma once
+
+static Symboltable symbtab;
 
 static void asmprint(ASTNode* n) {
     std::cout << "call to asmprint" << std::endl;
@@ -27,8 +30,9 @@ static void genBinOp(BinOp_n * node) {
         std::string temp1 = "!temp1";
         std::string temp2 = "!temp2";
 
+    
         /*
-        
+                
         */
     }
 
@@ -37,6 +41,10 @@ static void genBinOp(BinOp_n * node) {
 
 static void asmgen(ASTNode * n) {
     ASTNode* current  = n;
+    if (dynamic_cast<Prog * > (current)) {
+        std::cout << "print symbol" << std::endl;
+        n->getST()->printSymbols();
+    }
     do  {
         current = current->getFirst();
         ASTNode *temp = current;
