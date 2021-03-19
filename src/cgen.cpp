@@ -78,7 +78,7 @@ int cgloadint(int value) {
     
     // Get a new register
     int r = alloc_register();
-
+    
     // Print out the code to initialise it
     std::cout << "\tmovl\t$" << value <<", " << reglist[r] << "\n";
     return (r);
@@ -98,8 +98,28 @@ int cgsub(int r1, int r2) {
     free_register(r2);
     return(r1);
 }
-
-
+int cggreater(int r1,int r2)
+{
+    std::cout<<"\t#cggreater\n";
+    std::cout<<"\tmovl    "<<reglist[r1]<<", %eax\n"
+        <<"\tcmpl\t"<<reglist[r2]<<", %eax\n"
+        <<"\tsetg\t%al\n"
+        <<"\tmovzbl\t%al, %eax\n"
+        <<"\tmovl\t%eax, "<<reglist[r1]<<"\n";
+    free_register(r2);
+    return(r1);
+}
+int cglower(int r1,int r2)
+{
+    std::cout<<"\t#cglower\n";
+    std::cout<<"\tmovl    "<<reglist[r1]<<", %eax\n"
+        <<"\tcmpl    "<<reglist[r2]<<", %eax\n"
+        <<"\tsetl\t%al\n"
+        <<"\tmovzbl\t%al, %eax\n"
+        <<"\tmovl\t%eax, "<<reglist[r1]<<"\n";
+    free_register(r2);
+    return(r1);
+}
 int cgmul(int r1, int r2) {
     std::cout << "\tmovl    "<< reglist[r1] <<", %eax\n"; 
     std::cout << "\tmull\t" << reglist[r2]<< "\n";
@@ -157,3 +177,4 @@ void cgstorevar(int value, int addr) {
     std::cout << 
     "\tmovl     $" << value << "," << var_register << "\n";
 }
+

@@ -40,8 +40,12 @@ public:
   virtual antlrcpp::Any visitInitDeclarator 
       (ifccParser::InitDeclaratorContext *ctx) override ;
 
-  virtual antlrcpp::Any visitAssignmentExpr 
-      (ifccParser::AssignmentExprContext *ctx) override ;
+  virtual antlrcpp::Any visitAssignArithExpr 
+      (ifccParser::AssignArithExprContext *ctx) override ;
+
+  virtual antlrcpp::Any visitAssignRelExpr 
+      (ifccParser::AssignRelExprContext *ctx) override ;
+
 
   virtual antlrcpp::Any visitEqualityExpression 
       (ifccParser::EqualityExpressionContext *ctx) override ;
@@ -53,11 +57,7 @@ public:
   virtual antlrcpp::Any visitRelExpr
       (ifccParser::RelExprContext *ctx) override;
 
-  virtual antlrcpp::Any visitRe_number
-      (ifccParser::Re_numberContext *ctx) override;
 
-  virtual antlrcpp::Any visitRe_var
-      (ifccParser::Re_varContext *ctx) override;
 
 protected: 
     Symboltable symboltable;

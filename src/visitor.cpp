@@ -10,7 +10,9 @@ antlrcpp::Any Visitor::visitProg(ifccParser::ProgContext *ctx) {
     
     freeall_registers();
     cgprologue();    
-    visitChildren(ctx);
+  //  if(!ctx->primaryExpression()) {
+        visitChildren(ctx);
+   // }
     int retval = 12;
     std::string retstr;
    /* 
@@ -24,10 +26,7 @@ antlrcpp::Any Visitor::visitProg(ifccParser::ProgContext *ctx) {
         retstr = std::to_string(retval) + "(%rbp)";
     }*/
     int a  = visit(ctx->primaryExpression());
-
-      
     cgreturnreg(a);
-    std::cout << "\n" << std::endl;
     cgepilogue();
         
     return 0;
@@ -82,9 +81,19 @@ antlrcpp::Any Visitor::visitExpr(ifccParser::ExprContext *ctx)
     return 0;
 }
 
-antlrcpp::Any Visitor::visitAssignmentExpr
-(ifccParser::AssignmentExprContext *ctx) {
+antlrcpp::Any Visitor::visitAssignArithExpr
+(ifccParser::AssignArithExprContext *ctx) {
     int r =visit(ctx->arithExpr());
+    std::string name = ctx->ID()->getText();
+    int retval =  symboltable.getAddress(ctx->ID()->getText());
+    
+    cgloadvar(r, retval);
+    return 0;
+}
+
+antlrcpp::Any Visitor::visitAssignRelExpr
+(ifccParser::AssignRelExprContext *ctx) {
+    int r =visit(ctx->relationalExpression());
     std::string name = ctx->ID()->getText();
     int retval =  symboltable.getAddress(ctx->ID()->getText());
     
@@ -164,6 +173,7 @@ antlrcpp::Any Visitor::visitInitDeclarator(ifccParser::InitDeclaratorContext* ct
 
 
 antlrcpp::Any Visitor::visitEqualityExpression(ifccParser::EqualityExpressionContext *ctx) {
+    
     return visitChildren(ctx);
 }
 /*
@@ -173,12 +183,24 @@ antlrcpp::Any Visitor::visitPrimaryExpression(ifccParser::PrimaryExpressionConte
 
 
 antlrcpp::Any Visitor::visitRelExpr(ifccParser::RelExprContext *ctx) {
-    return visitChildren(ctx);
-}
-antlrcpp::Any Visitor::visitRe_var(ifccParser::Re_varContext *ctx) {
-    return visitChildren(ctx);
+    int left = visit(ctx->left);
+    int right = visit(ctx->right);
+    char relOp = ctx->relOp->getText().at(0);
+    int ret; 
+    switch(relOp) {
+        case '>':
+            ret  = cggreater(left, right);
+            return ret;
+            break;
+        case '<': 
+            ret = cglower(left, right);
+            return ret;
+            break;
+        default:
+            std::cout << "Unknow relational operator" << std::endl;
+            exit(EXIT_FAILURE);
+            break;
+    }
+    return 0;
 }
 
-antlrcpp::Any Visitor::visitRe_number(ifccParser::Re_numberContext *ctx) {
-    return visitChildren(ctx);
-}
