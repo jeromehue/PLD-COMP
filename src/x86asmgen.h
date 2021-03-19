@@ -75,7 +75,7 @@ static int genConst(Const_n* node) {
             (dynamic_cast<Const_n* > (node))->getValue();
 
         // generate asm
-        std::cout   << "\tmovl\t$" << const1 << ","
+        output   << "\tmovl\t$" << const1 << ","
                     << adrtemp << "(%rbp)\n";
 
         // return var adress
@@ -180,7 +180,7 @@ static void asmgen(ASTNode * n) {
         ASTNode *temp = current;
         do {
             //temp = temp->getNext();
-            
+           /* 
             if( dynamic_cast<Assign_n *>(temp)) {
                 
                 std::cout << "debug" << std::endl;
@@ -198,7 +198,7 @@ static void asmgen(ASTNode * n) {
                 }
 
             
-            } else  if( dynamic_cast<BinOp_n*>(temp)) {
+            } else*/  if( dynamic_cast<BinOp_n*>(temp)) {
                 std::cout << "We have expr node" << std::endl;
                 // Generate assembly from it
                 genBinOp(dynamic_cast<BinOp_n*> (temp));                
@@ -229,7 +229,17 @@ static void asmgen(ASTNode * n) {
             }
             temp = temp->getNext();
         } while(temp->hasNext());
- 
+        
+        if (dynamic_cast<Return_n* >(temp)) {
+                std::cout << "Instruction de retour " << std::endl;
+                if(dynamic_cast<Const_n*> (temp->getFirst())) 
+                {   std::cout << "return a const "  << std::endl;
+                    Const_n* n  = dynamic_cast<Const_n*>(temp->getFirst());
+                    int retconst = n->getValue();
+                    output << "\tmovl\t$"  << retconst << ",%eax\n"; 
+                }
+        }
+
     } while (current->hasFirst());
     epilogue();
    output.close();

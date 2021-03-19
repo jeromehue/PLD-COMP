@@ -227,9 +227,15 @@ public:
             ASTNode* e = visit(ctx->arithExpr());
             e->display();
 
+            int val;
+            if ( dynamic_cast<Const_n*>  (e)) {
+                val = (dynamic_cast<Const_n*> (e))->getValue();
+            } else {
+                 val = 0;
+            }
             // For testing purpose 
             Ident_n* lvalue = new Ident_n(NULL, NULL, id);
-            Expr_n* rvalue = new Const_n(NULL, NULL, NULL, NULL, 5);
+            Expr_n* rvalue = new Const_n(NULL, NULL, NULL, NULL, val);
             ASTNode* assign = new Assign_n(NULL, NULL, rvalue, lvalue);
             
             return assign;
