@@ -200,6 +200,14 @@ static void asmgen(ASTNode * n) {
                     std::cout << "\tmovl\t"<< adr << "%(rbp),"
                         << var_adr << "%(rbp)" << std::endl;
                 }
+            } else if (dynamic_cast<Return_n* >(temp)) {
+                std::cout << "Instruction de retour " << std::endl;
+                if(dynamic_cast<Const_n*> (temp->getFirst())) 
+                {   std::cout << "return a const "  << std::endl;
+                    Const_n* n  = dynamic_cast<Const_n*>(temp->getFirst());
+                    int retconst = n->getValue();
+                    std::cout << "\tmovl\t$"  << retconst << ",%eax\n"; 
+                }
             }
         } while(temp->hasNext());
  

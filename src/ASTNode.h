@@ -168,7 +168,7 @@ class Return_n : public ASTNode {
     public:
         Return_n(  ASTNode* first, ASTNode* next, 
             Expr_n* retExpr) : 
-        ASTNode(first, next), retExpr(retExpr) {};
+        ASTNode(retExpr, next), retExpr(retExpr) {};
         
         void display() {
             std::cout << "RETURN Node" << std::endl;
@@ -177,6 +177,8 @@ class Return_n : public ASTNode {
         void setExpr(Expr_n* expr) {
             this->retExpr = expr;
         }
+
+
 
     protected:
         Expr_n* retExpr;

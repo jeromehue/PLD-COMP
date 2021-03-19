@@ -32,6 +32,14 @@ public:
         std::cout << "Call to visitProg()" << std::endl;
         std::cout << "Programme \n" << ctx->getText() << std::endl;
         ASTNode* return_node = visit(ctx->primaryExpression()); 
+        ASTNode* abc = 
+            (visit(ctx->primaryExpression()));
+        abc->display();
+        if(dynamic_cast<Expr_n*> (abc)) { 
+            std::cout << "oui" << std::endl;
+            return_node = new Return_n(NULL, NULL,
+                    dynamic_cast<Expr_n*> (abc) );
+        }
         if(ctx->declaration()) {
         ASTNode* declaration_node = visit(ctx->declaration());
         std::cout << "Display of declaration" << std::endl;
