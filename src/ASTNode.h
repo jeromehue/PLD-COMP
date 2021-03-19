@@ -75,6 +75,7 @@ public:
     
     virtual void setST(Symboltable* st) {};
     virtual Symboltable*  getST() {return NULL;};
+    virtual std::string getName() {return NULL;};
 
     protected:
         ASTNode* next;
@@ -225,6 +226,9 @@ class Assign_n : public ASTNode {
             return this->lvalue;
         }
         
+        std::string getName() {
+            return lvalue->getName();
+        }        
     private:
         Expr_n* rvalue;
         Ident_n* lvalue;

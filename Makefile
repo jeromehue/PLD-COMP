@@ -39,6 +39,7 @@ basetest :
 	@./ifcc mainast.c &>/dev/null 
 	@echo 'Output produced : '
 	@cat output.s
+	gcc output.s && ./a.out; echo $$?
 
 clean:
 	rm -rf $(OUTPUT)

@@ -61,6 +61,10 @@ public:
     
     int getAddress(std::string name) {
         auto it = symbols.find(name);
+        if (it == symbols.end()) {
+            std::cout << "erreur, variable non déclarée" << std::endl;
+            exit(EXIT_FAILURE);
+        }
         return it->second.address;
     }   
 

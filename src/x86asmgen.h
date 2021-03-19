@@ -157,8 +157,11 @@ static int genBinOp(BinOp_n * node) {
                return rightadr; 
                 break;
             case '-':
-                std::cout << "Not implemented" << std::endl;
-                exit(EXIT_FAILURE);
+                output << "\tmovl\t" <<  rightadr << "(%rbp), %edx\n";
+                output << "\tmovl\t" <<  leftadr << "(%rbp), %eax\n";
+                output << "\tsubl\t%edx, %eax\n";
+                output << "\tmovl\t%eax," <<  rightadr << "(%rbp)\n";
+                return rightadr; 
                 break;
             case '*':
                 std::cout << "Not implemented" << std::endl;
@@ -202,6 +205,7 @@ static void asmgen(ASTNode * n) {
             } else if ( dynamic_cast<Assign_n*>(temp)) {
                 std::cout << "We have assign node" << std::endl;
                 temp->display();
+                std::string name =  temp->getName();
                 Expr_n* a(temp->getExpr()); 
                 a->display();
                 if (dynamic_cast<BinOp_n* > (a)){
@@ -210,7 +214,7 @@ static void asmgen(ASTNode * n) {
                     b->display();
                     // Generate assembly
                     int adr = genBinOp(b);
-                    int var_adr = st->getAddress("b");
+                    int var_adr = st->getAddress(name);
                     output << "\tmovl\t" << adr << "(%rbp), %eax\n";
                     output << "\tmovl\t%eax," << var_adr << "(%rbp)\n" ;
                 }
