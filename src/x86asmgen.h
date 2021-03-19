@@ -43,6 +43,12 @@ bool IsConst(ASTNode* n) {
     return (dynamic_cast<Const_n* > (n));
 }
 
+bool IsIdent(ASTNode* n) {
+    return (dynamic_cast<Ident_n* > (n));
+}
+
+
+
 bool IsBinOp(ASTNode* n) {
     return (dynamic_cast<BinOp_n* > (n));
 }
@@ -53,19 +59,60 @@ int getTempCount() {
     return tempCount++;
 }
 
+
+static int genConst(Const_n* node) {
+ 
+        //Debug
+        std::cout << "Current node is const" << std::endl;
+
+        //create temp var
+        int a = getTempCount();
+        std::string tempname = "!tempvar" + std::to_string(a);
+        int adrtemp = st->store(tempname, 0);    
+
+        // Fetch const value
+        int const1 = 
+            (dynamic_cast<Const_n* > (node))->getValue();
+
+        // generate asm
+        std::cout   << "\tmovl\t$" << const1 << ","
+                    << adrtemp << "(%rbp)\n";
+
+        // return var adress
+        return adrtemp;
+
+
+}
+
 static int genBinOp(BinOp_n * node) {
-    // Generating ASM for binary operators :
-    // +, -, *
+    // Generating ASM for binary operators nodes
+
+    // Check if node is a primary expression : const or var
+    std::cout << "call to Binop" << std::endl;
+    node->display();
+   
 
     int leftadr;
 
-    if ( IsBinOp(node->getLeft())  && IsConst(node->getRight())) {
+    if ( IsBinOp(node->getLeft())   ) {
         // Le noeud de gauche est un opérateur
         // on effectue le calcul
         std::cout << "test" << std::endl;
         leftadr = genBinOp(dynamic_cast<BinOp_n*> (node->getLeft()));
+    } else if (IsConst(node->getLeft()) ) {
+        // Le noeud de gauche est une constante
+        node->getLeft()->display();
+        std::cout << "test2" << std::endl;
+        leftadr = genConst(dynamic_cast<Const_n * > (node->getLeft()));
+        //genBinOp(dynamic_cast<BinOp_n * > (node->getLeft()));
+    } else if (IsIdent(node->getLeft()) ) {
+        // Le noeud de gauche est une variable
+        
+        // Ne marche probablement pas
+        std::cout << "test3" << std::endl;
+        leftadr = genBinOp(dynamic_cast<BinOp_n*> (node->getLeft()));
     }
-    else if ( IsConst(node->getLeft()) && IsConst(node->getRight() )) {
+    if ( IsConst(node->getLeft()) && IsConst(node->getRight() )) {
         std::cout << "both operands are constant" << std::endl;  
         // Create two temps variables and store operands in it
         std::string temp1 = "!temp1";
