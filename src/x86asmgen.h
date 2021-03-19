@@ -239,6 +239,10 @@ static void asmgen(ASTNode * n) {
                     Const_n* n  = dynamic_cast<Const_n*>(temp->getFirst());
                     int retconst = n->getValue();
                     output << "\tmovl\t$"  << retconst << ",%eax\n"; 
+                } else if (dynamic_cast<Ident_n*> (temp->getFirst())) {
+                    Ident_n* t  = dynamic_cast<Ident_n*>(temp->getFirst());
+                    int retvaradr= st->getAddress(t->getName());
+                    output<<"\tmovl\t"<<retvaradr<<"(%rbp),%eax\n"; 
                 }
         }
 
