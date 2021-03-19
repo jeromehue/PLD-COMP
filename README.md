@@ -1,32 +1,24 @@
-# C compiler with antlr4/c++
-H4424 - Long term project of 4th year of computer science at INSA Lyon.
+# C compiler with Antlr4/C++ (H4244)
+This is a long term project in 4th year in computer science at INSA Lyon.<br/>
+The goal is to create a compiler for a subset of the C programming language.
 
-## Folders
-- `src` : the source code (.cpp and .h files)
-- `tests` : the tests (see below)
-- `grammar` : our grammar for antlr4 
+`grammar/` contains the Antlr4 grammar for a subset of C (.g4 files)<br/>
+`src/` contains the source code (.cpp and .h files)<br/>
+`tests/` contains everything related to tests
 
-## Important files
-- `ifcc.g4` contains the grammar in antlr4 format
-- `main.cpp` contains the C++ code to call the antlr4-generated parser on the  file name provided in the command line.
-- `visitor.h` is a visitor of the parse tree that produces an assembly-language output
+## Prerequisites
+Make sure to create a `Makefile.local` file containing your local Antlr4 paths, e.g.:
+```
+ANTLR4_BINDIR=/usr/bin
+ANTLR4_INCDIR=/usr/include/antlr4-runtime
+ANTLR4_LIBDIR=/usr/lib/x86_64-linux-gnu
+ANTLR4_RUNTIME=libantlr4-runtime.a
+```
 
-## Compilation scripts
-- `Makefile` can be used to compile the parser. Libraries and include directories default to the values that work in the IF machines of rooms 208 and 219. You must create a `Makefile.local` file with your own Antlr4 paths.
-- `compile_ubuntu.sh` is a script that compiles the project in a different environment (a ubuntu where the antlr runtime had to be compiled manually).
-- `compile_docker.sh` is a script to use if you are desperate. It compiles the project in a docker environment where antlr4 and its dependencies are properly installed. 
+## Execution
+Compile the project with `make`.<br/>
+Run `./ifcc main.c` to run our compiler on `main.c`.
 
 ## Tests
-This directory contains scripts to test your compiler along with 
-a collection of C language source codes that can be tested.
-
-### Prerequisites
-Docker must be installed in order to execute these scripts. The compiler has 
-to be present in the directory `../compiler/ifcc`. Compiler options and location
-can be customized in the `wrapper.sh` script.
-
-### Running tests
-`test.sh` is the base file to launch. It will execute the `test.py`
-script. Results are put in a new directory `out`.
-
-The tests are in the `tests` subfolder. 
+Run tests with `make test`.<br/>
+Complete test results will go into `tests/out/`.

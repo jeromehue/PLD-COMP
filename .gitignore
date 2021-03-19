@@ -6,7 +6,8 @@ ifcc
 *.out
 *.s
 *.o
-*.c
+src/*.c
+main.c
 
 # Generated during compilation
 src/generated
