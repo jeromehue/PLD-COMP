@@ -35,6 +35,11 @@ dirs:
 test:
 	@cd tests && ./test.sh
 
+basetest : 
+	@./ifcc mainast.c &>/dev/null 
+	@echo 'Output produced : '
+	@cat output.s
+
 clean:
 	rm -rf $(OUTPUT)
 	rm -rf $(GENERATED)
