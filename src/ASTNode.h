@@ -29,6 +29,7 @@ public:
     virtual void display() { std::cout << "Node " << std::endl; }
 
     virtual void setExpr(Expr_n* expr) {}
+    virtual Expr_n *getExpr() {return NULL;}
 
     void setFirst(ASTNode * n) {
         this->first = n;
@@ -131,6 +132,9 @@ class BinOp_n : public Expr_n {
         char getOp() {
             return op;
         }
+        void display() {
+            std::cout << "Bin op : "<< op << std::endl;
+        }
 
     protected:
         char op;
@@ -209,6 +213,10 @@ class Assign_n : public ASTNode {
         void display() {
             std::cout << "ASSIGN : " <<  
                 lvalue->getName() << std::endl;
+        }
+
+        Expr_n*  getExpr() {
+            return this->rvalue;
         }
         
     private:

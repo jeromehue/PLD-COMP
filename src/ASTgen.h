@@ -78,6 +78,7 @@ public:
             ASTNode* first = new ASTNode(NULL, NULL);
             for(int i=0; i<nbAssign; ++i) {
                 ASTNode* a =  visit(ctx->assignmentExpr(0));
+                std::cout << "Retrieved node" << std::endl;
                 first->setEndNext(a);
             }
             ASTNode * final_node = first->getNext(); 
@@ -236,14 +237,15 @@ public:
     {
         std::cout << "Call to visitAssignmentExpr" << std::endl;
         std::cout << "Variable : " << ctx->ID()->getText() << std::endl;
-        ASTNode* lvalue = new Ident_n(NULL, NULL, ctx->ID()->getText());
+        Ident_n* lvalue = new Ident_n(NULL, NULL, ctx->ID()->getText());
         std::cout << "????" << std::endl;
         ASTNode* a = visit(ctx->arithExpr());
-        // ASTNode* test = new Assign_n(NULL, NULL, /*Expr_n*/, lvalue);
         a->display();
         std::cout << typeid(a).name() << std::endl;
         std::cout << "ANLD" << std::endl;
-        return a;
+        ASTNode* test = new Assign_n(NULL, NULL, 
+                dynamic_cast<Expr_n*> (a), lvalue);
+        return test;
     } 
 
 protected: 

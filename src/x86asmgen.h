@@ -93,7 +93,10 @@ static int genBinOp(BinOp_n * node) {
    
 
     int leftadr;
+    int rightadr;
 
+
+    // Opérande gauche
     if ( IsBinOp(node->getLeft())   ) {
         // Le noeud de gauche est un opérateur
         // on effectue le calcul
@@ -112,28 +115,34 @@ static int genBinOp(BinOp_n * node) {
         std::cout << "test3" << std::endl;
         leftadr = genBinOp(dynamic_cast<BinOp_n*> (node->getLeft()));
     }
-    if ( IsConst(node->getLeft()) && IsConst(node->getRight() )) {
-        std::cout << "both operands are constant" << std::endl;  
-        // Create two temps variables and store operands in it
-        std::string temp1 = "!temp1";
-        std::string temp2 = "!temp2";
 
-        int adrtemp1 = st->store(temp1, 0);    
-        int adrtemp2 = st->store(temp2, 0);    
-        int const1 = 
-            (dynamic_cast<Const_n* > (node->getLeft()))->getValue();
-        int const2 = 
-            (dynamic_cast<Const_n* > (node->getRight()))->getValue();
+    // Opérande droite
+    if ( IsBinOp(node->getRight())   ) {
+        // Le noeud de gauche est un opérateur
+        // on effectue le calcul
+        std::cout << "test" << std::endl;
+        rightadr = genBinOp(dynamic_cast<BinOp_n*> (node->getRight()));
+    } else if (IsConst(node->getRight()) ) {
+        // Le noeud de gauche est une constante
+        node->getLeft()->display();
+        std::cout << "test2" << std::endl;
+        rightadr = genConst(dynamic_cast<Const_n * > (node->getRight()));
+        //genBinOp(dynamic_cast<BinOp_n * > (node->getLeft()));
+    } else if (IsIdent(node->getRight()) ) {
+        // Le noeud de gauche est une variable
+        
+        // Ne marche probablement pas
+        std::cout << "test3" << std::endl;
+        rightadr = genBinOp(dynamic_cast<BinOp_n*> (node->getRight()));
+    }
        
-        std::cout << "\tmovl\t$" << const1 << ","<< adrtemp1 << "(%rbp)\n";
-        std::cout << "\tmovl\t$" << const2 << ","<< adrtemp2 << "(%rbp)\n";
 
 
         switch(node->getOp()){
             case '+':
-                std::cout << "\taddl\t" << adrtemp1 << "(%rbp)," 
-            << adrtemp2 <<"(%rbp)\n" ;
-               return adrtemp2; 
+                std::cout << "\taddl\t" << leftadr << "(%rbp)," 
+            << rightadr <<"(%rbp)\n" ;
+               return rightadr; 
                 break;
             case '-':
                 break;
@@ -143,11 +152,10 @@ static int genBinOp(BinOp_n * node) {
                 std::cout << "Error : Unknow operator" << std::endl;
                 exit(EXIT_FAILURE);
                 break;
-        }
         /*
                 
         */
-    }
+        }
     std::cout << "Erreur" << std::endl;
     return 0;
 }
@@ -175,8 +183,23 @@ static void asmgen(ASTNode * n) {
             if( dynamic_cast<BinOp_n*>(temp)) {
                 std::cout << "We have expr node" << std::endl;
                 // Generate assembly from it
-                genBinOp(dynamic_cast<BinOp_n*> (temp));
-                
+                genBinOp(dynamic_cast<BinOp_n*> (temp));                
+            } else if ( dynamic_cast<Assign_n*>(temp)) {
+
+                std::cout << "We have assign node" << std::endl;
+                temp->display();
+                Expr_n* a(temp->getExpr()); 
+                a->display();
+                if (dynamic_cast<BinOp_n* > (a)){
+                    std::cout << "bonjour"<< std::endl;
+                    BinOp_n* b = dynamic_cast<BinOp_n*> (a);
+                    b->display();
+                    // Generate assembly
+                    int adr = genBinOp(b);
+                    int var_adr = st->getAddress("b");
+                    std::cout << "\tmovl\t"<< adr << "%(rbp),"
+                        << var_adr << "%(rbp)" << std::endl;
+                }
             }
         } while(temp->hasNext());
  
