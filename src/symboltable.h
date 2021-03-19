@@ -62,7 +62,15 @@ public:
     int getAddress(std::string name) {
         auto it = symbols.find(name);
         return it->second.address;
-    }    
+    }   
+
+    void printSymbols() {
+        auto it = symbols.begin();
+        for (auto const& x : symbols) {
+            std::cout << x.first << std::endl;
+        }
+    
+    } 
     
     std::map<std::string, Variable> symbols;
     protected:
