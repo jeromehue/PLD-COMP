@@ -1,10 +1,12 @@
 #include <iostream>
+#include <fstream>
 #include "ASTNode.h"
 #include "symboltable.h"
 
 #pragma once
 
 static Symboltable symbtab;
+static std::ofstream output;
 
 static void asmprint(ASTNode* n) {
     std::cout << "call to asmprint" << std::endl;
@@ -43,6 +45,7 @@ static void genBinOp(BinOp_n * node) {
  * Generate x86 assembly code
  */
 static void asmgen(ASTNode * n) {
+    output.open("output.s");
     ASTNode* current  = n;
     if (dynamic_cast<Prog * > (current)) {
         std::cout << "print symbol" << std::endl;
@@ -62,10 +65,11 @@ static void asmgen(ASTNode * n) {
         } while(temp->hasNext());
  
     } while (current->hasFirst());
+    output.close();
 }
 
 void prologue() {
-    std::cout <<
+    output <<
         ".global main\n"
         "main:\n"
         "	# Prologue\n"
@@ -76,7 +80,7 @@ void prologue() {
 }
 
 void epilogue() {
-    std::cout <<
+    output <<
         "\n"
         "	# Epilogue\n"
         "   popq %rbp\n"
