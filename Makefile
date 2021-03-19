@@ -10,7 +10,7 @@ GRAMMAR=grammar/ifcc.g4
 SOURCES  := $(wildcard $(SRCDIR)/*.c)
 
 CC=clang++
-CCARGS=-g -c -I $(ANTLR4_INCDIR) -I $(GENERATED) -std=c++17 -Wno-defaulted-function-deleted -Wno-unknown-warning-option
+CCARGS=-g -c -I $(ANTLR4_INCDIR) -I $(GENERATED)/grammar -std=c++17 -Wno-defaulted-function-deleted -Wno-unknown-warning-option
 LDARGS=-g
 
 all: ifcc

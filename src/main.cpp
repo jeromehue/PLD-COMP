@@ -4,9 +4,9 @@
 #include <cstdlib>
 
 #include "antlr4-runtime.h"
-#include "generated/grammar/ifccLexer.h"
-#include "generated/grammar/ifccParser.h"
-#include "generated/grammar/ifccBaseVisitor.h"
+#include "ifccLexer.h"
+#include "ifccParser.h"
+#include "ifccBaseVisitor.h"
 #include "ASTgen.h"
 #include "ASTNode.h"
 #include "visitor.h"
