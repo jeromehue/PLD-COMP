@@ -139,7 +139,8 @@ public:
             ASTNode* left,  ASTNode* right, 
             int value) : 
         Expr_n(first, next, left, right) ,value(value) {
-            std::cout << "Creating const node" << std::endl;
+            std::cout << "Creating const node " 
+                << value <<  std::endl;
         };
         
     void display() {
