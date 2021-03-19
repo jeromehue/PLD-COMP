@@ -223,7 +223,10 @@ public:
                 " left value = " << ctx->ID()->getText()<<std::endl;
           
             std::string id = ctx->ID()->getText(); 
-            
+           
+            ASTNode* e = visit(ctx->arithExpr());
+            e->display();
+
             // For testing purpose 
             Ident_n* lvalue = new Ident_n(NULL, NULL, id);
             Expr_n* rvalue = new Const_n(NULL, NULL, NULL, NULL, 5);

@@ -220,6 +220,10 @@ class Assign_n : public ASTNode {
         Expr_n*  getExpr() {
             return this->rvalue;
         }
+
+        Ident_n * getVar() {
+            return this->lvalue;
+        }
         
     private:
         Expr_n* rvalue;

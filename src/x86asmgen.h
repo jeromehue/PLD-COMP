@@ -179,8 +179,26 @@ static void asmgen(ASTNode * n) {
         current = current->getFirst();
         ASTNode *temp = current;
         do {
-            temp = temp->getNext();
-            if( dynamic_cast<BinOp_n*>(temp)) {
+            //temp = temp->getNext();
+            
+            if( dynamic_cast<Assign_n *>(temp)) {
+                
+                std::cout << "debug" << std::endl;
+                temp->display();
+                Ident_n* i = (dynamic_cast<Assign_n * >(temp))->getVar();
+                std::string name = i->getName();
+                Expr_n* e  = dynamic_cast<Expr_n * >(temp->getExpr());
+                if(dynamic_cast<Const_n*> (e)) {
+                    std::cout << "assign a const" << std::endl;
+                    Const_n* c = dynamic_cast<Const_n * >(e);
+                    int value = c->getValue();
+                    std::cout << "const : " << value << std::endl;
+                    output << "\tmovl\t$" << value << "," 
+                        << st->getAddress(name) << "%(rbp)\n";
+                }
+
+            
+            } else  if( dynamic_cast<BinOp_n*>(temp)) {
                 std::cout << "We have expr node" << std::endl;
                 // Generate assembly from it
                 genBinOp(dynamic_cast<BinOp_n*> (temp));                
@@ -209,6 +227,7 @@ static void asmgen(ASTNode * n) {
                     output << "\tmovl\t$"  << retconst << ",%eax\n"; 
                 }
             }
+            temp = temp->getNext();
         } while(temp->hasNext());
  
     } while (current->hasFirst());
