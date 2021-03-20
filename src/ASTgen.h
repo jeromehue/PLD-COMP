@@ -57,7 +57,6 @@ public:
     }
 
     virtual antlrcpp::Any visitStatement(ifccParser::StatementContext *ctx) override {
-
         std::cout << "call to visitStatemet" << std::endl;
         int nbAssign = ctx->assignmentExpr().size();
         // Create the first node and
@@ -70,6 +69,7 @@ public:
         ASTNode *final_node = first->getNext();
         return final_node;
     }
+
     virtual antlrcpp::Any visitExpr(ifccParser::ExprContext *ctx) override {
         std::cout << "Call to visitExpr" << std::endl;
         char op = ctx->op->getText().at(0);
@@ -135,7 +135,6 @@ public:
     }
 
     virtual antlrcpp::Any visitInitDeclarator(ifccParser::InitDeclaratorContext *ctx) override {
-
         std::cout << "Nouvelle entrée dans la table des symboles"
                   << std::endl;
         std::string var_name = ctx->ID()->getText();
@@ -170,7 +169,6 @@ public:
     }
 
     virtual antlrcpp::Any visitAssignArithExpr(ifccParser::AssignArithExprContext *ctx) override {
-
         std::cout << "Call to visitAssignmentExpr" << std::endl;
         std::cout << "Variable : " << ctx->ID()->getText() << std::endl;
         Ident_n *lvalue = new Ident_n(NULL, NULL, ctx->ID()->getText());
