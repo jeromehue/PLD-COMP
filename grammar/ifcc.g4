@@ -71,9 +71,6 @@ arithExpr
     | '(' left=arithExpr op=('+'|'-') right=arithExpr   ')'      # Expr 
     ;
             
-   
-
-
 
 RETURN      : 'return' ;
 TYPE        : 'int';

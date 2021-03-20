@@ -7,18 +7,15 @@
 // sa valeur et peut être d'autres
 // trucs dans le futur
 
-
 /*
 A stocker dans la table :
     - Noms des variables (et constantes)
     - Fonctions et procédures
     - Variables temporaires générées par le compilateur
-    
 Pour toute variabe, garder en mémoire :
     - Nom
     - Type
     - Portée(pas forcément un attribut, à voir à l'implémentation)
-
 */
 
 enum TYPE {
@@ -36,14 +33,12 @@ public:
     Symboltable(){
         var_addr = 0;
     }
-    
-    int store(std::string name,  int type){
+
+    int store(std::string name, int type) {
         var_addr -= 4;
-        
         Variable v;
         v.address = var_addr;
         v.type = type;
-
         symbols.insert(std::pair<std::string, Variable>(name, v));
         return var_addr;
     }
@@ -73,12 +68,11 @@ public:
         for (auto const& x : symbols) {
             std::cout << x.first << std::endl;
         }
-    
     } 
     
     std::map<std::string, Variable> symbols;
-    protected:
-    // address of the last variable declared on the rbp stack
-    int var_addr;
+
+protected:
+    int var_addr; // Address of the last variable declared on the rbp stack
 };
 

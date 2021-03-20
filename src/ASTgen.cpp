@@ -4,7 +4,7 @@
 #include "decl.h"
 #include "ASTNode.h"
 
-
-antlrcpp::Any Visitor::visitAxiom(ifccParser::AxiomContext *ctx) 
- {  std::cout << "Bonjour" << std::endl;
-     return visitChildren(ctx);}
+antlrcpp::Any Visitor::visitAxiom(ifccParser::AxiomContext *ctx) {
+    std::cout << "Bonjour" << std::endl;
+    return visitChildren(ctx);
+}
