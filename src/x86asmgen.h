@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include "ASTNode.h"
-#include "symboltable.h"
+#include "Symboltable.h"
 
 #pragma once
 
