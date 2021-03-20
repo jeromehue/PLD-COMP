@@ -1,5 +1,5 @@
-#include "visitor.h"
-#include "decl.h"
+#include "Visitor.h"
+#include "cgen.h"
 #include <vector>
 #include <string>
 

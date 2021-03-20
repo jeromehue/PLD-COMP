@@ -7,9 +7,9 @@
 #include "ifccLexer.h"
 #include "ifccParser.h"
 #include "ifccBaseVisitor.h"
-#include "ASTgen.h"
+#include "ASTGenerator.h"
 #include "ASTNode.h"
-#include "visitor.h"
+#include "Visitor.h"
 #include "x86asmgen.h"
 
 using namespace antlr4;
@@ -43,7 +43,7 @@ int main(int argn, const char **argv) {
     // Visitor visitor;
     // visitor.visit(tree);
 
-    ASTgen generator;
+    ASTGenerator generator;
     ASTNode *n = generator.visit(tree);
     std::cout << "Génération de l'arbre correcte" << std::endl;
     asmprint(n);

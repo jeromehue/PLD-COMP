@@ -1,15 +1,14 @@
 #pragma once
 
+#include <vector>
+
 #include "antlr4-runtime.h"
 #include "ifccVisitor.h"
 #include "ifccBaseVisitor.h"
-
-#include "symboltable.h"
+#include "Symboltable.h"
 #include "ASTNode.h"
 
-#include <vector>
-
-class ASTgen : public ifccBaseVisitor {
+class ASTGenerator : public ifccBaseVisitor {
 public:
     virtual antlrcpp::Any visitAxiom(ifccParser::AxiomContext *ctx) override {
         std::cout << "Call to visitAxiom()" << std::endl;
