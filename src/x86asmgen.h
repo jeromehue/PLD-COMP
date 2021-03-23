@@ -101,35 +101,34 @@ static int genBinOp(BinOp_n *node) {
         // on effectue le calcul
         std::cout << "test" << std::endl;
         leftadr = genBinOp(dynamic_cast<BinOp_n *>(node->getLeft()));
+        
     } else if (isConst(node->getLeft())) {
+        
         // Le noeud de gauche est une constante
         node->getLeft()->display();
         std::cout << "test2" << std::endl;
         leftadr = genConst(dynamic_cast<Const_n *>(node->getLeft()));
-        //genBinOp(dynamic_cast<BinOp_n * > (node->getLeft()));
+    
     } else if (isIdent(node->getLeft())) {
-        // Le noeud de gauche est une variable
 
-        // Ne marche probablement pas
-        std::cout << "test3" << std::endl;
-        std::cout << "test3.1" << std::endl;
+        // Le noeud de gauche est une variable
         std::string name = (dynamic_cast<Ident_n *>(node->getLeft()))->getName();
-        std::cout << "test3.2" << std::endl;
         leftadr = st->getAddress(name);
     }
 
     // Opérande droite
     if (isBinOp(node->getRight())) {
+
         // Le noeud de gauche est un opérateur
         // on effectue le calcul
-        std::cout << "test" << std::endl;
         rightadr = genBinOp(dynamic_cast<BinOp_n *>(node->getRight()));
+
     } else if (isConst(node->getRight())) {
         // Le noeud de gauche est une constante
         node->getLeft()->display();
         std::cout << "test2" << std::endl;
         rightadr = genConst(dynamic_cast<Const_n *>(node->getRight()));
-        //genBinOp(dynamic_cast<BinOp_n * > (node->getLeft()));
+
     } else if (isIdent(node->getRight())) {
         // Le noeud de gauche est une variable
 
@@ -227,13 +226,14 @@ static void asmgen(ASTNode *n) {
             temp = temp->getNext();
         } while (temp->hasNext());
 
+        // Fin de la boucle, dernier noeud
         if (dynamic_cast<Return_n *>(temp)) {
-            std::cout << "Instruction de retour " << std::endl;
             if (dynamic_cast<Const_n *>(temp->getFirst())) {
                 std::cout << "return a const " << std::endl;
+                
                 Const_n *n = dynamic_cast<Const_n *>(temp->getFirst());
-                int retconst = n->getValue();
-                output << "\tmovl\t$" << retconst << ",%eax\n";
+                output << "\tmovl\t$" << n->getValue() << ",%eax\n";
+            
             } else if (dynamic_cast<Ident_n *>(temp->getFirst())) {
                 Ident_n *t = dynamic_cast<Ident_n *>(temp->getFirst());
                 int retvaradr = st->getAddress(t->getName());
