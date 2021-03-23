@@ -9,7 +9,7 @@
 #include "ifccBaseVisitor.h"
 #include "ASTGenerator.h"
 #include "ASTNode.h"
-#include "Visitor.h"
+#include "visitor.h"
 #include "x86asmgen.h"
 
 using namespace antlr4;

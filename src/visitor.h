@@ -5,7 +5,7 @@
 #include "antlr4-runtime.h"
 #include "ifccVisitor.h"
 #include "ifccBaseVisitor.h"
-#include "Symboltable.h"
+#include "symboltable.h"
 
 /**
  * This class provides an empty implementation of ifccVisitor, which can be

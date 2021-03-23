@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include "ASTNode.h"
-#include "Symboltable.h"
+#include "symboltable.h"
 
 #pragma once
 
@@ -90,6 +90,7 @@ static int genBinOp(BinOp_n *node) {
     // Check if node is a primary expression : const or var
     std::cout << "call to Binop" << std::endl;
     node->display();
+    
 
     int leftadr;
     int rightadr;
@@ -111,7 +112,10 @@ static int genBinOp(BinOp_n *node) {
 
         // Ne marche probablement pas
         std::cout << "test3" << std::endl;
-        leftadr = genBinOp(dynamic_cast<BinOp_n *>(node->getLeft()));
+        std::cout << "test3.1" << std::endl;
+        std::string name = (dynamic_cast<Ident_n *>(node->getLeft()))->getName();
+        std::cout << "test3.2" << std::endl;
+        leftadr = st->getAddress(name);
     }
 
     // Opérande droite
@@ -130,10 +134,13 @@ static int genBinOp(BinOp_n *node) {
         // Le noeud de gauche est une variable
 
         // Ne marche probablement pas
-        std::cout << "test3" << std::endl;
-        rightadr = genBinOp(dynamic_cast<BinOp_n *>(node->getRight()));
+        std::cout << "_test3" << std::endl;
+        std::cout << "_test3.1" << std::endl;
+        std::string name = (dynamic_cast<Ident_n *>(node->getRight()))->getName();
+        std::cout << "_test3.2" << std::endl;
+        rightadr = st->getAddress(name);
     }
-
+    std::cout << "########### op in switch :  " << node->getOp()<< std::endl;
     switch (node->getOp()) {
     case '+':
         output << "\tmovl\t" << leftadr << "(%rbp), %edx\n";
@@ -148,8 +155,10 @@ static int genBinOp(BinOp_n *node) {
         output << "\tmovl\t%eax," << rightadr << "(%rbp)\n";
         return rightadr;
     case '*':
-        std::cout << "Not implemented" << std::endl;
-        exit(EXIT_FAILURE);
+        output << "\tmovl    " << leftadr << "(%rbp), %eax\n";
+        output << "\tmull\t" << rightadr << "(%rbp)\n";
+        output << "\tmovl    %eax" << ", " << rightadr << "(%rbp)\n";
+        return rightadr;
     default:
         std::cout << "Error : Unknow operator" << std::endl;
         exit(EXIT_FAILURE);
@@ -186,9 +195,16 @@ static void asmgen(ASTNode *n) {
                 temp->display();
                 std::string name = temp->getName();
                 Expr_n *a(temp->getExpr());
-                a->display();
-                if (dynamic_cast<BinOp_n *>(a)) {
-                    std::cout << "bonjour" << std::endl;
+                std::cout << "a display : "; a->display(); std::cout << std::endl;
+                std::cout << "Assign variable : " << name << std::endl;
+                if (dynamic_cast<Const_n *>(a)) {
+                    Const_n *id = dynamic_cast<Const_n *>(a); 
+                    int value = id->getValue();
+                    std::cout << "value is " << value << std::endl;
+                    output << "\tmovl\t$" << value << "," << st->getAddress(name) << "(%rbp)\n";
+                    
+                }
+                else if (dynamic_cast<BinOp_n *>(a)) {
                     BinOp_n *b = dynamic_cast<BinOp_n *>(a);
                     b->display();
                     // Generate assembly

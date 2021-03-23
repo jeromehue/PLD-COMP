@@ -5,7 +5,7 @@
 #include "antlr4-runtime.h"
 #include "ifccVisitor.h"
 #include "ifccBaseVisitor.h"
-#include "Symboltable.h"
+#include "symboltable.h"
 #include "ASTNode.h"
 
 class ASTGenerator : public ifccBaseVisitor {

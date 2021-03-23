@@ -1,4 +1,4 @@
-#include "Visitor.h"
+#include "visitor.h"
 #include "cgen.h"
 #include <vector>
 #include <string>
