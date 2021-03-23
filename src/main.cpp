@@ -44,10 +44,10 @@ int main(int argn, const char **argv) {
     // visitor.visit(tree);
 
     ASTGenerator generator;
-    ASTNode *n = generator.visit(tree);
+    auto n = generator.visit(tree);
     std::cout << "Génération de l'arbre correcte" << std::endl;
-    asmprint(n);
-    asmgen(n);
+    //asmprint(n);
+    //asmgen(n);
 
     return 0;
 }

@@ -13,19 +13,45 @@ public:
     virtual antlrcpp::Any visitAxiom(ifccParser::AxiomContext *ctx) override {
         std::cout << "Call to visitAxiom()" << std::endl;
         // Création de notre premier noeud : prog
-        ASTNode *prog = new Prog(nullptr);
-        prog->setST(new Symboltable());
-        symboltable = (prog->getST());
-        ASTNode *content = visit(ctx->prog());
-        std::cout << "correct return from visitAxiom" << std::endl;
-        prog->setFirst(content);
+        //ASTNode *prog = new Prog(nullptr);
+        //prog->setST(new Symboltable());
+        
+        symboltable = new Symboltable();
+        std::vector<Node * > prog = visit(ctx->prog()); 
         return prog;
     }
 
-    virtual antlrcpp::Any visitProg(ifccParser::ProgContext *ctx) override {
+virtual antlrcpp::Any visitProg(ifccParser::ProgContext *ctx) override {
         std::cout << "Call to visitProg()" << std::endl;
-        std::cout << "Programme \n"
+        std::vector<Node*> v;
+        
+
+ 
+        std::cout << "### Programme ### :\n"
                   << ctx->getText() << std::endl;
+        
+        
+        if (ctx->declaration()) {
+            auto list = 
+            ctx->declaration()->initDeclaratorList()->initDeclarator(); 
+            auto nctx = 
+            ctx->declaration()->initDeclaratorList(); 
+
+            std::cout << "Nombre de déclarations : " << list.size() 
+                        << std::endl;  
+            for(int i=0; i<list.size(); ++i) {
+                std::string name =
+                visit(ctx->declaration()->initDeclaratorList()->initDeclarator(i));
+                symboltable->store(name, 0);
+            }  
+            //visit(ctx->declaration()->initDeclaratorList());
+        }
+        // Expression de retour (voir la grammaire)
+        Node* n  = visit(ctx->primaryExpression());        
+        
+        v.push_back(n); 
+        return v;
+        /*
         ASTNode *return_node = visit(ctx->primaryExpression());
         ASTNode *abc =
             (visit(ctx->primaryExpression()));
@@ -49,12 +75,21 @@ public:
             }
             declaration_node->setEndNext(return_node);
             std::cout << "End of visitProg()" << std::endl;
-            return declaration_node;
+            return 0;
         } else {
-            return return_node;
-        }
+            return 0;
+        }*/
     }
 
+virtual antlrcpp::Any visitInitDeclarator(ifccParser::InitDeclaratorContext* ctx) override {
+    std::cout << "Call to visitInitDeclarator " << std::endl;
+    std::string name = ctx->ID()->getText();
+    return name;
+}
+
+/*
+
+   
     virtual antlrcpp::Any visitStatement(ifccParser::StatementContext *ctx) override {
         std::cout << "call to visitStatemet" << std::endl;
         int nbAssign = ctx->assignmentExpr().size();
@@ -65,33 +100,43 @@ public:
             std::cout << "Retrieved node" << std::endl;
             first->setEndNext(a);
         }
-        ASTNode *final_node = first->getNext();
-        return final_node;
+        //ASTNode *final_node = first->getNext();
+        return 0;
     }
 
     virtual antlrcpp::Any visitExpr(ifccParser::ExprContext *ctx) override {
         std::cout << "Call to visitExpr" << std::endl;
         char op = ctx->op->getText().at(0);
-        ASTNode *left = visit(ctx->left);
-        ASTNode *right = visit(ctx->right);
-        ASTNode *n = new BinOp_n(NULL, NULL, left, right, op);
+        //ASTNode *left = visit(ctx->left);
+        //ASTNode *right = visit(ctx->right);
+        //ASTNode *n = new BinOp_n(NULL, NULL, left, right, op);
         //TODO Create the node recursibely
         return n;
     }
-
-    virtual antlrcpp::Any visitNumber(ifccParser::NumberContext *ctx) override {
+*/
+    virtual antlrcpp::Any 
+    visitNumber(ifccParser::NumberContext *ctx) override {
+        
         std::cout << "Call to visitNumber" << std::endl;
-        ASTNode *n = new Const_n(NULL, NULL, NULL, NULL,
-                                 stoi(ctx->CONST()->getText()));
+      
+        int val = stoi(ctx->CONST()->getText()); 
+        std::cout << "Valeur : " << val << std::endl;
+        // Creating a const node
+        Node* n = new Node(OP_CONST, NULL, NULL, val, 0); 
         return n;
     }
 
-    virtual antlrcpp::Any visitVar(ifccParser::VarContext *ctx) override {
+    virtual antlrcpp::Any 
+    visitVar(ifccParser::VarContext *ctx) override {
         std::cout << "Call to visitVar" << std::endl;
-        ASTNode *n = new Ident_n(NULL, NULL, ctx->ID()->getText());
+
+        std::string name = ctx->ID()->getText();
+        int address = symboltable->getAddress(name); 
+        Node* n = new Node(OP_IDENT, NULL, NULL, address, 0); 
+        
         return n;
     }
-
+/*
     virtual antlrcpp::Any visitDeclaration(ifccParser::DeclarationContext *ctx) override {
         std::cout << "Call to visitDeclaration()" << std::endl;
         std::cout << "Type of declarator: "
@@ -179,7 +224,7 @@ public:
         ASTNode *test = new Assign_n(NULL, NULL, dynamic_cast<Expr_n *>(a), lvalue);
         return test;
     }
-
+*/
 protected:
     Symboltable *symboltable;
 };

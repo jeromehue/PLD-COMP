@@ -8,6 +8,7 @@
 static Symboltable *st;
 static std::ofstream output;
 
+/*
 void prologue() {
     output << 
         ".global main\n"
@@ -165,10 +166,12 @@ static int genBinOp(BinOp_n *node) {
     std::cout << "Erreur" << std::endl;
     return 0;
 }
-
+*/
 /**
  * Generate x86 assembly code
  */
+
+/*
 static void asmgen(ASTNode *n) {
 
     tempCount = 0;
@@ -243,4 +246,4 @@ static void asmgen(ASTNode *n) {
     } while (current->hasFirst());
     epilogue();
     output.close();
-}
+}*/

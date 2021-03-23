@@ -18,7 +18,9 @@ Pour toute variabe, garder en mémoire :
     - Portée(pas forcément un attribut, à voir à l'implémentation)
 */
 
-enum TYPE {
+
+// Since IR.h need a 'Type' type
+enum Type {
     INT = 0,
     CHAR = 1
 };
@@ -35,10 +37,18 @@ public:
     }
 
     int store(std::string name, int type) {
+        if(symbols.find(name) != symbols.end()) {
+            std::cout << "Erreur : la variable a déjà été déclarée" 
+                << std::endl;
+            exit(EXIT_FAILURE);
+        }
+        
         var_addr -= 4;
         Variable v;
         v.address = var_addr;
         v.type = type;
+
+
         symbols.insert(std::pair<std::string, Variable>(name, v));
         return var_addr;
     }
