@@ -224,7 +224,7 @@ static void asmgen(ASTNode *n) {
                 std::cout << "Error, unknow node" << std::endl;
             }
             temp = temp->getNext();
-        } while (temp->hasNext());
+        } while (temp != NULL && temp->hasNext());
 
         // Fin de la boucle, dernier noeud
         if (dynamic_cast<Return_n *>(temp)) {
