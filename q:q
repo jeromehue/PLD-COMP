@@ -1,0 +1,79 @@
+[1mdiff --git a/src/ASTNode.h b/src/ASTNode.h[m
+[1mindex a620894..953dbe8 100644[m
+[1m--- a/src/ASTNode.h[m
+[1m+++ b/src/ASTNode.h[m
+[36m@@ -53,7 +53,24 @@[m [mpublic:[m
+     // The code generation is a recursive walk of the AST of[m
+     // of the function body.[m
+     // Each node of the AST has a methode buildIR(CFG* cfg) [m
+[31m-    void buildIR(CFG* cfg);[m
+[32m+[m[32m    std::string  buildIR(CFG* cfg){[m
+[32m+[m[32m        switch(op) {[m
+[32m+[m[32m            case OP_CONST:[m
+[32m+[m[32m                /* Tiré du poly :[m
+[32m+[m[32m                string var = createNewVar();[m
+[32m+[m[32m                cfg->addInstruction(ldconst var const)[m[41m [m
+[32m+[m[32m                */[m
+[32m+[m
+[32m+[m[32m                std::string var =  create_new_tempvar();[m
+[32m+[m[32m                cfg->[m
+[32m+[m
+[32m+[m[32m                break;[m
+[32m+[m[32m            default:[m
+[32m+[m[32m                std::cout << "Erreur lors de la génération de l'IR"[m[41m [m
+[32m+[m[32m                << std::endl;[m
+[32m+[m[32m                break;[m
+[32m+[m[32m        }[m
+[32m+[m[32m    }[m
+ [m
+     // Operator[m
+     int op;[m
+[1mdiff --git a/src/IR.h b/src/IR.h[m
+[1mindex 00b5f12..40cda64 100644[m
+[1m--- a/src/IR.h[m
+[1m+++ b/src/IR.h[m
+[36m@@ -41,7 +41,10 @@[m [mclass IRInstr {[m
+ [m
+ [m
+ 	/**  constructor */[m
+[31m-	IRInstr(BasicBlock* bb_, Operation op, Type t, std::vector<std::string> params);[m
+[32m+[m	[32mIRInstr(BasicBlock* bb_,[m[41m [m
+[32m+[m[32m            Operation op,[m[41m [m
+[32m+[m[32m            Type t,[m[41m [m
+[32m+[m[32m            std::vector<std::string> params);[m
+ 	[m
+ 	/** Actual code generation */[m
+     [m
+[36m@@ -147,12 +150,14 @@[m [mclass BasicBlock {[m
+ /** The class for the control flow graph, also includes the symbol table */[m
+ [m
+ /* A few important comments:[m
+[31m-	 The entry block is the one with the same label as the AST function name.[m
+[31m-	   (it could be the first of bbs, or it could be defined by an attribute value)[m
+[31m-	 The exit block is the one with both exit pointers equal to nullptr.[m
+[32m+[m	[32m The entry block is the one with the same label as[m[41m [m
+[32m+[m[32m     the AST function name. (it could be the first of bbs,[m[41m [m
+[32m+[m[32m     or it could be defined by an attribute value)[m
+[32m+[m[41m	 [m
+[32m+[m[32m     The exit block is the one with both exit pointers equal to nullptr.[m
+      (again it could be identified in a more explicit way)[m
+[32m+[m[32m*/[m
+ [m
+[31m- */[m
+ class CFG {[m
+  public:[m
+ 	CFG(DefFonction* ast);[m
+[36m@@ -181,8 +186,12 @@[m [mclass CFG {[m
+ 	std::string new_BB_name();[m
+ 	BasicBlock* current_bb;[m
+ [m
+[32m+[m[32m    //public pour le moment[m
+[32m+[m[32m    SymboltTablle* symboltable;[m
+[32m+[m
+  protected:[m
+[31m-    [m
+[32m+[m[41m   [m
+[32m+[m[41m     [m
+     /**< part of the symbol table  */[m
+ 	std::map <std::string, Type> SymbolType; [m
+ [m

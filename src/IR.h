@@ -41,7 +41,10 @@ class IRInstr {
 
 
 	/**  constructor */
-	IRInstr(BasicBlock* bb_, Operation op, Type t, std::vector<std::string> params);
+	IRInstr(BasicBlock* bb_, 
+            Operation op, 
+            Type t, 
+            std::vector<std::string> params);
 	
 	/** Actual code generation */
     
@@ -147,12 +150,14 @@ class BasicBlock {
 /** The class for the control flow graph, also includes the symbol table */
 
 /* A few important comments:
-	 The entry block is the one with the same label as the AST function name.
-	   (it could be the first of bbs, or it could be defined by an attribute value)
-	 The exit block is the one with both exit pointers equal to nullptr.
+	 The entry block is the one with the same label as 
+     the AST function name. (it could be the first of bbs, 
+     or it could be defined by an attribute value)
+	 
+     The exit block is the one with both exit pointers equal to nullptr.
      (again it could be identified in a more explicit way)
+*/
 
- */
 class CFG {
  public:
 	CFG(DefFonction* ast);
@@ -181,8 +186,12 @@ class CFG {
 	std::string new_BB_name();
 	BasicBlock* current_bb;
 
+    //public pour le moment
+    SymboltTablle* symboltable;
+
  protected:
-    
+   
+     
     /**< part of the symbol table  */
 	std::map <std::string, Type> SymbolType; 
 

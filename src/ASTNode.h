@@ -53,7 +53,24 @@ public:
     // The code generation is a recursive walk of the AST of
     // of the function body.
     // Each node of the AST has a methode buildIR(CFG* cfg) 
-    void buildIR(CFG* cfg);
+    std::string  buildIR(CFG* cfg){
+        switch(op) {
+            case OP_CONST:
+                /* Tiré du poly :
+                string var = createNewVar();
+                cfg->addInstruction(ldconst var const) 
+                */
+
+                std::string var =  create_new_tempvar();
+                cfg->
+
+                break;
+            default:
+                std::cout << "Erreur lors de la génération de l'IR" 
+                << std::endl;
+                break;
+        }
+    }
 
     // Operator
     int op;
