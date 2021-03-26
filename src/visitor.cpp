@@ -1,19 +1,21 @@
 #include "visitor.h"
-#include "decl.h"
+#include "cgen.h"
 #include <vector>
 #include <string>
 
-antlrcpp::Any Visitor::visitAxiom(ifccParser::AxiomContext *ctx) 
- {return visitChildren(ctx);}
+antlrcpp::Any Visitor::visitAxiom(ifccParser::AxiomContext *ctx) {
+    return visitChildren(ctx);
+}
 
 antlrcpp::Any Visitor::visitProg(ifccParser::ProgContext *ctx) {
-    
     freeall_registers();
-    cgprologue();    
+    cgprologue();
+    //  if(!ctx->primaryExpression()) {
     visitChildren(ctx);
+    // }
     int retval = 12;
     std::string retstr;
-   /* 
+    /* 
     if (ctx->primaryExpression()->CONST() != nullptr) {
         // Return an int
         retval = visi(ctx->primaryExpression);
@@ -23,16 +25,12 @@ antlrcpp::Any Visitor::visitProg(ifccParser::ProgContext *ctx) {
         int retval =symboltable.getAddress(ctx->primaryExpression()->ID()->getText());
         retstr = std::to_string(retval) + "(%rbp)";
     }*/
-    int a  = visit(ctx->primaryExpression());
-
-      
+    int a = visit(ctx->primaryExpression());
     cgreturnreg(a);
-    std::cout << "\n" << std::endl;
     cgepilogue();
-        
-    return 0;
 
- }
+    return 0;
+}
 
 /*
 antlrcpp::Any Visitor::visitAssignmentExpr
@@ -49,72 +47,73 @@ antlrcpp::Any Visitor::visitAssignmentExpr
     return visitChildren(ctx);
 }*/
 
-antlrcpp::Any Visitor::visitExpr(ifccParser::ExprContext *ctx)
-{
-    
+antlrcpp::Any Visitor::visitExpr(ifccParser::ExprContext *ctx) {
     int left = visit(ctx->left);
     int right = visit(ctx->right);
-    
+
     char op = ctx->op->getText().at(0);
-    int ret; 
-    switch(op) {
-        case '+':
-            ret  = cgadd(left, right);
-            return ret;
-            break;
-        case '-': 
-            ret = cgsub(left, right);
-            return ret;
-            break;
-        case '*': 
-            ret  = cgmul(left, right);
-            return ret;
-            break;
-        case '/': 
-            ret  = cgdiv(left, right); 
-            return ret;
-            break;
-        default:
-            std::cout << "Unknow operator" << std::endl;
-            exit(EXIT_FAILURE);
-            break;
+    int ret;
+
+    switch (op) {
+    case '+':
+        ret = cgadd(left, right);
+        return ret;
+    case '-':
+        ret = cgsub(left, right);
+        return ret;
+    case '*':
+        ret = cgmul(left, right);
+        return ret;
+    case '/':
+        ret = cgdiv(left, right);
+        return ret;
+    default:
+        std::cout << "Unknow operator" << std::endl;
+        exit(EXIT_FAILURE);
+        break;
     }
     return 0;
 }
 
-antlrcpp::Any Visitor::visitAssignmentExpr
-(ifccParser::AssignmentExprContext *ctx) {
-    int r =visit(ctx->arithExpr());
+antlrcpp::Any Visitor::visitAssignArithExpr(ifccParser::AssignArithExprContext *ctx) {
+    int r = visit(ctx->arithExpr());
     std::string name = ctx->ID()->getText();
-    int retval =  symboltable.getAddress(ctx->ID()->getText());
-    
+    int retval = symboltable.getAddress(ctx->ID()->getText());
     cgloadvar(r, retval);
     return 0;
 }
 
-//antlrcpp::Any Visitor::visitRetval(ifccParser::RetvalContext *ctx) { 
-    //int r  = visitChildren(ctx);
-    //cgloadeax(r);
+antlrcpp::Any Visitor::visitAssignRelExpr(ifccParser::AssignRelExprContext *ctx) {
+    int r = visit(ctx->relationalExpression());
+    std::string name = ctx->ID()->getText();
+    int retval = symboltable.getAddress(ctx->ID()->getText());
+
+    cgloadvar(r, retval);
+    return 0;
+}
+
+//antlrcpp::Any Visitor::visitRetval(ifccParser::RetvalContext *ctx) {
+//int r  = visitChildren(ctx);
+//cgloadeax(r);
 //    return 0;
 //}
 
-
 antlrcpp::Any Visitor::visitNumber(ifccParser::NumberContext *ctx) {
     int value = stoi(ctx->CONST()->getText());
-    int r =cgloadint(value);
+    int r = cgloadint(value);
     return r;
 }
 
-antlrcpp::Any Visitor::visitVar(ifccParser::VarContext* ctx) {
+antlrcpp::Any Visitor::visitVar(ifccParser::VarContext *ctx) {
     // We have reached var in an expresion
-    std::string nom= ctx->ID()->getText();
-    if(!symboltable.find(nom)){
+    std::string nom = ctx->ID()->getText();
+    if (!symboltable.find(nom)) {
         std::cout << "Undeclared Variable" << std::endl;
         exit(EXIT_FAILURE);
     }
-    int addr =  symboltable.getAddress(ctx->ID()->getText());
+    int addr = symboltable.getAddress(ctx->ID()->getText());
     int r = cgvartoreg(addr);
-    
+
     return r;
 }
 
@@ -140,45 +139,53 @@ antlrcpp::Any Visitor::visitBlockItem(ifccParser::BlockItemContext *ctx) {
     return visitChildren(ctx);
 }
 
-
-antlrcpp::Any Visitor::visitInitDeclarator(ifccParser::InitDeclaratorContext* ctx) {
+antlrcpp::Any Visitor::visitInitDeclarator(ifccParser::InitDeclaratorContext *ctx) {
     std::string name = ctx->ID()->getText();
-        if (symboltable.find(name)) { 
-            std::cout << "La variable a déjà été déclarée" << std::endl;
-            exit(EXIT_FAILURE);
-        }
-        std::cout << "\t# variable " << name << std::endl;    
-        int value  = 0;
+    if (symboltable.find(name)) {
+        std::cout << "La variable a déjà été déclarée" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+    std::cout << "\t# variable " << name << std::endl;
+    int value = 0;
     if (ctx->arithExpr() == NULL) {
-        
         int addr = symboltable.store(ctx->ID()->getText(), 0);
         cgstorevar(value, addr);
-    }  else  {
+    } else {
         int reg = visit(ctx->arithExpr());
         int addr = symboltable.store(ctx->ID()->getText(), 0);
-        cgloadvar(reg, addr); 
+        cgloadvar(reg, addr);
     }
-    
+
     return 0;
 }
-
 
 antlrcpp::Any Visitor::visitEqualityExpression(ifccParser::EqualityExpressionContext *ctx) {
     return visitChildren(ctx);
 }
+
 /*
 antlrcpp::Any Visitor::visitPrimaryExpression(ifccParser::PrimaryExpressionContext* ctx) {
     return visitChildren(ctx);
 }*/
 
-
 antlrcpp::Any Visitor::visitRelExpr(ifccParser::RelExprContext *ctx) {
-    return visitChildren(ctx);
-}
-antlrcpp::Any Visitor::visitRe_var(ifccParser::Re_varContext *ctx) {
-    return visitChildren(ctx);
-}
+    int left = visit(ctx->left);
+    int right = visit(ctx->right);
+    char relOp = ctx->relOp->getText().at(0);
+    int ret;
 
-antlrcpp::Any Visitor::visitRe_number(ifccParser::Re_numberContext *ctx) {
-    return visitChildren(ctx);
+    switch (relOp) {
+    case '>':
+        ret = cggreater(left, right);
+        return ret;
+    case '<':
+        ret = cglower(left, right);
+        return ret;
+    default:
+        std::cout << "Unknow relational operator" << std::endl;
+        exit(EXIT_FAILURE);
+        break;
+    }
+
+    return 0;
 }

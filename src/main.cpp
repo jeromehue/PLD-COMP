@@ -7,7 +7,7 @@
 #include "ifccLexer.h"
 #include "ifccParser.h"
 #include "ifccBaseVisitor.h"
-#include "ASTgen.h"
+#include "ASTGenerator.h"
 #include "ASTNode.h"
 #include "visitor.h"
 #include "x86asmgen.h"
@@ -16,9 +16,9 @@ using namespace antlr4;
 using namespace std;
 
 int main(int argn, const char **argv) {
-    
+
     stringstream in;
-    if (argn==2) {
+    if (argn == 2) {
         ifstream lecture(argv[1]);
         in << lecture.rdbuf();
     }
@@ -28,23 +28,26 @@ int main(int argn, const char **argv) {
     CommonTokenStream tokens(&lexer);
 
     tokens.fill();
-//  for (auto token : tokens.getTokens()) {
-//    std::cout << token->toString() << std::endl;
-//  }
+    //  for (auto token : tokens.getTokens()) {
+    //    std::cout << token->toString() << std::endl;
+    //  }
 
     ifccParser parser(&tokens);
-    tree::ParseTree* tree = parser.axiom();
-      
-    
-    if (parser.getNumberOfSyntaxErrors()!=0)    {
-        cout<<"erreur of syntax";
-  	    return 1;
+    tree::ParseTree *tree = parser.axiom();
+
+    if (parser.getNumberOfSyntaxErrors() != 0) {
+        cout << "erreur of syntax";
+        return 1;
     }
 
-    
-   Visitor visitor;visitor.visit(tree);
-    
-   //ASTgen generator;ASTNode* n = generator.visit(tree);std::cout << "Génération de l'arbre correcte" << std::endl;asmprint(n);
-    
+    // Visitor visitor;
+    // visitor.visit(tree);
+
+    ASTGenerator generator;
+    ASTNode *n = generator.visit(tree);
+    std::cout << "Génération de l'arbre correcte" << std::endl;
+    asmprint(n);
+    asmgen(n);
+
     return 0;
 }

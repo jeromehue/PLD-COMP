@@ -34,12 +34,7 @@ primaryExpression
 
 
 relationalExpression
-    : CONST     #re_number
-    | ID        #re_var
-    | relationalExpression '<' relationalExpression    #RelExpr
-    | relationalExpression '>' relationalExpression    #RelExpr
-    | relationalExpression '<=' relationalExpression   #RelExpr
-    | relationalExpression '>=' relationalExpression   #RelExpr
+    : left=primaryExpression relOp=('<'|'>') right=primaryExpression    #RelExpr
     ;
 
 equalityExpression 
@@ -62,19 +57,20 @@ statement
     ;
 
 assignmentExpr  
-    : ID '=' arithExpr ';'
+    : ID '=' arithExpr ';' # assignArithExpr
+    | ID '=' relationalExpression ';' # assignRelExpr
     ;
 
 
 arithExpr    
     : primaryExpression                                 # prExpr
+    | '(' primaryExpression ')'                         # prExpr
     | left=arithExpr op=('*'|'/') right=arithExpr       # Expr 
     | left=arithExpr op=('+'|'-') right=arithExpr       # Expr 
+    | '(' left=arithExpr op=('*'|'/') right=arithExpr   ')'      # Expr 
+    | '(' left=arithExpr op=('+'|'-') right=arithExpr   ')'      # Expr 
     ;
             
-   
-
-
 
 RETURN      : 'return' ;
 TYPE        : 'int';

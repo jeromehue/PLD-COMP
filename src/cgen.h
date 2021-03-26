@@ -16,3 +16,5 @@ int cgmul(int r1, int r2);
 int cgdiv(int r1, int r2);
 int cgloadeax(int r1);
 void cgstorevar(int value, int addr);
+int cggreater(int r1,int r2);
+int cglower(int r1,int r2);

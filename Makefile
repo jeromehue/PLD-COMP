@@ -16,7 +16,7 @@ LDARGS=-g
 all: ifcc
 
 ifcc: dirs antlr $(SOURCES) $(SRC)/visitor.h
-	$(CC) $(CCARGS) $(SRC)/main.cpp  -o $(OUTPUT)/main.o 
+	$(CC) $(CCARGS) $(SRC)/main.cpp -o $(OUTPUT)/main.o 
 	$(CC) $(CCARGS) $(GENERATED)/grammar/ifccBaseVisitor.cpp -o $(OUTPUT)/ifccBaseVisitor.o 
 	$(CC) $(CCARGS) $(GENERATED)/grammar/ifccLexer.cpp -o $(OUTPUT)/ifccLexer.o 
 	$(CC) $(CCARGS) $(GENERATED)/grammar/ifccVisitor.cpp -o $(OUTPUT)/ifccVisitor.o 
@@ -34,6 +34,12 @@ dirs:
 
 test:
 	@cd tests && ./test.sh
+
+basetest : 
+	@./ifcc mainast.c &>/dev/null 
+	@echo 'Output produced : '
+	@cat output.s
+	gcc output.s && ./a.out; echo $$?
 
 clean:
 	rm -rf $(OUTPUT)
