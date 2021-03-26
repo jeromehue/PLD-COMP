@@ -41,8 +41,10 @@ virtual antlrcpp::Any visitExpr(ifccParser::ExprContext *ctx) override;
 virtual antlrcpp::Any visitPrExpr(ifccParser::PrExprContext *ctx) override;
 
 
+//helper function 
 
 
+// Getters
 std::vector<Node*> getNodes() {
         return this->ast_nodes;
 }

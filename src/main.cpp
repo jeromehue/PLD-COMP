@@ -52,13 +52,17 @@ int main(int argn, const char **argv) {
 
 
     // Now generate the IR
+    std::cout << "\n### IR Generation ###" << std::endl;
     CFG* mainCFG = new CFG(visitor.getST());
+    for(int i=0; i<n.size(); ++i) {
+        n[i]->buildIR(mainCFG);
+    }
+    
+    /*
     Program p;
     p.addCFG(mainCFG);
     p.buildIR();
-
-    //asmprint(n);
-    //asmgen(n);
+    */
 
     return 0;
 }

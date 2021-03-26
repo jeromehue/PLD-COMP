@@ -46,7 +46,12 @@ public:
                 std::cout << "OP_IDENT" << std::endl;
                 break;
             case OP_ASSIGN:
-                std::cout << "OP_ASSIGN" << std::endl;
+                std::cout << "OP_ASSIGN | " << std::endl;
+                std::cout << "\tleft : "; 
+                left->display();
+                std::cout << "\tright : ";
+                right->display();
+                std::cout << std::endl;
                 break;
             case OP_RETURN:
                 std::cout << "OP_RETURN" << std::endl;
@@ -61,23 +66,39 @@ public:
     // of the function body.
     // Each node of the AST has a methode buildIR(CFG* cfg) 
     std::string  buildIR(CFG* cfg){
+
+        // Debug print
+        std::cout << "Generating IR for : "; 
+        this->display(); std::cout << endl; 
+
+        // Avoid jumps that bypasses var init.
+        std::string sright, sleft;
         switch(op) {
-            case OP_CONST:
+            
+           // case OP_CONST:
                 /* Tiré du poly :
                 string var = createNewVar();
                 cfg->addInstruction(ldconst var const) 
                 */
 
-                //std::string var =  create_new_tempvar();
-                //cfg->
-
+             //   break;
+            case OP_ASSIGN:
+                sright = right->buildIR(cfg);
+                sleft  = left->buildIR(cfg);
+                break;
+            case OP_RETURN:
                 break;
             default:
-                std::cout << "Erreur lors de la génération de l'IR" 
+                std::cout 
+                << "Erreur lors de la génération de l'IR" 
                 << std::endl;
+                std::cout 
+                << "Fonctionnalité non implémentée" 
+                << std::endl; 
+                exit(EXIT_FAILURE);
                 break;
         }
-        return 0;
+        return "";
     }
 
     // Operator

@@ -114,9 +114,8 @@ Any Visitor::visitInitDeclarator(ifccParser::InitDeclaratorContext *ctx) {
 
         int index = ast_nodes.size() - 1;
         visitChildren(ctx);
-     //   std::cout << ast_nodes.size() << " : " << index << std::endl;
         assert(ast_nodes.size() == index+2);
-        ast_nodes[index]->left = ast_nodes[index+1];
+        ast_nodes[index]->right = ast_nodes[index+1];
         ast_nodes.pop_back();
     }
         
