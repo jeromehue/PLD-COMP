@@ -4,5 +4,5 @@ int main() {
     b = 42;
     a = a + 1;
     a = 8 + b + 3;
-    return 0;
+    return a;
 }

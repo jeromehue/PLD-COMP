@@ -3,5 +3,5 @@
 #define SOMETHING 5
 
 int main() {
-    return 5;
+    return 0;
 }
