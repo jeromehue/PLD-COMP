@@ -5,16 +5,20 @@
 #include <vector>
 #include <string>
 
-antlrcpp::Any Visitor::visitAxiom(ifccParser::AxiomContext *ctx) {
+// Improving lisibility
+using namespace antlrcpp;
+
+Any Visitor::visitAxiom(ifccParser::AxiomContext *ctx) {
     return visitChildren(ctx);
 }
 
-antlrcpp::Any Visitor::visitProg(ifccParser::ProgContext *ctx) {
+Any Visitor::visitProg(ifccParser::ProgContext *ctx) {
     std::cout << "Call to visitProg" << std::endl;
     return visitChildren(ctx);
 }
 
-antlrcpp::Any Visitor::visitReturnInstr(ifccParser::ReturnInstrContext *ctx) {
+Any Visitor::visitReturnInstr(ifccParser::ReturnInstrContext 
+    *ctx) {
 
     // Debug print
     std::cout << "Call to visitReturnInstr" << std::endl;
@@ -35,7 +39,7 @@ antlrcpp::Any Visitor::visitReturnInstr(ifccParser::ReturnInstrContext *ctx) {
 }
 
 
-antlrcpp::Any Visitor::visitNumber(ifccParser::NumberContext *ctx) {
+Any Visitor::visitNumber(ifccParser::NumberContext *ctx) {
     // Debug print
     std::cout << "Call to visitNumber" << std::endl;
 
@@ -48,13 +52,13 @@ antlrcpp::Any Visitor::visitNumber(ifccParser::NumberContext *ctx) {
     return visitChildren(ctx);
 }
 
-antlrcpp::Any Visitor::visitVar(ifccParser::VarContext *ctx) {
+Any Visitor::visitVar(ifccParser::VarContext *ctx) {
         std::cout << "Call to visitVar" << std::endl;
         return visitChildren(ctx);
 }
 
 
-antlrcpp::Any Visitor::visitStatement(ifccParser::StatementContext *ctx) {
+Any Visitor::visitStatement(ifccParser::StatementContext *ctx) {
 
     // Debug print
     std::cout << "Call to visitStatement" << std::endl;
@@ -62,7 +66,8 @@ antlrcpp::Any Visitor::visitStatement(ifccParser::StatementContext *ctx) {
     return visitChildren(ctx);
 }
 
-antlrcpp::Any Visitor::visitDeclaration(ifccParser::DeclarationContext *ctx) { 
+Any Visitor::visitDeclaration 
+(ifccParser::DeclarationContext *ctx) { 
 
     // Debug print
     std::cout << "Call to visitDeclaration" << std::endl;
@@ -70,7 +75,7 @@ antlrcpp::Any Visitor::visitDeclaration(ifccParser::DeclarationContext *ctx) {
     return visitChildren(ctx);
 }
 
-antlrcpp::Any Visitor::visitInitDeclaratorList(ifccParser::InitDeclaratorListContext *ctx) {
+Any Visitor::visitInitDeclaratorList(ifccParser::InitDeclaratorListContext *ctx) {
 
     // Debug print
     std::cout << "Call to visitInitDeclaratorList" << std::endl;
@@ -79,7 +84,7 @@ antlrcpp::Any Visitor::visitInitDeclaratorList(ifccParser::InitDeclaratorListCon
 
 }
 
-antlrcpp::Any Visitor::visitInitDeclarator(ifccParser::InitDeclaratorContext *ctx) {
+Any Visitor::visitInitDeclarator(ifccParser::InitDeclaratorContext *ctx) {
     std::cout << "Call to visitInitDeclarator" << std::endl;
     
     if(ctx->arithExpr()) {
@@ -103,22 +108,22 @@ antlrcpp::Any Visitor::visitInitDeclarator(ifccParser::InitDeclaratorContext *ct
 
         // Now let's deal with the ASSIGN node
         Node* n = new Node(OP_ASSIGN, var, NULL, 0, 0);
+        ast_nodes.push_back(n);
 
         // Finishing with the expr node
+
         int index = ast_nodes.size() - 1;
         visitChildren(ctx);
-        /*
-        // In case we added nothing or more than one node 
+     //   std::cout << ast_nodes.size() << " : " << index << std::endl;
         assert(ast_nodes.size() == index+2);
         ast_nodes[index]->left = ast_nodes[index+1];
         ast_nodes.pop_back();
-        */
     }
         
     return 0;
 }
 
-antlrcpp::Any Visitor::visitAssignArithExpr(ifccParser::AssignArithExprContext *ctx) {
+Any Visitor::visitAssignArithExpr(ifccParser::AssignArithExprContext *ctx) {
     // Debug print
     std::cout <<"Call to AssignArithExpr " << std::endl;
     std::cout << " >> Assigning " << ctx->ID()->getText()
@@ -140,14 +145,14 @@ antlrcpp::Any Visitor::visitAssignArithExpr(ifccParser::AssignArithExprContext *
     return visitChildren(ctx);
 }
 
-antlrcpp::Any Visitor::visitExpr(ifccParser::ExprContext* ctx){
+Any Visitor::visitExpr(ifccParser::ExprContext* ctx){
     std::cout << "Call to visit Expr" << std::endl;
 
     return visitChildren(ctx);
 }
 
 
-antlrcpp::Any Visitor::visitPrExpr(ifccParser::PrExprContext* ctx) {
+Any Visitor::visitPrExpr(ifccParser::PrExprContext* ctx) {
     std::cout << "Call to visit prExpression" << std::endl;
 
     return visitChildren(ctx);

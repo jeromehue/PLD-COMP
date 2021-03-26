@@ -6,7 +6,18 @@ grammar ifcc;
 */
 
 axiom           
-    : prog       
+    : function* prog       
+    ;
+
+function 
+    :   'void' ID '(' parameterlist? ')' '{'
+            declaration?
+            statement*
+        '}'
+    ;
+
+parameterlist 
+    :   TYPE ID (',' TYPE ID)*
     ;
 
 prog            

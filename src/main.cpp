@@ -10,6 +10,7 @@
 #include "ASTNode.h"
 #include "visitor.h"
 #include "x86asmgen.h"
+#include "Program.h"
 
 using namespace antlr4;
 using namespace std;
@@ -48,6 +49,14 @@ int main(int argn, const char **argv) {
     for(int i=0; i < n.size(); ++i) {
         n.at(i)->display();
     }
+
+
+    // Now generate the IR
+    CFG* mainCFG = new CFG(visitor.getST());
+    Program p;
+    p.addCFG(mainCFG);
+    p.buildIR();
+
     //asmprint(n);
     //asmgen(n);
 

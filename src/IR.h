@@ -161,20 +161,26 @@ class BasicBlock {
 
 
 
-/** The class for the control flow graph, also includes the symbol table */
+/** The class for the control flow graph, also includes 
+  the symbol table */
 
 /* A few important comments:
 	 The entry block is the one with the same label as 
      the AST function name. (it could be the first of bbs, 
      or it could be defined by an attribute value)
 	 
-     The exit block is the one with both exit pointers equal to nullptr.
-     (again it could be identified in a more explicit way)
+     The exit block is the one with both exit pointers 
+     equal to nullptr. (again it could be identified in 
+     a more explicit way)
+    
+     One CFG for one function
+
 */
 
 class CFG {
  public:
-	CFG(DefFonction* ast);
+	CFG(Symboltable * st) : symbols(st){};
+
 
 	DefFonction* ast; /**< The AST this CFG comes from */
 	
@@ -200,8 +206,6 @@ class CFG {
 	std::string new_BB_name();
 	BasicBlock* current_bb;
 
-    //public pour le moment
-    Symboltable* symboltable;
 
  protected:
    
@@ -220,6 +224,8 @@ class CFG {
 	
     /**< all the basic blocks of this CFG*/
 	std::vector <BasicBlock*> bbs;
+
+    Symboltable* symbols;
 
 };
 

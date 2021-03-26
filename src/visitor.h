@@ -47,6 +47,10 @@ std::vector<Node*> getNodes() {
         return this->ast_nodes;
 }
 
+Symboltable *getST() {
+    return &symboltable;
+}
+
 protected:
     std::vector<Node* > ast_nodes;
     Symboltable symboltable;
