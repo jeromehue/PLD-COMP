@@ -35,10 +35,11 @@ public:
             return_node = new Return_n(NULL, NULL,
                                        dynamic_cast<Expr_n *>(abc));
         }
+
         if (ctx->declaration()) {
-            ASTNode *declaration_node = visit(ctx->declaration());
+            ASTNode *declaration_node = visit(ctx->declaration()); // NULL avec "int a,b;" mais pas "int a=1,b;"
             std::cout << "Display of declaration" << std::endl;
-            if (declaration_node != NULL) {
+            if (declaration_node != NULL) { // On a ajouté ça
                 declaration_node->displayLinked();
                 for (int i = 0; i < ctx->statement().size(); ++i) {
                     std::cout << "ANDL1" << std::endl;
@@ -52,7 +53,7 @@ public:
                 std::cout << "End of visitProg()" << std::endl;
                 return declaration_node;
             }
-            return return_node;
+            return return_node; // Et ça
         } else {
             return return_node;
         }
