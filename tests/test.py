@@ -167,7 +167,7 @@ if args.debug:
 for jobname in jobs:
     os.chdir(orig_cwd)
 
-    print('Testing '+jobname)
+    print('Testing '+jobname+': ', end='')
     os.chdir(jobname)
     
     ## JEDI compiler, aka GCC
@@ -187,14 +187,15 @@ for jobname in jobs:
     
     if gccstatus != 0 and pldstatus != 0:
         ## padawan correctly rejects invalid program -> test-case ok
+        print("OK (correctly rejects)")
         continue
     elif gccstatus != 0 and pldstatus == 0:
         ## padawan wrongly accepts invalid program -> error
-        print("> FAILED (your compiler accepts an invalid program)")
+        print("FAILED (your compiler accepts an invalid program)")
         continue
     elif gccstatus == 0 and pldstatus != 0:
         ## padawan wrongly rejects valid program -> error
-        print("> FAILED (your compiler rejects a valid program)")
+        print("FAILED (your compiler rejects a valid program)")
         if args.verbose:
             dumpfile("compile.txt")
         continue
@@ -202,20 +203,22 @@ for jobname in jobs:
         ## padawan accepts to compile valid program -> let's link it
         ldstatus=command("gcc -o exe-pld asm-pld.s", "link.txt")
         if ldstatus:
-            print("> FAILED (your compiler produces incorrect assembly)")
+            print("FAILED (your compiler produces incorrect assembly)")
             if args.verbose:
                 dumpfile("link.txt")
             continue
 
-    ## both compilers  did produce an  executable, so now we  run both
+    ## both compilers  did produce an  executable, so now we run both
     ## these executables and compare the results.
         
     exepldstatus=command("./exe-pld","execute.txt")
     if open("gcc-execute.txt").read() != open("execute.txt").read() :
-        print("> FAILED (different results at execution)")
+        print("FAILED (different results at execution)")
         if args.verbose:
             print("GCC:")
             dumpfile("gcc-execute.txt")
             print("you:")
             dumpfile("execute.txt")
         continue
+
+    print("OK")
