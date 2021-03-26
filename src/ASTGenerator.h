@@ -38,18 +38,21 @@ public:
         if (ctx->declaration()) {
             ASTNode *declaration_node = visit(ctx->declaration());
             std::cout << "Display of declaration" << std::endl;
-            declaration_node->displayLinked();
-            for (int i = 0; i < ctx->statement().size(); ++i) {
-                std::cout << "ANDL1" << std::endl;
-                auto st = visit(ctx->statement(i));
-                std::cout << typeid(st).name() << std::endl;
-                //visit(ctx->statement(i));
-                std::cout << "ANDL2" << std::endl;
-                declaration_node->setEndNext(st);
+            if (declaration_node != NULL) {
+                declaration_node->displayLinked();
+                for (int i = 0; i < ctx->statement().size(); ++i) {
+                    std::cout << "ANDL1" << std::endl;
+                    auto st = visit(ctx->statement(i));
+                    std::cout << typeid(st).name() << std::endl;
+                    //visit(ctx->statement(i));
+                    std::cout << "ANDL2" << std::endl;
+                    declaration_node->setEndNext(st);
+                }
+                declaration_node->setEndNext(return_node);
+                std::cout << "End of visitProg()" << std::endl;
+                return declaration_node;
             }
-            declaration_node->setEndNext(return_node);
-            std::cout << "End of visitProg()" << std::endl;
-            return declaration_node;
+            return return_node;
         } else {
             return return_node;
         }

@@ -16,8 +16,9 @@
 
 DESTNAME=$1
 SOURCENAME=$2
-$(dirname $0)/../ifcc $SOURCENAME > $DESTNAME
+$(dirname $0)/../ifcc $SOURCENAME
 retcode=$?
+mv output.s $DESTNAME
 
 # Forward exit status of the compiler
 exit $retcode
