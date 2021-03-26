@@ -26,6 +26,8 @@ public:
         std::cout << "Call to visitProg()" << std::endl;
         std::cout << "Programme \n"
                   << ctx->getText() << std::endl;
+
+        // Noeud de retour
         ASTNode *return_node = visit(ctx->primaryExpression());
         ASTNode *abc =
             (visit(ctx->primaryExpression()));
@@ -35,39 +37,58 @@ public:
             return_node = new Return_n(NULL, NULL,
                                        dynamic_cast<Expr_n *>(abc));
         }
+
+        ASTNode * declaration_node = NULL;
+        // Déclarations
         if (ctx->declaration()) {
+            std::cout << "Nous avons une ligne de déclaration" << std::endl;
             ASTNode *declaration_node = visit(ctx->declaration());
-            std::cout << "Display of declaration" << std::endl;
-            if (declaration_node != NULL) {
-                declaration_node->displayLinked();
+            std::cout << "Fin de la génération des noeuds de la ligne de déclarations" << std::endl;
+        }
+
+        if (ctx->statement().size() >  0) {
+            std::cout << "Parsing des statements" << std::endl;
+            if(declaration_node != NULL) {
+                std::cout << "Parsing des statements 1" << std::endl;
                 for (int i = 0; i < ctx->statement().size(); ++i) {
-                    std::cout << "ANDL1" << std::endl;
                     auto st = visit(ctx->statement(i));
                     std::cout << typeid(st).name() << std::endl;
-                    //visit(ctx->statement(i));
-                    std::cout << "ANDL2" << std::endl;
                     declaration_node->setEndNext(st);
                 }
-                declaration_node->setEndNext(return_node);
-                std::cout << "End of visitProg()" << std::endl;
-                return declaration_node;
+ 
+            } else {
+                std::cout << "Parsing des statements 2" << std::endl;
+                declaration_node = visit(ctx->statement(0));
+                std::cout << "Nombre instructions : " << ctx->statement().size() << std::endl;
+                for (int i = 1; i < ctx->statement().size(); i++) {
+                    std::cout << "AAAAAAAAAAA\n" << std::endl;
+                    std::cout << ctx->statement(i)->getText();
+                    auto st = visit(ctx->statement(i));
+                    std::cout << typeid(st).name() << std::endl;
+                    declaration_node->setEndNext(st);
+                }
             }
-            return return_node;
+
         } else {
-            return return_node;
+            if(declaration_node != NULL) {
+                std::cout << "Programme avec déclaration mais pas d'instructions" << std::endl;
+                declaration_node->setEndNext(return_node);
+                return declaration_node;
+            } else {
+                std::cout << "Programme sans déclarations ni instructions" << std::endl;
+                return return_node;
+            }
         }
+        declaration_node->setEndNext(return_node);
+        return declaration_node;
     }
 
     virtual antlrcpp::Any visitStatement(ifccParser::StatementContext *ctx) override {
         std::cout << "call to visitStatemet" << std::endl;
-        int nbAssign = ctx->assignmentExpr().size();
-        // Create the first node and
         ASTNode *first = new ASTNode(NULL, NULL);
-        for (int i = 0; i < nbAssign; ++i) {
-            ASTNode *a = visit(ctx->assignmentExpr(0));
-            std::cout << "Retrieved node" << std::endl;
-            first->setEndNext(a);
-        }
+        ASTNode *a = visit(ctx->assignmentExpr());
+        std::cout << "Retrieved node" << std::endl;
+        first->setEndNext(a);
         ASTNode *final_node = first->getNext();
         return final_node;
     }
@@ -174,7 +195,6 @@ public:
         std::cout << "Call to visitAssignmentExpr" << std::endl;
         std::cout << "Variable : " << ctx->ID()->getText() << std::endl;
         Ident_n *lvalue = new Ident_n(NULL, NULL, ctx->ID()->getText());
-        std::cout << "????" << std::endl;
         ASTNode *a = visit(ctx->arithExpr());
         a->display();
         std::cout << typeid(a).name() << std::endl;

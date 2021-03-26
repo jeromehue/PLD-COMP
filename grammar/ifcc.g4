@@ -53,7 +53,10 @@ initDeclarator
     ;
 
 statement       
-    : assignmentExpr+ 
+    // Avant : 
+    // assignmentExpr+
+    // Après :
+    : assignmentExpr 
     ;
 
 assignmentExpr  
