@@ -3,5 +3,5 @@ int main() {
     while (a) {
         a = a - 1;
     }
-    return 0;
+    return a;
 }

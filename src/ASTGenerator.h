@@ -50,7 +50,8 @@ public:
             std::cout << "Parsing des statements" << std::endl;
             if(declaration_node != NULL) {
                 std::cout << "Parsing des statements 1" << std::endl;
-                for (int i = 0; i < ctx->statement().size(); ++i) {
+            
+               for (int i = 0; i < ctx->statement().size(); ++i) {
                     auto st = visit(ctx->statement(i));
                     std::cout << typeid(st).name() << std::endl;
                     declaration_node->setEndNext(st);
