@@ -17,7 +17,8 @@ enum nodeOp{
     OP_ADD,
     OP_ASSIGN,
     OP_IDENT,
-    OP_CONST
+    OP_CONST,
+    OP_RETURN
 };
 
 class Node {
@@ -47,6 +48,12 @@ public:
             case OP_ASSIGN:
                 std::cout << "OP_ASSIGN" << std::endl;
                 break;
+            case OP_RETURN:
+                std::cout << "OP_RETURN" << std::endl;
+                break;
+            default:
+                std::cout << "Unknown Node" << std::endl;
+                break;
         }
     }
    
@@ -61,8 +68,8 @@ public:
                 cfg->addInstruction(ldconst var const) 
                 */
 
-                std::string var =  create_new_tempvar();
-                cfg->
+                //std::string var =  create_new_tempvar();
+                //cfg->
 
                 break;
             default:
@@ -70,6 +77,7 @@ public:
                 << std::endl;
                 break;
         }
+        return 0;
     }
 
     // Operator

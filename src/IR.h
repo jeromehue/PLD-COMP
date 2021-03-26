@@ -19,6 +19,20 @@ class BasicBlock;
 class CFG;
 class DefFonction;
 
+/*
+A few definitions : 
+    - IRinstruction : an abstraction of an assembly language
+      instruction
+
+    - Basic Block : an atomic sequence of instructions
+
+    - Control Flow Graph : a graph of basic blocks    
+
+
+
+
+*/
+
 
 //! The class for one 3-address instruction
 class IRInstr {
@@ -187,7 +201,7 @@ class CFG {
 	BasicBlock* current_bb;
 
     //public pour le moment
-    SymboltTablle* symboltable;
+    Symboltable* symboltable;
 
  protected:
    

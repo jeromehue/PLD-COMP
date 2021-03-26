@@ -50,6 +50,8 @@ public:
 
 
         symbols.insert(std::pair<std::string, Variable>(name, v));
+        std::cout << " >> New entry in symbol table : " 
+            << name << " @"<< v.address<< std::endl;
         return var_addr;
     }
     

@@ -14,7 +14,7 @@ prog
         'int' 'main' '(' ')' '{' 
             declaration?
             statement*
-            RETURN primaryExpression ';' 
+            returnInstr    
         '}' 
     ;
 
@@ -30,9 +30,12 @@ initDeclaratorList
 
 initDeclarator  
     : ID 
-    | ID '=' arithExpr
+    | ID '=' arithExpr 
     ;
 
+returnInstr
+    :   RETURN primaryExpression ';'
+    ;
 
 primaryExpression
     : CONST # number
@@ -50,12 +53,12 @@ equalityExpression
     | equalityExpression '!=' relationalExpression 
     ;    
 statement       
-    : assignmentExpr
+    : assignmentExpr ';'
     ;
 
 assignmentExpr  
-    : ID '=' arithExpr ';' # assignArithExpr
-    | ID '=' relationalExpression ';' # assignRelExpr
+    : ID '=' arithExpr # assignArithExpr
+    | ID '=' relationalExpression # assignRelExpr
     ;
 
 

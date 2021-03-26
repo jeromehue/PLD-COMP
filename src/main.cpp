@@ -7,7 +7,6 @@
 #include "ifccLexer.h"
 #include "ifccParser.h"
 #include "ifccBaseVisitor.h"
-#include "ASTGenerator.h"
 #include "ASTNode.h"
 #include "visitor.h"
 #include "x86asmgen.h"
@@ -40,12 +39,15 @@ int main(int argn, const char **argv) {
         return 1;
     }
 
-    // Visitor visitor;
-    // visitor.visit(tree);
+    Visitor visitor;
+    visitor.visit(tree);
 
-    ASTGenerator generator;
-    auto n = generator.visit(tree);
-    std::cout << "Génération de l'arbre correcte" << std::endl;
+    std::vector<Node*> n = visitor.getNodes();
+
+    std::cout << "\n### List of AST Nodes ###" << std::endl;
+    for(int i=0; i < n.size(); ++i) {
+        n.at(i)->display();
+    }
     //asmprint(n);
     //asmgen(n);
 
