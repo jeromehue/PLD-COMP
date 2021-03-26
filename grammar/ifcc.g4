@@ -18,14 +18,21 @@ prog
         '}' 
     ;
 
-blockItem       
-    : declaration
-    | statement
-    ;
+// Declaration
 
 declaration     
     : TYPE initDeclaratorList ';'
     ;
+
+initDeclaratorList
+    :   initDeclarator (',' initDeclarator)*
+    ;
+
+initDeclarator  
+    : ID 
+    | ID '=' arithExpr
+    ;
+
 
 primaryExpression
     : CONST # number
@@ -42,18 +49,8 @@ equalityExpression
     | equalityExpression '==' relationalExpression     
     | equalityExpression '!=' relationalExpression 
     ;    
-
-initDeclaratorList
-    :   initDeclarator (',' initDeclarator)*
-    ;
-
-initDeclarator  
-    : ID 
-    | ID '=' arithExpr
-    ;
-
 statement       
-    : assignmentExpr+ 
+    : assignmentExpr
     ;
 
 assignmentExpr  
