@@ -1,8 +1,7 @@
 #define SOMETHING 5
 
-#include <whatever.h>
-#include "thing.h"
+#include <string>
 
 int main() {
-    return 0;
+    return SOMETHING;
 }
