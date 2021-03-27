@@ -34,7 +34,7 @@ struct Variable {
 class Symboltable {
 public:
     Symboltable(){
-        next_offset = 0;
+        next_offset = -4;
     }
 
     int store(std::string name, int type) {

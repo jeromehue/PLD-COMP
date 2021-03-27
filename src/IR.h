@@ -116,8 +116,14 @@ class IRInstr {
 
     inline friend ostream& operator<<(ostream& os, IRInstr& instr)
     {
-        os << getOpByIndex(instr.op) 
-            << ' ' << std::endl;return os;
+        os 
+        << getOpByIndex(instr.op) 
+        << " Args : "; 
+        for(int i=0; i< (int)instr.params.size(); ++i)
+            os << instr.params.at(i) << ",";
+        os << std::endl;
+        
+        return os;
     }
 
 
@@ -263,8 +269,20 @@ class CFG {
 	// symbol table methods
 	void add_to_symbol_table(std::string name, Type t);
     std::string create_new_tempvar(int t) {
-        std::cout << "creating new tempvar" << std::endl;
-        return "!tmp16";
+
+        int index= symbols->getNextOffset();
+        std::string var_name = 
+            "!tmp" + to_string(- index);
+        
+        symbols->store(var_name, INT);
+
+        // Debug prints
+        std::cout 
+        << "Creating new tempvar :" 
+        << var_name 
+        << std::endl;
+
+        return var_name;
     }
 	int get_var_index(std::string name);
 	Type get_var_type(std::string name);
