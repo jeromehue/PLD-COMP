@@ -56,6 +56,11 @@ public:
                 break;
             case OP_RETURN:
                 std::cout << "OP_RETURN" << std::endl;
+                /* In a non void case, we first generate the code for 
+                the expression, and copy the result in the special 
+                variable !retval. The translation IR->ASM will generate 
+                the code that places this walue where the ABI 
+                tells it should go.*/
                 break;
             default:
                 std::cout << "Unknown Node" << std::endl;
