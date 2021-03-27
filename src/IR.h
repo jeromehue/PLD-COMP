@@ -66,41 +66,41 @@ class IRInstr {
         this->params = params;
     }
 
-    /**< Helper funciotn */
+    /**< Helper function */
     static const std::string getOpByIndex(int index) {
         switch(index) {
             case 0:
-                return "ldconst";
+                return " >> ldconst [dest,const]";
                 break;
             case 1:
-                return "copy";
+                return " >> copy [dest, op1]";
                 break;
             case 2:
-                return "add";
+                return " >> add [dest, op1, op2]";
                 break;
             case 3:
-                return "sub";
+                return " >> sub";
                 break;
             case 4:
-                return "mul";
+                return " >> mul";
                 break;
             case 5:
-                return "rmem";
+                return " >> rmem";
                 break;
             case 6:
-                return "wmem";
+                return " >> wmem [addr, var]";
                 break;
             case 7:
-                return "call";
+                return " >> call";
                 break;
             case 8:
-                return "cmp_eq";
+                return " >> cmp_eq";
                 break;
             case 9:
-                return "cmp_lt";
+                return " >> cmp_lt";
                 break;
             case 10:
-                return "cmp_le";
+                return " >> cmp_le";
                 break;
             default:
                 std::cout << "Erreur : Opérateur inconnu" 
@@ -112,10 +112,25 @@ class IRInstr {
 	/** Actual code generation */
     
     /**< x86 assembly code generation for this IR instruction */
-	void gen_asm(std::ostream &o); 
+    void gen_asm(std::ostream &o) {
+        switch(this->op) {
+            case ldconst:
+            // load a constant (#1) in a variable (#0)
+                o   << "\tmovl\t$" << params[1] << ","
+                    << params[0] << "(%rbp)\n";
+                return;
 
-    inline friend ostream& operator<<(ostream& os, IRInstr& instr)
-    {
+            default:
+                std::cout<<"gen_asm not implemented"<<std::endl;
+                //exit(EXIT_FAILURE);
+                return;
+        
+        }
+    }
+
+
+    inline friend ostream& 
+    operator<<(ostream& os,IRInstr& instr) {
         os 
         << getOpByIndex(instr.op) 
         << " Args : "; 
@@ -186,7 +201,11 @@ class BasicBlock {
         this->label = entry_label;
     } 
     /* x86 assembly code generation for this basic block (very simple) */
-	void gen_asm(std::ostream &o); 
+     void gen_asm(std::ostream &o) {
+         for(int i = 0; i < (int)instrs.size(); ++i) {
+            instrs.at(i)->gen_asm(o);
+         }
+     }
 
 	void add_IRInstr(   IRInstr::Operation op, Type t, 
         std::vector<std::string> params ) {

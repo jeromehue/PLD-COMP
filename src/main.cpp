@@ -9,11 +9,31 @@
 #include "ifccBaseVisitor.h"
 #include "ASTNode.h"
 #include "visitor.h"
-#include "x86asmgen.h"
 #include "Program.h"
 
 using namespace antlr4;
 using namespace std;
+
+static std::ofstream output;
+
+void prologue() {
+    output << 
+        ".global main\n"
+        "main:\n"
+        "\t# Prologue\n"
+        "\tpushq %rbp\n"
+        "\tmovq %rsp, %rbp\n"
+        "\n"
+        "\t# Body\n";
+}
+
+void epilogue() {
+    output <<
+        "\n"
+        "\t# Epilogue\n"
+        "\tpopq %rbp\n"
+        "\tret\n";
+}
 
 
 int main(int argn, const char **argv) {
@@ -63,12 +83,17 @@ int main(int argn, const char **argv) {
     for(int i=0; i<n.size(); ++i) {
         n[i]->buildIR(mainCFG);
     }
-    
-    /*
-    Program p;
-    p.addCFG(mainCFG);
-    p.buildIR();
-    */
+
+    // WIP : To be removed from here
+    std::cout << "\n### ASM Generation ###" << std::endl;
+    output.open("output.s");
+    prologue();
+
+    // Now the real thing
+    mainBB->gen_asm(output); 
+
+    epilogue();
+    output.close();
 
     return 0;
 }

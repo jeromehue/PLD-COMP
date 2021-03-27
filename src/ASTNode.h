@@ -70,7 +70,7 @@ public:
 
         // Debug print
         std::cout << "Generating IR for : "; 
-        this->display(); std::cout << endl; 
+        this->display();  
 
         // Avoid jumps that bypasses var init.
         std::string sright, sleft;
@@ -88,8 +88,10 @@ public:
             case OP_CONST:
                 var3 = cfg->create_new_tempvar(INT);
                 retvector.push_back(var3);
-                cfg->current_bb->add_IRInstr(IRInstr::ldconst, INT, retvector
-                        );
+                // Pas le choix, la constante est cast en string
+                retvector.push_back(to_string(args[0]));
+                cfg->current_bb->add_IRInstr(IRInstr::ldconst, 
+                INT, retvector);
                 return var3;
                 break;
             case OP_IDENT:
