@@ -14,6 +14,7 @@
 // Declarations from the parser -- replace with your own
 //#include "type.h"
 //#include "symbole.h"
+using namespace std;
 
 class BasicBlock;
 class CFG;
@@ -40,17 +41,17 @@ class IRInstr {
    public:
 	/** The instructions themselves -- feel free to subclass instead */
 	typedef enum {
-		ldconst,
-		copy,
-		add,
-		sub,
-		mul,
-		rmem,
-		wmem,
-		call, 
-		cmp_eq,
-		cmp_lt,
-		cmp_le
+		ldconst,    //  0
+		copy,       //  1
+		add,        //  2   
+		sub,        //  3
+		mul,        //  4
+		rmem,       //  5
+		wmem,       //  6
+		call,       //  7 
+		cmp_eq,     //  8 
+		cmp_lt,     //  9  
+		cmp_le      // 10
 	} Operation;
 
 
@@ -58,13 +59,25 @@ class IRInstr {
 	IRInstr(BasicBlock* bb_, 
             Operation op, 
             Type t, 
-            std::vector<std::string> params);
+            std::vector<std::string> params) {
+        this->bb= bb_;
+        this->op = op;
+        this->t =t;
+        this->params = params;
+    }
 	
 	/** Actual code generation */
     
     /**< x86 assembly code generation for this IR instruction */
 	void gen_asm(std::ostream &o); 
-	
+
+    inline friend ostream& operator<<(ostream& os, IRInstr& instr)
+    {
+        os << instr.op << ' ' << std::endl;return os;
+    }
+
+
+
  private:
 
     /**< The BB this instruction belongs to, which provides 
@@ -125,10 +138,16 @@ class BasicBlock {
     /* x86 assembly code generation for this basic block (very simple) */
 	void gen_asm(std::ostream &o); 
 
-	void add_IRInstr(   IRInstr::Operation op, 
-                        Type t, 
-                        std::vector<std::string> params ) {
-        std::cout << "Writing IR" << std::endl;
+	void add_IRInstr(   IRInstr::Operation op, Type t, 
+        std::vector<std::string> params ) {
+        std::cout << "Writing IR instruction "<< op<<std::endl;
+        IRInstr* instr = new IRInstr(this, op, t, params);
+        this->instrs.push_back(instr);
+        std::cout << "Current BB instructions : \n" ;
+        
+        for (int i = 0; i < (int)instrs.size(); i++)
+            std::cout << *(instrs.at(i));
+
     } 
 
 	// No encapsulation whatsoever here. Feel free to do better.

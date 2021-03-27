@@ -28,36 +28,45 @@ typedef  enum {
 struct Variable {
     int address;
     int type;
+    bool defined;
 };
 
 class Symboltable {
 public:
     Symboltable(){
-        var_addr = 0;
+        next_offset = 0;
     }
 
     int store(std::string name, int type) {
+
+        // Has the variable already been declared ?
         if(symbols.find(name) != symbols.end()) {
             std::cout 
-                << "Erreur : la variable a déjà été déclarée" 
-                << std::endl;
+            << "Erreur : la variable a déjà été déclarée" 
+            << std::endl;
+            
             exit(EXIT_FAILURE);
         }
         
-        var_addr -= 4;
         Variable v;
-        v.address = var_addr;
-        v.type = type;
-
+        v.address   = next_offset;
+        v.type      = type;
+        v.defined   = false;
 
         symbols.insert(std::pair<std::string, Variable>(name, v));
         std::cout << " >> New entry in symbol table : " 
             << name << " @"<< v.address<< std::endl;
-        return var_addr;
+
+        // Let's not forget to update next offset
+        next_offset = next_offset - 4;
+
+        // Return var address
+        return v.address;
     }
     
-    int getNext_val_ptr() {
-        return var_addr;
+    
+    int getNextOffset() {
+        return next_offset;
     }
    
     bool find(std::string variable) {
@@ -96,6 +105,6 @@ public:
     std::map<std::string, Variable> symbols;
 
 protected:
-    int var_addr; // Address of the last variable declared on the rbp stack
+    int next_offset; 
 };
 
