@@ -65,6 +65,49 @@ class IRInstr {
         this->t =t;
         this->params = params;
     }
+
+    /**< Helper funciotn */
+    static const std::string getOpByIndex(int index) {
+        switch(index) {
+            case 0:
+                return "ldconst";
+                break;
+            case 1:
+                return "copy";
+                break;
+            case 2:
+                return "add";
+                break;
+            case 3:
+                return "sub";
+                break;
+            case 4:
+                return "mul";
+                break;
+            case 5:
+                return "rmem";
+                break;
+            case 6:
+                return "wmem";
+                break;
+            case 7:
+                return "call";
+                break;
+            case 8:
+                return "cmp_eq";
+                break;
+            case 9:
+                return "cmp_lt";
+                break;
+            case 10:
+                return "cmp_le";
+                break;
+            default:
+                std::cout << "Erreur : Opérateur inconnu" 
+                    << std::endl;
+                exit(EXIT_FAILURE);
+        }
+    }
 	
 	/** Actual code generation */
     
@@ -73,7 +116,8 @@ class IRInstr {
 
     inline friend ostream& operator<<(ostream& os, IRInstr& instr)
     {
-        os << instr.op << ' ' << std::endl;return os;
+        os << getOpByIndex(instr.op) 
+            << ' ' << std::endl;return os;
     }
 
 
