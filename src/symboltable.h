@@ -20,10 +20,10 @@ Pour toute variabe, garder en mémoire :
 
 
 // Since IR.h need a 'Type' type
-enum Type {
+typedef  enum {
     INT = 0,
     CHAR = 1
-};
+} Type;
 
 struct Variable {
     int address;
@@ -38,7 +38,8 @@ public:
 
     int store(std::string name, int type) {
         if(symbols.find(name) != symbols.end()) {
-            std::cout << "Erreur : la variable a déjà été déclarée" 
+            std::cout 
+                << "Erreur : la variable a déjà été déclarée" 
                 << std::endl;
             exit(EXIT_FAILURE);
         }
@@ -66,6 +67,16 @@ public:
         return true;
     } 
     
+    std::string getName(int index) {
+        for (auto& it : symbols) { 
+            if (it.second.address == index) {
+            return it.first;
+            }
+        }    
+        std::cout << "Nom de variable introuvable" <<std::endl;
+        exit(EXIT_FAILURE);
+    }
+     
     int getAddress(std::string name) {
         auto it = symbols.find(name);
         if (it == symbols.end()) {

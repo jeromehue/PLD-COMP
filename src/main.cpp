@@ -15,6 +15,7 @@
 using namespace antlr4;
 using namespace std;
 
+
 int main(int argn, const char **argv) {
 
     stringstream in;
@@ -54,6 +55,11 @@ int main(int argn, const char **argv) {
     // Now generate the IR
     std::cout << "\n### IR Generation ###" << std::endl;
     CFG* mainCFG = new CFG(visitor.getST());
+    std::string entry_labl = "test";
+    BasicBlock* mainBB = new BasicBlock(mainCFG, entry_labl);
+    mainCFG->current_bb = mainBB;
+
+
     for(int i=0; i<n.size(); ++i) {
         n[i]->buildIR(mainCFG);
     }

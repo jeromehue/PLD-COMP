@@ -116,18 +116,20 @@ class IRInstr {
         instruction of its block, generates an actual assembly comparison 
         followed by a conditional jump to the exit_false branch
 */
-
 class BasicBlock {
  public:
-	BasicBlock(CFG* cfg, std::string entry_label);
-    
+     BasicBlock(CFG* cfg, std::string entry_label) {
+        this->cfg =cfg;
+        this->label = entry_label;
+    } 
     /* x86 assembly code generation for this basic block (very simple) */
 	void gen_asm(std::ostream &o); 
 
 	void add_IRInstr(   IRInstr::Operation op, 
                         Type t, 
-                        std::vector<std::string> params
-                    );
+                        std::vector<std::string> params ) {
+        std::cout << "Writing IR" << std::endl;
+    } 
 
 	// No encapsulation whatsoever here. Feel free to do better.
 
@@ -153,7 +155,6 @@ class BasicBlock {
         store here the name of the variable that holds the value of expr*/
     std::string test_var_name;  
  
- protected:
 
  
 };
@@ -198,7 +199,10 @@ class CFG {
 
 	// symbol table methods
 	void add_to_symbol_table(std::string name, Type t);
-	std::string create_new_tempvar(Type t);
+    std::string create_new_tempvar(int t) {
+        std::cout << "creating new tempvar" << std::endl;
+        return "!tmp16";
+    }
 	int get_var_index(std::string name);
 	Type get_var_type(std::string name);
 
@@ -206,6 +210,7 @@ class CFG {
 	std::string new_BB_name();
 	BasicBlock* current_bb;
 
+    Symboltable* symbols;
 
  protected:
    
@@ -225,7 +230,6 @@ class CFG {
     /**< all the basic blocks of this CFG*/
 	std::vector <BasicBlock*> bbs;
 
-    Symboltable* symbols;
 
 };
 

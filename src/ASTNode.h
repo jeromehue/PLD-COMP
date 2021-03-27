@@ -9,6 +9,7 @@
 
 #include <iostream>
 #include "IR.h"
+#include "symboltable.h"
 
 using namespace std;
 
@@ -73,6 +74,8 @@ public:
 
         // Avoid jumps that bypasses var init.
         std::string sright, sleft;
+        std::string var3;   
+        std::vector<std::string> retvector;
         switch(op) {
             
            // case OP_CONST:
@@ -82,9 +85,29 @@ public:
                 */
 
              //   break;
+            case OP_CONST:
+                var3 = cfg->create_new_tempvar(INT);
+                retvector.push_back(var3);
+                cfg->current_bb->add_IRInstr(IRInstr::ldconst, INT, retvector
+                        );
+                return var3;
+                break;
+            case OP_IDENT:
+                std::cout << "Generating IR for var : " <<
+                cfg->symbols->getName(args[0])
+                << std::endl;
+                return cfg->symbols->getName(args[0]);
             case OP_ASSIGN:
-                sright = right->buildIR(cfg);
                 sleft  = left->buildIR(cfg);
+                sright = right->buildIR(cfg);
+                retvector.push_back(sleft);
+                retvector.push_back(sright);
+                cfg->current_bb->add_IRInstr(
+                    IRInstr::wmem, 
+                    INT,  
+                    retvector
+                );
+                return sright;
                 break;
             case OP_RETURN:
                 break;
@@ -94,7 +117,7 @@ public:
                 << std::endl;
                 std::cout 
                 << "Fonctionnalité non implémentée" 
-                << std::endl; 
+                << std::endl;
                 exit(EXIT_FAILURE);
                 break;
         }
