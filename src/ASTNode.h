@@ -117,6 +117,15 @@ public:
                 return sright;
                 break;
             case OP_RETURN:
+                sleft = left->buildIR(cfg);
+                sright = "!retval";
+                retvector.push_back(sright);
+                retvector.push_back(sleft);
+                cfg->current_bb->add_IRInstr(
+                    IRInstr::wmem, 
+                    INT,  
+                    retvector
+                );
                 break;
             default:
                 std::cout 

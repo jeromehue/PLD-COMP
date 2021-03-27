@@ -16,6 +16,14 @@ void IRInstr::gen_asm(std::ostream &o) {
             case wmem: {
                 //the value of variable var is written at address addr
 
+                // Special case : return
+                if ( params[0] == "!retval" ) {
+                    std::cout << "return " << std::endl; 
+                    int index = bb->cfg->symbols->getAddress(params[1]);
+                    o<<"\tmovl\t"<<index<<"(%rbp),%eax\n";
+                    return;
+                }
+
                 // Fetch addresses from our variables names
                 int var_index, addr;
                 addr = this->bb->cfg->symbols->getAddress(params[0]);
