@@ -113,44 +113,8 @@ class IRInstr {
     
     /**< x86 assembly code generation for this IR instruction */
     void gen_asm(std::ostream &o);
-    /*
-    void gen_asm(std::ostream &o) {
-        switch(this->op) {
-            case ldconst: {
-                // load a constant (#1) in a variable (#0)
-                o<<"\tmovl\t$"<<params[1]<<","<< params[0]<<"(%rbp)\n";
-                return;
-            }
-            case wmem: {
-                 the value of variable var is written at address addr*/
-                //o<<"\tmovl\t$"<<params[1]<<","<< params[0]<<"(%rbp)\n";
 
-                // Fetch addresses from our variables names
-                /*
-                int var_offset, addr;
-                addr = this->bb->symbols->getAddress();
-                var_offset = this->bb->symbols->getAddress();
-
-                // Debug prints
-                std::cout << "addr : " << params[0] << " "<< addr <<" \n";
-                std::cout << "var  : " << params[1] << " "<<var_offset;
-                std::cout << std::endl;
-                
-                BasicBlock* sqsdqsd = this->bb;
-                int a = this->bb->
-                return;
-            }
-            default:
-                std::cout<<"gen_asm not implemented"<<std::endl;
-                //exit(EXIT_FAILURE);
-                return;
-        
-        }
-    }
-    */
-
-    inline friend ostream& 
-    operator<<(ostream& os,IRInstr& instr) {
+    inline friend ostream& operator<<(ostream& os,IRInstr& instr) {      
         os << getOpByIndex(instr.op) << " Args : "; 
         for(int i=0; i< (int)instr.params.size(); ++i)
             os << instr.params.at(i) << " ";

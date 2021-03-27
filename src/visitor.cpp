@@ -31,6 +31,7 @@ Any Visitor::visitReturnInstr(ifccParser::ReturnInstrContext
     // our return node
     int index = ast_nodes.size() - 1;
     visitChildren(ctx);
+    assert(ast_nodes.size() == index+2);
     ast_nodes[index]->left = ast_nodes[index+1];
     ast_nodes.pop_back();
 
@@ -53,8 +54,15 @@ Any Visitor::visitNumber(ifccParser::NumberContext *ctx) {
 }
 
 Any Visitor::visitVar(ifccParser::VarContext *ctx) {
-        std::cout << "Call to visitVar" << std::endl;
-        return visitChildren(ctx);
+    std::cout << "Call to visitVar" << std::endl;
+    
+    //Node definition
+    std::string var_name = ctx->ID()->getText();
+    int var_adr = symboltable.getAddress(var_name);
+    Node* var = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
+    ast_nodes.push_back(var);
+    
+    return visitChildren(ctx);
 }
 
 
