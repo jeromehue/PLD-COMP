@@ -167,7 +167,7 @@ if args.debug:
 for jobname in jobs:
     os.chdir(orig_cwd)
 
-    print('Testing '+jobname)
+    print('Testing '+jobname[10:] +': ', end='')
     os.chdir(jobname)
     
     ## JEDI compiler, aka GCC
@@ -203,20 +203,22 @@ for jobname in jobs:
         ## padawan accepts to compile valid program -> let's link it
         ldstatus=command("gcc -o exe-pld asm-pld.s", "link.txt")
         if ldstatus:
-           print("\033[91mFAILED\x1b[0m (produces incorrect assembly)")
+            print("\033[91mFAILED\x1b[0m (produces incorrect assembly)")
             if args.verbose:
                 dumpfile("link.txt")
             continue
 
-    ## both compilers  did produce an  executable, so now we  run both
+    ## both compilers  did produce an  executable, so now we run both
     ## these executables and compare the results.
         
     exepldstatus=command("./exe-pld","execute.txt")
     if open("gcc-execute.txt").read() != open("execute.txt").read() :
-        print("> FAILED (different results at execution)")
+        print("\033[91mFAILED\x1b[0m (different results at execution)")
         if args.verbose:
             print("GCC:")
             dumpfile("gcc-execute.txt")
             print("you:")
             dumpfile("execute.txt")
         continue
+
+    print("\033[92mOK\x1b[0m")
