@@ -77,6 +77,8 @@ int main(int argn, const char **argv) {
 
     // One CFG for One Function
     CFG* mainCFG = new CFG(visitor.getST());
+    BasicBlock* inputBB;
+    BasicBlock* outputBB;
     BasicBlock* mainBB = new BasicBlock(mainCFG, "main");
     mainCFG->current_bb = mainBB;
 

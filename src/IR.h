@@ -262,7 +262,9 @@ class CFG {
 
 	DefFonction* ast; /**< The AST this CFG comes from */
 	
-	void add_bb(BasicBlock* bb); 
+    void add_bb(BasicBlock* bb) {
+        bbs.push_back(bb);
+    }
 
 	// x86 code generation: could be encapsulated in a processor class in a retargetable compiler
 	void gen_asm(std::ostream& o);
@@ -276,6 +278,7 @@ class CFG {
 
 	// symbol table methods
 	void add_to_symbol_table(std::string name, Type t);
+
     std::string create_new_tempvar(int t) {
 
         int index= symbols->getNextOffset();
@@ -284,11 +287,7 @@ class CFG {
         symbols->store(var_name, INT);
 
         // Debug prints
-        std::cout 
-        << "Creating new tempvar :" 
-        << var_name 
-        << std::endl;
-
+        std::cout << "Creating new tempvar :" << var_name << std::endl;
         return var_name;
     }
 	int get_var_index(std::string name);
