@@ -3,5 +3,5 @@ int main() {
     a = 10 - 5 - 2 - 1;
     b = a - 7;
     a = b - b - 1;
-    return 0;
+    return a;
 }

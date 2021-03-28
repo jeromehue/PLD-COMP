@@ -1,7 +1,6 @@
-#define SOMETHING 5
+#include <string.h>
 
-#include <whatever.h>
-#include "thing.h"
+#define SOMETHING 5
 
 int main() {
     return 0;
