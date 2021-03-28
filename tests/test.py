@@ -187,7 +187,7 @@ for jobname in jobs:
     
     if gccstatus != 0 and pldstatus != 0:
         ## padawan correctly rejects invalid program -> test-case ok
-        print("\033[92mOK\x1b[0m (correctly rejects an invalid progrem)")
+        print("\033[92mOK\x1b[0m (rejects an invalid program)")
         continue
     elif gccstatus != 0 and pldstatus == 0:
         ## padawan wrongly accepts invalid program -> error
