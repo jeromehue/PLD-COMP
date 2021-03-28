@@ -21,4 +21,4 @@ Run `./ifcc main.c` to run our compiler on `main.c`.
 
 ## Tests
 Run tests with `make test`.<br/>
-Complete test results will go into `tests/out/`.
+Detailed test results will go into `tests/out/`.
