@@ -73,6 +73,14 @@ Any Visitor::visitStatement(ifccParser::StatementContext *ctx) {
     return visitChildren(ctx);
 }
 
+Any Visitor::visitIfStatement(ifccParser::IfStatementContext *ctx) {
+    //Debug print
+    std::cout << "Call to visit Statement " << std::endl;
+    exit(EXIT_FAILURE);
+
+    return 0;
+}
+
 Any Visitor::visitDeclaration 
 (ifccParser::DeclarationContext *ctx) { 
 
