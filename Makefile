@@ -32,8 +32,8 @@ antlr: $(GRAMMAR)
 	$(ANTLR4_BINDIR)/antlr4 -visitor -no-listener -Dlanguage=Cpp -o $(GENERATED) $(GRAMMAR)
 
 dirs:
-	mkdir -p $(OUTPUT) 
-	mkdir -p $(GENERATED) 
+	rm -rf $(OUPUT) 	; mkdir -p $(OUTPUT) 
+	rm -rf $(GENERATED) ; mkdir -p $(GENERATED) 
 
 test:
 	@cd tests && ./test.sh

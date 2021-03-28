@@ -74,9 +74,10 @@ int main(int argn, const char **argv) {
 
     // Now generate the IR
     std::cout << "\n### IR Generation ###" << std::endl;
+
+    // One CFG for One Function
     CFG* mainCFG = new CFG(visitor.getST());
-    std::string entry_labl = "test";
-    BasicBlock* mainBB = new BasicBlock(mainCFG, entry_labl);
+    BasicBlock* mainBB = new BasicBlock(mainCFG, "main");
     mainCFG->current_bb = mainBB;
 
 
