@@ -137,8 +137,6 @@ Any Visitor::visitAssignArithExpr(ifccParser::AssignArithExprContext *ctx) {
         << " to " << ctx->arithExpr()->getText() << std::endl;
 
     // Node definition
-    Node* n = new Node(OP_ASSIGN, NULL, NULL, 0, 0);
-    ast_nodes.push_back(n);
     /*
         n->left is going to be the variable
         n->right is going to be an expression
@@ -146,16 +144,53 @@ Any Visitor::visitAssignArithExpr(ifccParser::AssignArithExprContext *ctx) {
     std::string var_name = ctx->ID()->getText();
     // TODO A finir sur le modèle du neour retour :
     // On empile et après on mets à jour les enfants
-    Node* o = new Node(OP_IDENT, NULL, NULL, 0, 0);
-    
+    int var_adr = symboltable.getAddress(var_name);
+    Node* o = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
+   
+    int ref = ast_nodes.size();
+    // Expression 
+    visitChildren(ctx);
+    assert(ast_nodes.size()== ref+1);
 
-    return visitChildren(ctx);
+
+    Node* n = new Node(OP_ASSIGN, o, ast_nodes.back(), 0, 0);
+    ast_nodes.pop_back(); // poping expression
+    ast_nodes.push_back(n);
+
+    return 0; 
 }
 
 Any Visitor::visitExpr(ifccParser::ExprContext* ctx){
     std::cout << "Call to visit Expr" << std::endl;
 
-    return visitChildren(ctx);
+    char op = ctx->op->getText().at(0);
+    int ref = ast_nodes.size();
+    visit(ctx->left);
+    visit(ctx->right);
+    
+   
+    assert(ast_nodes.size() == ref+2);
+    std::cout << "debug" << std::endl; 
+ 
+    switch(op) {
+        case '+': {
+                std::cout << "Addition" << std::endl;
+                Node* nop = new Node(
+                    OP_ADD, ast_nodes[ref+1], ast_nodes[ref], 0, 0);
+                ast_nodes.pop_back();
+                ast_nodes.pop_back();
+                ast_nodes.push_back(nop);
+                nop->display();
+                break;
+            }
+            break;
+        default:
+            std::cout << "Erreur, opérateur non reconnu" << std::endl;
+            exit(EXIT_FAILURE);
+    }
+    return 0;
+
+
 }
 
 

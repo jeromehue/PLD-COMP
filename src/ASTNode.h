@@ -16,6 +16,8 @@ using namespace std;
 // Les différents types de noeuds
 enum nodeOp{
     OP_ADD,
+    OP_SUB,
+    OP_MUL,
     OP_ASSIGN,
     OP_IDENT,
     OP_CONST,
@@ -39,6 +41,11 @@ public:
         switch(op) {
             case OP_ADD:
                 std::cout << "OP_ADD" << std::endl;
+                std::cout << "\tleft : "; 
+                left->display();
+                std::cout << "\tright : ";
+                right->display();
+                std::cout << std::endl;
                 break;
             case OP_CONST:
                 std::cout << "OP_CONST" << std::endl;
@@ -100,8 +107,8 @@ public:
                 return var3;
                 break;
             case OP_IDENT:
-                std::cout << "Generating IR for var : " <<
-                cfg->symbols->getName(args[0])
+                std::cout << "Generating IR for var @"<<args[0] <<" : " 
+                << cfg->symbols->getName(args[0])
                 << std::endl;
                 return cfg->symbols->getName(args[0]);
             case OP_ASSIGN:
