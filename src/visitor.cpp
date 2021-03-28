@@ -182,7 +182,7 @@ Any Visitor::visitExpr(ifccParser::ExprContext* ctx){
                 ast_nodes.push_back(nop);
                 nop->display();
                 break;
-            }
+        }
         case '-': {
                 std::cout << "Subtraction" << std::endl;
                 Node* nop = new Node(
@@ -192,8 +192,19 @@ Any Visitor::visitExpr(ifccParser::ExprContext* ctx){
                 ast_nodes.push_back(nop);
                 nop->display();
                 break;
+        } 
+        case '*': {
 
-            } 
+            std::cout << "Multiplication" << std::endl;
+            Node* nop =
+                new Node(OP_MUL, ast_nodes[ref+1], ast_nodes[ref], 0, 0);
+            ast_nodes.pop_back();
+            ast_nodes.pop_back();
+            ast_nodes.push_back(nop);
+            nop->display();
+            break;
+            return 0;
+        }
         default:
             std::cout << "Erreur, opérateur non reconnu" << std::endl;
             exit(EXIT_FAILURE);

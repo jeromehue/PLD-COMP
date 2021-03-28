@@ -116,6 +116,18 @@ public:
                 cfg->current_bb->add_IRInstr(IRInstr::sub, INT, retvector);
                 return var3;
                 break;
+            case OP_MUL:
+                var1 = left->buildIR(cfg); 
+                var2 = right->buildIR(cfg); 
+                var3 = cfg->create_new_tempvar(INT);
+                retvector.push_back(var3);
+                retvector.push_back(var1);
+                retvector.push_back(var2);
+
+                // Actual instruction
+                cfg->current_bb->add_IRInstr(IRInstr::mul, INT, retvector);
+                return var3;
+                break;
 
             case OP_CONST:
                 var3 = cfg->create_new_tempvar(INT);
