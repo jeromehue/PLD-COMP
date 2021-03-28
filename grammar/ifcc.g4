@@ -6,7 +6,7 @@ grammar ifcc;
 */
 
 axiom           
-    : function* prog       
+    :  prog       
     ;
 
 function 
