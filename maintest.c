@@ -1,5 +1,7 @@
 int main() {
-    int a=15,b=12,c;
-    a = a - (3 * 2) + 10; 
-    return a;
+    int a,b,c;
+    a = 5;
+    b = 2;
+    c = a*a +b*b +1 ;
+    return c;
 }
