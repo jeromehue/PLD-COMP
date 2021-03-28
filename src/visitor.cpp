@@ -183,7 +183,17 @@ Any Visitor::visitExpr(ifccParser::ExprContext* ctx){
                 nop->display();
                 break;
             }
-            break;
+        case '-': {
+                std::cout << "Subtraction" << std::endl;
+                Node* nop = new Node(
+                    OP_SUB, ast_nodes[ref+1], ast_nodes[ref], 0, 0);
+                ast_nodes.pop_back();
+                ast_nodes.pop_back();
+                ast_nodes.push_back(nop);
+                nop->display();
+                break;
+
+            } 
         default:
             std::cout << "Erreur, opérateur non reconnu" << std::endl;
             exit(EXIT_FAILURE);

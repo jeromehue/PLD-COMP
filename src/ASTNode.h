@@ -90,16 +90,33 @@ public:
         std::vector<std::string> retvector;
         switch(op) {
             case OP_ADD:
-                
+                // Fetching data
                 var1 = left->buildIR(cfg); 
                 var2 = right->buildIR(cfg); 
                 var3 = cfg->create_new_tempvar(INT);
                 retvector.push_back(var3);
                 retvector.push_back(var1);
                 retvector.push_back(var2);
+
+                // Actual instruction
                 cfg->current_bb->add_IRInstr(IRInstr::add, INT, retvector);
                 return var3;
                 break;
+            case OP_SUB:
+                //TODO Factoriser '+'/'-'
+                // Fetching data
+                var1 = left->buildIR(cfg); 
+                var2 = right->buildIR(cfg); 
+                var3 = cfg->create_new_tempvar(INT);
+                retvector.push_back(var3);
+                retvector.push_back(var1);
+                retvector.push_back(var2);
+
+                // Actual instruction
+                cfg->current_bb->add_IRInstr(IRInstr::sub, INT, retvector);
+                return var3;
+                break;
+
             case OP_CONST:
                 var3 = cfg->create_new_tempvar(INT);
                 retvector.push_back(var3);

@@ -23,6 +23,16 @@ void IRInstr::gen_asm(std::ostream &o) {
                 o<<"\tmovl\t%eax," << index3 << "(%rbp)\n";
                 return;
             }
+            case sub: {
+                
+                int index = bb->cfg->symbols->getAddress(params[1]);
+                int index2 = bb->cfg->symbols->getAddress(params[2]);
+                o<<"\tmovl\t"<<index2<<"(%rbp),%eax\n";
+                o<<"\tsubl\t"<<index<<"(%rbp),%eax\n";
+                int index3 = bb->cfg->symbols->getAddress(params[0]);
+                o<<"\tmovl\t%eax," << index3 << "(%rbp)\n";
+                return;
+            }
             case wmem: {
                 //the value of variable var is written at address addr
 
