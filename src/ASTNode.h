@@ -1,5 +1,5 @@
-/*************************************************************************
-                           ASTNode  -  description
+/************************************************************************
+
                              -------------------
     début                : 2021-02-27
     copyright            : (C) 2021 par H4244 
@@ -86,17 +86,20 @@ public:
 
         // Avoid jumps that bypasses var init.
         std::string sright, sleft;
-        std::string var3;   
+        std::string var1, var2, var3;   
         std::vector<std::string> retvector;
         switch(op) {
-            
-           // case OP_CONST:
-                /* Tiré du poly :
-                string var = createNewVar();
-                cfg->addInstruction(ldconst var const) 
-                */
-
-             //   break;
+            case OP_ADD:
+                
+                var1 = left->buildIR(cfg); 
+                var2 = right->buildIR(cfg); 
+                var3 = cfg->create_new_tempvar(INT);
+                retvector.push_back(var3);
+                retvector.push_back(var1);
+                retvector.push_back(var2);
+                cfg->current_bb->add_IRInstr(IRInstr::add, INT, retvector);
+                return var3;
+                break;
             case OP_CONST:
                 var3 = cfg->create_new_tempvar(INT);
                 retvector.push_back(var3);
@@ -112,10 +115,12 @@ public:
                 << std::endl;
                 return cfg->symbols->getName(args[0]);
             case OP_ASSIGN:
+
                 sleft  = left->buildIR(cfg);
                 sright = right->buildIR(cfg);
                 retvector.push_back(sleft);
                 retvector.push_back(sright);
+                
                 cfg->current_bb->add_IRInstr(
                     IRInstr::wmem, 
                     INT,  
@@ -135,12 +140,9 @@ public:
                 );
                 break;
             default:
-                std::cout 
-                << "Erreur lors de la génération de l'IR" 
+                std::cout << "Erreur lors de la génération de l'IR" 
                 << std::endl;
-                std::cout 
-                << "Fonctionnalité non implémentée" 
-                << std::endl;
+                std::cout << "Fonctionnalité non implémentée"<< std::endl;
                 exit(EXIT_FAILURE);
                 break;
         }
