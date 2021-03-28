@@ -187,14 +187,15 @@ for jobname in jobs:
     
     if gccstatus != 0 and pldstatus != 0:
         ## padawan correctly rejects invalid program -> test-case ok
+        print("\033[92mOK\x1b[0m (correctly rejects an invalid progrem)")
         continue
     elif gccstatus != 0 and pldstatus == 0:
         ## padawan wrongly accepts invalid program -> error
-        print("> FAILED (your compiler accepts an invalid program)")
+        print("\033[91mFAILED\x1b[0m (accepts an invalid program)")
         continue
     elif gccstatus == 0 and pldstatus != 0:
         ## padawan wrongly rejects valid program -> error
-        print("> FAILED (your compiler rejects a valid program)")
+        print("\033[91mFAILED\x1b[0m (rejects a valid program)")
         if args.verbose:
             dumpfile("compile.txt")
         continue
@@ -202,7 +203,7 @@ for jobname in jobs:
         ## padawan accepts to compile valid program -> let's link it
         ldstatus=command("gcc -o exe-pld asm-pld.s", "link.txt")
         if ldstatus:
-            print("> FAILED (your compiler produces incorrect assembly)")
+           print("\033[91mFAILED\x1b[0m (produces incorrect assembly)")
             if args.verbose:
                 dumpfile("link.txt")
             continue
