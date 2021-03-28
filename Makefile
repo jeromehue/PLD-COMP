@@ -1,4 +1,5 @@
-# Create this file locally and put your 3 Antlr paths in it.
+# Create this file locally and put your
+# Antlr4 paths in it (see README.md)
 include Makefile.local
 
 SRC=src
@@ -7,7 +8,7 @@ OUTPUT=$(SRC)/out
 GENERATED=$(SRC)/generated
 GRAMMAR=grammar/ifcc.g4
 
-SOURCES  := $(wildcard $(SRCDIR)/*.c)
+SOURCES := $(wildcard $(SRCDIR)/*.c)
 
 CC=clang++
 CCARGS=-g -c -I $(ANTLR4_INCDIR) -I $(GENERATED)/grammar -std=c++17 -Wno-defaulted-function-deleted -Wno-unknown-warning-option
