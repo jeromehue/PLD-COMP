@@ -38,8 +38,8 @@ dirs:
 test:
 	@cd tests && ./test.sh
 
-basetest : 
-	@./ifcc mainast.c &>/dev/null 
+maintest : 
+	@./ifcc maintest.c &>/dev/null 
 	@echo 'Output produced : '
 	@cat output.s
 	gcc output.s && ./a.out; echo $$?
