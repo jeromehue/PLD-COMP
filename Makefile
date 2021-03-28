@@ -32,7 +32,7 @@ antlr: $(GRAMMAR)
 	$(ANTLR4_BINDIR)/antlr4 -visitor -no-listener -Dlanguage=Cpp -o $(GENERATED) $(GRAMMAR)
 
 dirs:
-	rm -rf $(OUPUT) 	; mkdir -p $(OUTPUT) 
+	rm -rf $(OUTPUT) 	; mkdir -p $(OUTPUT) 
 	rm -rf $(GENERATED) ; mkdir -p $(GENERATED) 
 
 test:
