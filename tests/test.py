@@ -166,8 +166,9 @@ if args.debug:
 
 for jobname in jobs:
     os.chdir(orig_cwd)
-
-    print('Testing '+jobname[10:] +': ', end='')
+    
+    teststr = 'Testing '+jobname[10:] +':'
+    print(teststr.ljust(40,'.'), end='')
     os.chdir(jobname)
     
     ## JEDI compiler, aka GCC
