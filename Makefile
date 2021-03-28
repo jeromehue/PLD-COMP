@@ -26,7 +26,7 @@ ifcc: dirs antlr $(SOURCES) $(SRC)/visitor.h
 	$(CC) $(CCARGS) $(SRC)/visitor.cpp -o $(OUTPUT)/visitor.o 
 	$(CC) $(CCARGS) $(SRC)/Program.cpp -o $(OUTPUT)/Program.o 
 	$(CC) $(CCARGS) $(SRC)/IR.cpp -o $(OUTPUT)/IR.o 
-	$(CC) $(LDARGS) $(OUTPUT)/main.o $(OUTPUT)/ifccBaseVisitor.o $(OUTPUT)/ifccLexer.o $(OUTPUT)/ifccVisitor.o $(OUTPUT)/ifccParser.o $(OUTPUT)/visitor.o $(OUTPUT)/cgen.o $(OUTPUT)/Program.o $(OUTPUT)/IR.o $(ANTLR4_LIBDIR)/$(ANTLR4_RUNTIME) -o ifcc
+	$(CC) $(LDARGS) $(OUTPUT)/main.o $(OUTPUT)/ifccBaseVisitor.o $(OUTPUT)/ifccLexer.o $(OUTPUT)/ifccVisitor.o $(OUTPUT)/ifccParser.o $(OUTPUT)/visitor.o $(OUTPUT)/Program.o $(OUTPUT)/IR.o $(ANTLR4_LIBDIR)/$(ANTLR4_RUNTIME) -o ifcc
 
 antlr: $(GRAMMAR)
 	$(ANTLR4_BINDIR)/antlr4 -visitor -no-listener -Dlanguage=Cpp -o $(GENERATED) $(GRAMMAR)
