@@ -30,7 +30,7 @@ class DefFonction;
 //! The class for one 3-address instruction
 class IRInstr {
  
-   public:
+public:
 	/** The instructions themselves -- feel free to subclass instead */
 	typedef enum {
 		ldconst,    //  0
@@ -48,15 +48,14 @@ class IRInstr {
 
 
 	/**  constructor */
-	IRInstr(BasicBlock* bb_, 
-            Operation op, 
-            Type t, 
-            std::vector<std::string> params) {
-        this->bb= bb_;
-        this->op = op;
-        this->t =t;
-        this->params = params;
-    }
+	IRInstr(BasicBlock* bb_, Operation op, 
+                Type t, std::vector<std::string> params) 
+        {
+                this->bb= bb_;
+                this->op = op;
+                this->t =t;
+                this->params = params;
+        }
 
         /**< Helper function */
         static const std::string getOpByIndex(int index) 
@@ -127,9 +126,11 @@ private:
 	Type t;
         
         
-        /**<    For 3-op instrs: d, x, y; for ldconst: d, c;  
-            For call: label, d, params;  
-            for wmem and rmem: choose yourself */
+        /*
+         * For 3-op instrs: d, x, y; for ldconst: d, c;  
+         * For call: label, d, params;  
+         * for wmem and rmem: choose yourself *
+         */
 	std::vector<std::string> params; 
         
         /* 
@@ -228,9 +229,11 @@ public:
         /** < the instructions themselves. */
         std::vector<IRInstr*> instrs; 
 
-        /**<when generating IR code for an if(expr) or 
-        while(expr) etc, store here the name of the variable 
-        that holds the value of expr*/
+        /* 
+         * when generating IR code for an if(expr) or while(expr) etc, 
+         * store here the name of the variable that holds the value 
+         * of expr
+         */
         std::string test_var_name;  
  
 };
@@ -238,31 +241,31 @@ public:
 
 
 
- /* 
-  * The class for the control flow graph, also includes the symbol table 
-  * 
-  * A few important comments:
-  * 
-  * The entry block is the one with the same label as the AST function name.
-  * ( it could be the first of bbs, ot it could be defined by an attribute
-  * node )
-  *
-  * The exit block is the one with both exit pointers equal to nullptr.
-  * ( again it could be identified in a more explicit way )
-  *
-  * There is one cfg for one function
-  *
-  */ 
+/* 
+ * The class for the control flow graph, also includes the symbol table 
+ * 
+ * A few important comments:
+ * 
+ * The entry block is the one with the same label as the AST function name.
+ * ( it could be the first of bbs, ot it could be defined by 
+ * an attribute node )
+ *
+ * The exit block is the one with both exit pointers equal to nullptr.
+ * ( again it could be identified in a more explicit way )
+ *
+ * There is one cfg for one function
+ *
+ */ 
 
 class CFG {
 public:
+
         CFG(Symboltable * st) : symbols(st){};
 
+	/**< The AST this CFG comes from */
+	DefFonction* ast;
 
-	DefFonction* ast; /**< The AST this CFG comes from */
-	
-        void 
-        add_bb(BasicBlock* bb) 
+        void add_bb(BasicBlock* bb) 
         {
                 bbs.push_back(bb);
         }
@@ -310,7 +313,6 @@ public:
 
 protected:
    
-     
         /**< part of the symbol table  */
 	std::map <std::string, Type> SymbolType; 
 
