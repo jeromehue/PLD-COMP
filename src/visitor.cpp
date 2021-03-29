@@ -4,182 +4,188 @@
 #include <vector>
 #include <string>
 
-// Improving lisibility
+// Improving readability
 using namespace antlrcpp;
 
-Any Visitor::visitAxiom(ifccParser::AxiomContext *ctx) {
-    return visitChildren(ctx);
+Any Visitor::visitAxiom(ifccParser::AxiomContext *ctx) 
+{
+        return visitChildren(ctx);
 }
 
-Any Visitor::visitProg(ifccParser::ProgContext *ctx) {
-    std::cout << "Call to visitProg" << std::endl;
-    return visitChildren(ctx);
+Any Visitor::visitProg(ifccParser::ProgContext *ctx) 
+{
+        std::cout << "Call to visitProg" << std::endl;
+        return visitChildren(ctx);
 }
 
-Any Visitor::visitReturnInstr(ifccParser::ReturnInstrContext 
-    *ctx) {
-
-    // Debug print
-    std::cout << "Call to visitReturnInstr" << std::endl;
+Any Visitor::visitReturnInstr(ifccParser::ReturnInstrContext *ctx) 
+{    
+        // Debug print
+        std::cout << "Call to visitReturnInstr" << std::endl;
     
-    // Node definition
-    Node* n = new Node(OP_RETURN, NULL, NULL,0, 0); 
-    ast_nodes.push_back(n);
-
-    // Setting the return expression as a child for 
-    // our return node
-    int index = ast_nodes.size() - 1;
-    visitChildren(ctx);
-    assert(ast_nodes.size() == index+2);
-    ast_nodes[index]->left = ast_nodes[index+1];
-    ast_nodes.pop_back();
-
-    // My job here is done
-    return 0;
-}
-
-
-Any Visitor::visitNumber(ifccParser::NumberContext *ctx) {
-    // Debug print
-    std::cout << "Call to visitNumber" << std::endl;
-
-
-    // Node definition
-    int a = stoi(ctx->CONST()->getText());
-    Node* n = new Node(OP_CONST, NULL, NULL, a, 0);
-    ast_nodes.push_back(n);
-    
-    return visitChildren(ctx);
-}
-
-Any Visitor::visitVar(ifccParser::VarContext *ctx) {
-    std::cout << "Call to visitVar" << std::endl;
-    
-    //Node definition
-    std::string var_name = ctx->ID()->getText();
-    int var_adr = symboltable.getAddress(var_name);
-    Node* var = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
-    ast_nodes.push_back(var);
-    
-    return visitChildren(ctx);
-}
-
-
-Any Visitor::visitStatement(ifccParser::StatementContext *ctx) {
-
-    // Debug print
-    std::cout << "Call to visitStatement" << std::endl;
-    
-    return visitChildren(ctx);
-}
-
-Any Visitor::visitIfStatement(ifccParser::IfStatementContext *ctx) {
-    //Debug print
-    std::cout << "Call to visit Statement " << std::endl;
-    exit(EXIT_FAILURE);
-
-    return 0;
-}
-
-Any Visitor::visitDeclaration 
-(ifccParser::DeclarationContext *ctx) { 
-
-    // Debug print
-    std::cout << "Call to visitDeclaration" << std::endl;
-
-    return visitChildren(ctx);
-}
-
-Any Visitor::visitInitDeclaratorList(ifccParser::InitDeclaratorListContext *ctx) {
-
-    // Debug print
-    std::cout << "Call to visitInitDeclaratorList" << std::endl;
-
-    return visitChildren(ctx);
-
-}
-
-Any Visitor::visitInitDeclarator(ifccParser::InitDeclaratorContext *ctx) {
-    std::cout << "Call to visitInitDeclarator" << std::endl;
-    
-    if(ctx->arithExpr()) {
-        std::cout << " >> Declaration and affectaion" ;
-    }  else {
-        std::cout << " >> Declaration w/o affectation";
-    }
-    std::cout << " of " << ctx->ID()->getText() << std::endl;
-
-
-    // Let's insert or var in the symbol table 
-    std::string var_name = ctx->ID()->getText();
-    symboltable.store(var_name, 0);
-
-    if (ctx->arithExpr()) {
-        
-        // If assign, we create an IDENT node that's going to 
-        // be the left child of out ASSIGN node
-        int var_adr = symboltable.getAddress(var_name);
-        Node* var = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
-
-        // Now let's deal with the ASSIGN node
-        Node* n = new Node(OP_ASSIGN, var, NULL, 0, 0);
+        // Node definition
+        Node* n = new Node(OP_RETURN, NULL, NULL,0, 0); 
         ast_nodes.push_back(n);
 
-        // Finishing with the expr node
-
+        // Setting the return expression as a child for 
+        // our return node
         int index = ast_nodes.size() - 1;
         visitChildren(ctx);
         assert(ast_nodes.size() == index+2);
-        ast_nodes[index]->right = ast_nodes[index+1];
+        ast_nodes[index]->left = ast_nodes[index+1];
         ast_nodes.pop_back();
-    }
-        
-    return 0;
+
+        // My job here is done
+        return 0;
 }
 
-Any Visitor::visitAssignArithExpr(ifccParser::AssignArithExprContext *ctx) {
-    // Debug print
-    std::cout <<"Call to AssignArithExpr " << std::endl;
-    std::cout << " >> Assigning " << ctx->ID()->getText()
+
+Any Visitor::visitNumber(ifccParser::NumberContext *ctx) 
+{
+        // Debug print
+        std::cout << "Call to visitNumber" << std::endl;
+
+
+        // Node definition
+        int a = stoi(ctx->CONST()->getText());
+        Node* n = new Node(OP_CONST, NULL, NULL, a, 0);
+        ast_nodes.push_back(n);
+    
+        return visitChildren(ctx);
+}
+
+Any Visitor::visitVar(ifccParser::VarContext *ctx) 
+{    
+        std::cout << "Call to visitVar" << std::endl;
+    
+        //Node definition
+        std::string var_name = ctx->ID()->getText();
+        int var_adr = symboltable.getAddress(var_name);
+        Node* var = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
+        ast_nodes.push_back(var);
+    
+        return visitChildren(ctx);
+}
+
+
+Any Visitor::visitStatement(ifccParser::StatementContext *ctx) 
+{
+        // Debug print
+        std::cout << "Call to visitStatement" << std::endl;
+    
+        return visitChildren(ctx);
+}
+
+Any Visitor::visitIfStatement(ifccParser::IfStatementContext *ctx) 
+{
+        //Debug print
+        std::cout << "Call to visit Statement " << std::endl;
+        exit(EXIT_FAILURE);
+
+        return 0;
+}
+
+Any Visitor::visitDeclaration (ifccParser::DeclarationContext *ctx) 
+{ 
+        // Debug print
+        std::cout << "Call to visitDeclaration" << std::endl;
+
+        return visitChildren(ctx);
+}
+
+Any Visitor::visitInitDeclaratorList(ifccParser::InitDeclaratorListContext *ctx) 
+{
+        // Debug print
+        std::cout << "Call to visitInitDeclaratorList" << std::endl;
+
+        return visitChildren(ctx);
+
+}
+
+Any Visitor::visitInitDeclarator(ifccParser::InitDeclaratorContext *ctx) 
+{
+        std::cout << "Call to visitInitDeclarator" << std::endl;
+    
+        if(ctx->arithExpr()) {
+                std::cout << " >> Declaration and affectaion" ;
+        } else {
+                std::cout << " >> Declaration w/o affectation";
+        }
+        std::cout << " of " << ctx->ID()->getText() << std::endl;
+
+
+        // Let's insert or var in the symbol table 
+        std::string var_name = ctx->ID()->getText();
+        symboltable.store(var_name, 0);
+
+        if (ctx->arithExpr()) {
+        
+                // If assign, we create an IDENT node that's going to 
+                // be the left child of out ASSIGN node
+                int var_adr = symboltable.getAddress(var_name);
+                Node* var = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
+
+                // Now let's deal with the ASSIGN node
+                Node* n = new Node(OP_ASSIGN, var, NULL, 0, 0);
+                ast_nodes.push_back(n);
+
+                // Finishing with the expr node
+
+                int index = ast_nodes.size() - 1;
+                visitChildren(ctx);
+                assert(ast_nodes.size() == index+2);
+                ast_nodes[index]->right = ast_nodes[index+1];
+                ast_nodes.pop_back();
+        }
+        
+        return 0;
+}
+
+Any Visitor::visitAssignArithExpr(ifccParser::AssignArithExprContext *ctx) 
+{
+        // Debug print
+        std::cout <<"Call to AssignArithExpr " << std::endl;
+        std::cout << " >> Assigning " << ctx->ID()->getText()
         << " to " << ctx->arithExpr()->getText() << std::endl;
 
-    // Node definition
-    /*
-        n->left is going to be the variable
-        n->right is going to be an expression
-    */  
-    std::string var_name = ctx->ID()->getText();
-    // TODO A finir sur le modèle du neour retour :
-    // On empile et après on mets à jour les enfants
-    int var_adr = symboltable.getAddress(var_name);
-    Node* o = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
+        // Node definition
+        /*
+         * n->left is going to be the variable
+         * n->right is going to be an expression
+        */  
+        
+        std::string var_name = ctx->ID()->getText();
+        int var_adr = symboltable.getAddress(var_name);
+        Node* o = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
    
-    int ref = ast_nodes.size();
-    // Expression 
-    visitChildren(ctx);
-    assert(ast_nodes.size()== ref+1);
+        int ref = ast_nodes.size();
+        // Expression 
+        visitChildren(ctx);
+        assert(ast_nodes.size()== ref+1);
 
 
-    Node* n = new Node(OP_ASSIGN, o, ast_nodes.back(), 0, 0);
-    ast_nodes.pop_back(); // poping expression
-    ast_nodes.push_back(n);
+        Node* n = new Node(OP_ASSIGN, o, ast_nodes.back(), 0, 0);
+        ast_nodes.pop_back(); 
+        ast_nodes.push_back(n);
 
-    return 0; 
+        return 0; 
 }
 
-Any Visitor::visitExpr(ifccParser::ExprContext* ctx){
-    std::cout << "Call to visit Expr" << std::endl;
+Any Visitor::visitExpr(ifccParser::ExprContext* ctx)
+{
+        std::cout << "Call to visit Expr" << std::endl;
 
-    char op = ctx->op->getText().at(0);
-    int ref = ast_nodes.size();
-    visit(ctx->left);
-    visit(ctx->right);
+        char op = ctx->op->getText().at(0);
+        int ref = ast_nodes.size();
+        visit(ctx->left);
+        visit(ctx->right);
     
    
-    assert(ast_nodes.size() == ref+2);
-    std::cout << "debug" << std::endl; 
+        assert(ast_nodes.size() == ref+2);
+        std::cout << "debug" << std::endl; 
  
-    switch(op) {
+        switch(op) 
+        {
         case '+': {
                 std::cout << "Addition" << std::endl;
                 Node* nop = new Node(
@@ -201,29 +207,27 @@ Any Visitor::visitExpr(ifccParser::ExprContext* ctx){
                 break;
         } 
         case '*': {
-
-            std::cout << "Multiplication" << std::endl;
-            Node* nop =
-                new Node(OP_MUL, ast_nodes[ref+1], ast_nodes[ref], 0, 0);
-            ast_nodes.pop_back();
-            ast_nodes.pop_back();
-            ast_nodes.push_back(nop);
-            nop->display();
-            break;
-            return 0;
+                std::cout << "Multiplication" << std::endl;
+                Node* nop = new Node(OP_MUL, ast_nodes[ref+1], a
+                                     st_nodes[ref], 0, 0);
+                ast_nodes.pop_back();
+                ast_nodes.pop_back();
+                ast_nodes.push_back(nop);
+                nop->display();
+                break;
+                return 0;
         }
         default:
-            std::cout << "Erreur, opérateur non reconnu" << std::endl;
-            exit(EXIT_FAILURE);
-    }
-    return 0;
+                std::cout << "Erreur, opérateur non reconnu" << std::endl;
+                exit(EXIT_FAILURE);
+        }
 
-
+        return 0;
 }
 
 
-Any Visitor::visitPrExpr(ifccParser::PrExprContext* ctx) {
-    std::cout << "Call to visit prExpression" << std::endl;
-
-    return visitChildren(ctx);
+Any Visitor::visitPrExpr(ifccParser::PrExprContext* ctx) 
+{
+        std::cout << "Call to visit prExpression" << std::endl;
+        return visitChildren(ctx);
 }
