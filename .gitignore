@@ -1,15 +1,15 @@
-# Output and local files
+# local files
 Makefile.local
-ifcc
-build/
 
-# Intermediate files
+# Temporary files
 *.out
 *.s
 *.o
 
-# Generated during compilation
-src/generated
+# Generated at compilation
+build/
+src/grammar/
+ifcc
 
 # Tests
 tests/gui/*.class
