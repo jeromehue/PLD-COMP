@@ -164,6 +164,9 @@ if args.debug:
 ######################################################################################
 ## TEST step: actually compile all test-cases with both compilers
 
+nbTests = len(jobs)
+nbSucces = 0
+
 for jobname in jobs:
     os.chdir(orig_cwd)
     
@@ -189,6 +192,7 @@ for jobname in jobs:
     if gccstatus != 0 and pldstatus != 0:
         ## padawan correctly rejects invalid program -> test-case ok
         print("\033[92mOK\x1b[0m (rejects an invalid program)")
+        nbSucces = nbSucces + 1  
         continue
     elif gccstatus != 0 and pldstatus == 0:
         ## padawan wrongly accepts invalid program -> error
@@ -222,4 +226,10 @@ for jobname in jobs:
             dumpfile("execute.txt")
         continue
 
+    nbSucces = nbSucces +1
     print("\033[92mOK\x1b[0m")
+
+print('\n')
+print("RESULTS".center(40, '='))
+print(str(nbSucces) + " out of " + str(nbTests) + 
+        " (" + str(round(  (nbSucces / nbTests) * 100,2))  +"%) of tests succeeded.")
