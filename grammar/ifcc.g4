@@ -9,96 +9,109 @@ axiom
     :  prog
     ;
 
-function 
-    :   'void' ID '(' parameterlist? ')' '{'
-            declaration?
-            statement*
+procedure 
+	:
+	'void' ID '(' parameterlist? ')' '{'
+		declaration?
+		statement*
         '}'
-    ;
+        ;
 
 parameterlist 
-    :   TYPE ID (',' TYPE ID)*
-    ;
+	:   
+	TYPE ID (',' TYPE ID)*
+	;
 
-// As its name indicates, for testing purposes
-progtest: 'int' 'main' '(' ')' '{' 
-            declaration?
-            ifStatement
-            returnInstr    
-        '}' ;
-
-
-
-
-prog            
-    : 
-       'int' 'main' '(' ')' '{' 
-            declaration?
-            statement*
-            returnInstr    
+function
+	: 
+	TYPE ID '(' parameterlist? ')' '{'
+		declaration?
+		statement*
+		returnInstr    
         '}' 
-    ;
+        ;
+
+prog    : 
+        function*
+	'int' 'main' '(' ')' '{' 
+		declaration?
+		statement*
+		returnInstr    
+	'}' 
+	;
 
 // Declaration
 
 declaration     
-    : TYPE initDeclaratorList ';'
-    ;
+	: 
+	TYPE initDeclaratorList ';'
+	;
 
 initDeclaratorList
-    :   initDeclarator (',' initDeclarator)*
-    ;
+	:   
+	initDeclarator (',' initDeclarator)*
+	;
 
 initDeclarator  
-    : ID 
-    | ID '=' arithExpr 
-    ;
+	: 
+	ID 
+	| ID '=' arithExpr 
+	;
 
 returnInstr
-    :   RETURN primaryExpression ';'
-    ;
+	:   
+	RETURN primaryExpression ';'
+	;
 
 primaryExpression
-    : CONST # number
-    | ID    # var
-    ;
+	: 
+	CONST # number
+	| ID    # var
+	;
 
 
 relationalExpression
-    : left=primaryExpression relOp=('<'|'>') right=primaryExpression    #RelExpr
-    ;
+	: 
+	left=primaryExpression relOp=('<'|'>') right=primaryExpression    #RelExpr
+	;
 
 equalityExpression 
-    : relationalExpression
-    | equalityExpression '==' relationalExpression     
-    | equalityExpression '!=' relationalExpression 
-    ;    
+	: 
+	relationalExpression
+	| equalityExpression '==' relationalExpression     
+	| equalityExpression '!=' relationalExpression 
+	;
+	    
 statement       
-    : assignmentExpr ';'
-    | ifStatement
-    ;
+	: 
+	assignmentExpr ';'
+	| ifStatement
+	;
 
 ifStatement 
-    :   'if' '(' equalityExpression ')' '{'
-            statement*
+	:
+	'if' '(' equalityExpression ')' '{'
+		statement*
         '}'
-    ;
+	;
 
 
 assignmentExpr  
-    : ID '=' arithExpr # assignArithExpr
-    | ID '=' relationalExpression # assignRelExpr
-    ;
+	: 
+	ID '=' arithExpr # assignArithExpr
+	| ID '=' relationalExpression # assignRelExpr
+	;
 
 
 arithExpr    
-    : primaryExpression                                 # prExpr
-    | '(' primaryExpression ')'                         # prExpr
-    | left=arithExpr op=('*'|'/') right=arithExpr       # Expr 
-    | left=arithExpr op=('+'|'-') right=arithExpr       # Expr 
-    | '(' left=arithExpr op=('*'|'/') right=arithExpr   ')'      # Expr 
-    | '(' left=arithExpr op=('+'|'-') right=arithExpr   ')'      # Expr 
-    ;
+	: 
+	primaryExpression                                   # prExpr
+	| '(' primaryExpression ')'                         # prExpr
+	| left=arithExpr op=('*'|'/') right=arithExpr       # Expr 
+	| left=arithExpr op=('+'|'-') right=arithExpr       # Expr 
+	| '(' left=arithExpr op=('*'|'/') right=arithExpr   ')'      # Expr 
+	| '(' left=arithExpr op=('+'|'-') right=arithExpr   ')'      # Expr 
+	;
             
 
 RETURN      : 'return' ;
