@@ -9,7 +9,7 @@ LDARGS := -g
 
 # Files
 ANTLR_SOURCES := src/grammar/ifccBaseVisitor.cpp src/grammar/ifccLexer.cpp src/grammar/ifccParser.cpp src/grammar/ifccVisitor.cpp
-SOURCES := $(wildcard src/*.cpp) $(ANTLR_SOURCES)
+SOURCES := $(ANTLR_SOURCES) $(wildcard src/*.cpp)
 HEADERS := $(wildcard src/*.h)
 OBJECTS := $(SOURCES:.cpp=.o)
 OBJECTS := $(OBJECTS:src/%=build/%)
