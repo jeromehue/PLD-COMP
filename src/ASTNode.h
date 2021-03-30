@@ -23,7 +23,11 @@ enum nodeOp {
         OP_CONST,
         OP_RETURN,
         OP_BLOCK,
-        OP_FUNCTION
+        OP_FUNCTION,
+        OP_LOWER,
+        OP_GREATER,
+        OP_EQUAL,
+        OP_UNEQUAL
 };
 
 class Node {
@@ -60,6 +64,42 @@ public:
                         
                 case OP_ASSIGN:
                         std::cout << "OP_ASSIGN | " << std::endl;
+                        std::cout << "\tleft : "; 
+                        ndlist[0]->display();
+                        std::cout << "\tright : ";
+                        ndlist[1]->display();
+                        std::cout << std::endl;
+                        break;
+                
+                case OP_LOWER:
+                        std::cout << "OP_LOWER | " << std::endl;
+                        std::cout << "\tleft : "; 
+                        ndlist[0]->display();
+                        std::cout << "\tright : ";
+                        ndlist[1]->display();
+                        std::cout << std::endl;
+                        break;
+                
+                case OP_GREATER:
+                        std::cout << "OP_GREATER | " << std::endl;
+                        std::cout << "\tleft : "; 
+                        ndlist[0]->display();
+                        std::cout << "\tright : ";
+                        ndlist[1]->display();
+                        std::cout << std::endl;
+                        break;
+
+                case OP_EQUAL:
+                        std::cout << "OP_EQUAL | " << std::endl;
+                        std::cout << "\tleft : "; 
+                        ndlist[0]->display();
+                        std::cout << "\tright : ";
+                        ndlist[1]->display();
+                        std::cout << std::endl;
+                        break;
+                
+                case OP_UNEQUAL:
+                        std::cout << "OP_UNEQUAL | " << std::endl;
                         std::cout << "\tleft : "; 
                         ndlist[0]->display();
                         std::cout << "\tright : ";
@@ -127,7 +167,8 @@ public:
                 cfg->current_bb->add_IRInstr(IRInstr::sub, INT, retvector);
                 return var3;
                 break;
-        case OP_MUL:
+        
+         case OP_MUL:
                 var1 = ndlist[0]->buildIR(cfg); 
                 var2 = ndlist[1]->buildIR(cfg); 
                 var3 = cfg->create_new_tempvar(INT);
@@ -137,6 +178,62 @@ public:
 
                 // Actual instruction
                 cfg->current_bb->add_IRInstr(IRInstr::mul, INT, retvector);
+                return var3;
+                break;
+
+        case OP_LOWER: //<
+                /* Fetching data */
+                var1 = ndlist[0]->buildIR(cfg); 
+                var2 = ndlist[1]->buildIR(cfg); 
+                var3 = cfg->create_new_tempvar(INT);
+                retvector.push_back(var3);
+                retvector.push_back(var1);
+                retvector.push_back(var2);
+
+                /* Actual instruction */
+                cfg->current_bb->add_IRInstr(IRInstr::lower, INT, retvector);
+                return var3;
+                break;
+
+        case OP_GREATER:
+                /* Fetching data */
+                var1 = ndlist[0]->buildIR(cfg); 
+                var2 = ndlist[1]->buildIR(cfg); 
+                var3 = cfg->create_new_tempvar(INT);
+                retvector.push_back(var3);
+                retvector.push_back(var1);
+                retvector.push_back(var2);
+
+                /* Actual instruction */
+                cfg->current_bb->add_IRInstr(IRInstr::greater, INT, retvector);
+                return var3;
+                break;
+
+        case OP_EQUAL:
+                /* Fetching data */
+                var1 = ndlist[0]->buildIR(cfg); 
+                var2 = ndlist[1]->buildIR(cfg); 
+                var3 = cfg->create_new_tempvar(INT);
+                retvector.push_back(var3);
+                retvector.push_back(var1);
+                retvector.push_back(var2);
+
+                /* Actual instruction */
+                cfg->current_bb->add_IRInstr(IRInstr::cmp_eq, INT, retvector);
+                return var3;
+                break;
+
+        case OP_UNEQUAL:
+                /* Fetching data */
+                var1 = ndlist[0]->buildIR(cfg); 
+                var2 = ndlist[1]->buildIR(cfg); 
+                var3 = cfg->create_new_tempvar(INT);
+                retvector.push_back(var3);
+                retvector.push_back(var1);
+                retvector.push_back(var2);
+
+                /* Actual instruction */
+                cfg->current_bb->add_IRInstr(IRInstr::cmp_uneq, INT, retvector);
                 return var3;
                 break;
 
@@ -155,11 +252,11 @@ public:
                 << std::endl;
                 return cfg->symbols->getName(args[0]);
         case OP_ASSIGN:
-                sleft  = ndlist[0]->buildIR(cfg);
-                sright = ndlist[1]->buildIR(cfg);
+                sleft  = ndlist[0]->buildIR(cfg); // adresse variable
+                sright = ndlist[1]->buildIR(cfg); // adresse résultat expression
                 retvector.push_back(sleft);
                 retvector.push_back(sright);
-                
+                std::cout << "-------------> Assign node building ir " << sleft << std::endl;
                 cfg->current_bb->add_IRInstr(
                     IRInstr::wmem, 
                     INT,  

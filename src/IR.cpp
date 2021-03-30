@@ -43,6 +43,54 @@ void IRInstr::gen_asm(std::ostream &o) {
                 return;
 
             }
+            case greater: {
+                
+                int index = bb->cfg->symbols->getAddress(params[1]);
+                int index2 = bb->cfg->symbols->getAddress(params[2]);
+                o << "\tmovl\t" << index2 << "(%rbp), %eax\n";
+                o << "\tcmpl\t" << index << "(%rbp), %eax\n";
+                o << "\tsetg\t%al\n";
+                o << "\tmovzbl\t%al, %eax\n";
+                int index3 = bb->cfg->symbols->getAddress(params[0]);
+                o << "\tmovl\t%eax, " << index3 << "(%rbp)\n";
+                return;
+            }
+            case lower: {
+                
+                int index = bb->cfg->symbols->getAddress(params[1]);
+                int index2 = bb->cfg->symbols->getAddress(params[2]);
+                o<< "\tmovl\t" << index2 << "(%rbp), %eax\n";
+                o<< "\tcmpl\t" << index << "(%rbp), %eax\n";
+                o<< "\tsetl\t%al\n";
+                o<< "\tmovzbl\t%al, %eax\n";
+                int index3 = bb->cfg->symbols->getAddress(params[0]);
+                o<< "\tmovl\t%eax, " << index3 << "(%rbp)\n";
+                return;
+            }
+            case cmp_eq: {
+                
+                int index = bb->cfg->symbols->getAddress(params[1]);
+                int index2 = bb->cfg->symbols->getAddress(params[2]);
+                o<< "\tmovl\t" << index2 << "(%rbp), %eax\n";
+                o<< "\tcmpl\t" << index << "(%rbp), %eax\n";
+                o<< "\tsete\t%al\n";
+                o<< "\tmovzbl\t%al, %eax\n";
+                int index3 = bb->cfg->symbols->getAddress(params[0]);
+                o<< "\tmovl\t%eax, " << index3 << "(%rbp)\n";
+                return;
+            }
+            case cmp_uneq: {
+                
+                int index = bb->cfg->symbols->getAddress(params[1]);
+                int index2 = bb->cfg->symbols->getAddress(params[2]);
+                o<< "\tmovl\t" << index2 << "(%rbp), %eax\n";
+                o<< "\tcmpl\t" << index << "(%rbp), %eax\n";
+                o<< "\tsetne\t%al\n";
+                o<< "\tmovzbl\t%al, %eax\n";
+                int index3 = bb->cfg->symbols->getAddress(params[0]);
+                o<< "\tmovl\t%eax, " << index3 << "(%rbp)\n";
+                return;
+            }
             case wmem: {
                 //the value of variable var is written at address addr
 

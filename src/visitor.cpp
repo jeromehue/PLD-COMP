@@ -172,6 +172,35 @@ Any Visitor::visitAssignArithExpr(ifccParser::AssignArithExprContext *ctx)
 
         return 0; 
 }
+Any Visitor::visitAssignRelExpr(ifccParser::AssignRelExprContext *ctx) 
+{
+        // Debug print
+        cout <<"Call to AssignRelExpr " << std::endl;
+        cout << " >> Assigning " << ctx->ID()->getText()
+        << " to " << ctx->relationalExpression()->getText() << std::endl;
+
+        // Node definition
+        /*
+         * n->left is going to be the variable
+         * n->right is going to be an expression
+        */  
+        
+        std::string var_name = ctx->ID()->getText();
+        int var_adr = globalSymb.getAddress(var_name);
+        Node* o = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
+   
+        int ref = ast_nodes.size();
+        // Expression 
+        visitChildren(ctx);
+        assert(ast_nodes.size()== ref+1);
+
+
+        Node* n = new Node(OP_ASSIGN, o, ast_nodes.back(), 0, 0);
+        ast_nodes.pop_back(); 
+        ast_nodes.push_back(n);
+
+        return 0; 
+}
 
 Any Visitor::visitExpr(ifccParser::ExprContext* ctx)
 {
@@ -226,7 +255,58 @@ Any Visitor::visitExpr(ifccParser::ExprContext* ctx)
         return 0;
 }
 
+Any Visitor::visitRelExpr(ifccParser::RelExprContext* ctx)
+{
+        cout << "Call to visit RelExpr" << std::endl;
 
+        string relop = ctx->relOp->getText();
+        int ref = ast_nodes.size();
+        visit(ctx->left);
+        visit(ctx->right);
+    
+   
+        assert(ast_nodes.size() == ref+2);
+ 
+        if( relop == "<") {
+                cout << "inferieur" << std::endl;
+                Node* nop = new Node(
+                    OP_LOWER, ast_nodes[ref+1], ast_nodes[ref], 0, 0);
+                ast_nodes.pop_back();
+                ast_nodes.pop_back();
+                ast_nodes.push_back(nop);
+                nop->display();
+        }
+        else if (relop == ">") {
+                cout << "superieur" << std::endl;
+                Node* nop = new Node(
+                    OP_GREATER, ast_nodes[ref+1], ast_nodes[ref], 0, 0);
+                ast_nodes.pop_back();
+                ast_nodes.pop_back();
+                ast_nodes.push_back(nop);
+                nop->display();
+        } else if (relop == "==") {
+                cout << "égale à" << std::endl;
+                Node* nop = new Node(
+                OP_EQUAL, ast_nodes[ref+1], ast_nodes[ref], 0, 0);
+                ast_nodes.pop_back();
+                ast_nodes.pop_back();
+                ast_nodes.push_back(nop);
+                nop->display();
+        } else if (relop == "différent de") {
+                cout << "superieur" << std::endl;
+                Node* nop = new Node(
+                OP_UNEQUAL, ast_nodes[ref+1], ast_nodes[ref], 0, 0);
+                ast_nodes.pop_back();
+                ast_nodes.pop_back();
+                ast_nodes.push_back(nop);
+                nop->display();
+        }else {
+                cout << "Erreur, opérateur non reconnu" << std::endl;
+                exit(EXIT_FAILURE);
+        }
+
+        return 0;
+}
 Any Visitor::visitPrExpr(ifccParser::PrExprContext* ctx) 
 {
         cout << "Call to visit prExpression" << std::endl;
