@@ -31,13 +31,9 @@ function
         '}' 
         ;
 
-prog    : 
-        function*
-	'int' 'main' '(' ')' '{' 
-		declaration?
-		statement*
-		returnInstr    
-	'}' 
+prog    
+	: 
+        (function | procedure)+
 	;
 
 // Declaration

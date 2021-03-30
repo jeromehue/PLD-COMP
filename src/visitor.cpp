@@ -61,7 +61,7 @@ Any Visitor::visitVar(ifccParser::VarContext *ctx)
     
         //Node definition
         std::string var_name = ctx->ID()->getText();
-        int var_adr = globalSymb.getAddress(var_name);
+        int var_adr = localSymb->getAddress(var_name);
         Node* var = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
         ast_nodes.push_back(var);
     
@@ -117,14 +117,14 @@ Any Visitor::visitInitDeclarator(ifccParser::InitDeclaratorContext *ctx)
 
         // Let's insert or var in the symbol table 
         std::string var_name = ctx->ID()->getText();
-        globalSymb.store(var_name, 0);
+        localSymb->store(var_name, 0);
 
 
         if (ctx->arithExpr()) {
         
                 // If assign, we create an IDENT node that's going to 
                 // be the left child of out ASSIGN node
-                int var_adr = globalSymb.getAddress(var_name);
+                int var_adr = localSymb->getAddress(var_name);
                 Node* var = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
 
                 // Now let's deal with the ASSIGN node
@@ -157,7 +157,7 @@ Any Visitor::visitAssignArithExpr(ifccParser::AssignArithExprContext *ctx)
         */  
         
         std::string var_name = ctx->ID()->getText();
-        int var_adr = globalSymb.getAddress(var_name);
+        int var_adr = localSymb->getAddress(var_name);
         Node* o = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
    
         int ref = ast_nodes.size();
@@ -236,5 +236,23 @@ Any Visitor::visitPrExpr(ifccParser::PrExprContext* ctx)
 Any Visitor::visitFunction(ifccParser::FunctionContext* ctx) 
 {
         cout << "Call to visitFunction " << std::endl;
-        return visitChildren(ctx);
+        cout << ctx->getText() << endl;
+        std::string name = ctx->ID()->getText();
+        Function * f = new Function(name);
+        (this->functions).push_back(f);
+        this->ast_nodes = f->funcInstr;//Here is a probleeemm
+        this->localSymb = f->symb;
+        visitChildren(ctx);
+        cout << "Display ast_nodes"<<endl;
+        for(int i=0; i < this->ast_nodes.size(); ++i) {
+                this->ast_nodes.at(i)->display();
+        }
+        cout <<"End display ast_nodes"<<endl;
+
+        cout << "Display funcInstr"<<endl;
+        for(int i=0; i < f->funcInstr.size(); ++i) {
+                f->funcInstr.at(i)->display();
+        }
+        cout <<"End display funcInstr"<<endl;
+        return 0;
 }

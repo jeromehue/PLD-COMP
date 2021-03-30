@@ -64,7 +64,20 @@ int main(int argn, const char **argv) {
     Visitor visitor;
     visitor.visit(tree);
 
-    std::vector<Node*> n = visitor.getNodes();
+    std::vector <Function *> functions = visitor.getFunctions();
+    for(int i = 0; i<functions.size(); ++i){
+        cout <<  "Function n°"<< i << " : " << functions.at(i)->name <<endl;
+        std::vector<Node*> n = functions.at(i)->funcInstr;
+
+        std::cout << "\n### List of AST Nodes for function n° " << i << " ###" << std::endl;
+        for(int i=0; i < n.size(); ++i) {
+                n.at(i)->display();
+        }
+        cout << "------------"<< std::endl;
+        cout << std::endl;
+    }
+
+/*std::vector<Node*> n = visitor.getNodes();
 
     std::cout << "\n### List of AST Nodes ###" << std::endl;
     for(int i=0; i < n.size(); ++i) {
@@ -96,7 +109,7 @@ int main(int argn, const char **argv) {
     mainBB->gen_asm(output); 
 
     epilogue();
-    output.close();
+    output.close();*/
 
     return 0;
 }

@@ -28,6 +28,13 @@ public:
         std::string name;
         Symboltable* symb;
         std::vector<Node*> funcInstr; 
+        Function(std::string name)
+        {
+		this->name=name;
+                cout << "Creating Function named : " << this->name << endl;
+                symb = new Symboltable();
+                funcInstr = std::vector<Node*>();
+        }
 
 
 };
