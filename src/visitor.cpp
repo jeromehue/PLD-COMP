@@ -235,6 +235,6 @@ Any Visitor::visitPrExpr(ifccParser::PrExprContext* ctx)
 
 Any Visitor::visitFunction(ifccParser::FunctionContext* ctx) 
 {
-        cout << "Call to visit Function " << std::endl;
-        return 0;
+        cout << "Call to visitFunction " << std::endl;
+        return visitChildren(ctx);
 }
