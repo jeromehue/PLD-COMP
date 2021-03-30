@@ -64,29 +64,65 @@ int main(int argn, const char **argv) {
     Visitor visitor;
     visitor.visit(tree);
 
-    std::vector<Node*> n = visitor.getNodes();
+        /* temp */
+        bool hasMain = false;
+        int mainFuncIndex;
 
-    std::cout << "\n### List of AST Nodes ###" << std::endl;
-    for(int i=0; i < n.size(); ++i) {
-        n.at(i)->display();
-    }
+        std::vector <Function *> functions = visitor.getFunctions();
+        for(int i = 0; i<functions.size(); ++i){
+                cout << "------------"<< std::endl;
+                cout <<  "Function n°"<< i << " : " 
+                << functions.at(i)->name <<endl;
+                
+                std::vector<Node*> n = functions.at(i)->funcInstr;
+
+                if(functions.at(i)->name == "main" ) {
+                        hasMain = true;
+                        mainFuncIndex = i;
+                }
+
+                std::cout 
+                << "\n### List of AST Nodes for function n° " << i 
+                << " ###" << std::endl;
+                for(int i=0; i < n.size(); ++i) {
+                        n.at(i)->display();
+                }       
+                cout << std::endl;
+        }
+
+        if (!hasMain) {
+                std::cout << "No main function found " << std::endl;
+                exit(EXIT_FAILURE);
+        }
+
+        int mfi = mainFuncIndex;
+        
+        std::vector<Node* > n = functions.at(mfi)->getInstr();
 
 
-    // Now generate the IR
-    std::cout << "\n### IR Generation ###" << std::endl;
+        // Now generate the IR
+        std::cout << "\n### IR Generation ###" << std::endl;
 
-    // One CFG for One Function
-    CFG* mainCFG = new CFG(visitor.getglobalSymb());
-    BasicBlock* inputBB;
-    BasicBlock* outputBB;
-    BasicBlock* mainBB = new BasicBlock(mainCFG, "main");
-    mainCFG->current_bb = mainBB;
+        CFG* mainCFG = new CFG(functions.at(mfi)->getSymboltable());
+        BasicBlock* mainBB =new BasicBlock(mainCFG,functions.at(mfi)->name);
 
+        mainCFG->current_bb = mainBB;
+        for(int i=0; i<n.size(); ++i) {
+                n[i]->buildIR(mainCFG);
+        }
 
-    for(int i=0; i<n.size(); ++i) {
-        n[i]->buildIR(mainCFG);
-    }
-
+        functions.at(mfi)->computeOffset();
+        /*
+        // One CFG for One Function
+        CFG* mainCFG = new CFG(visitor.getglobalSymb());
+        BasicBlock* inputBB;
+        BasicBlock* outputBB;
+        BasicBlock* mainBB = new BasicBlock(mainCFG, "main");
+        mainCFG->current_bb = mainBB;
+        
+        for(int i=0; i<n.size(); ++i) {
+                n[i]->buildIR(mainCFG);
+        }*/
     // WIP : To be removed from here
     std::cout << "\n### ASM Generation ###" << std::endl;
     output.open("output.s");

@@ -55,12 +55,17 @@ std::vector<Node*> getNodes() {
 }
 
 Symboltable *getglobalSymb() {
-    return &globalSymb;
+    return globalSymb;
+}
+
+std::vector<Function * > getFunctions(){
+        return functions;
 }
 
 protected:
         std::vector<Function* > functions;
+        Function* curfct;
         std::vector<Node* > ast_nodes;
-        Symboltable globalSymb;
-        Symboltable localSymb;
+        Symboltable * globalSymb;
+        Symboltable * localSymb;
 };
