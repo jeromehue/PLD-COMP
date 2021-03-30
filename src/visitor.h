@@ -41,10 +41,9 @@ virtual antlrcpp::Any visitExpr(ifccParser::ExprContext *ctx) override;
 
 virtual antlrcpp::Any visitPrExpr(ifccParser::PrExprContext *ctx) override;
 
-
 virtual antlrcpp::Any visitIfStatement(ifccParser::IfStatementContext *ctx) override;
 
-//helper function 
+virtual antlrcpp::Any visitFunction(ifccParser::FunctionContext* ctx) override;
 
 
 // Getters
