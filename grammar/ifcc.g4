@@ -31,8 +31,8 @@ function
         '}' 
         ;
 
-prog            
-	: 
+prog    : 
+        function*
 	'int' 'main' '(' ')' '{' 
 		declaration?
 		statement*
