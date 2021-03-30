@@ -1,25 +1,22 @@
 # Output and local files
 Makefile.local
 ifcc
+build/
 
 # Intermediate files
 *.out
 *.s
 *.o
-src/*.c
-main.c
-executable
 
 # Generated during compilation
 src/generated
-src/out
 
 # Tests
 tests/gui/*.class
 tests/gui/*.java
 tests/gui/*.interp
 tests/gui/*.tokens
-tests/out
+tests/out/
 
 # Custom settings for VSCode
 .vscode

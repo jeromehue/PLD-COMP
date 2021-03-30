@@ -2,48 +2,47 @@
 # Antlr4 paths in it (see README.md)
 include Makefile.local
 
-SRC=src
-BUILD=build
-OUTPUT=$(SRC)/out
-GENERATED=$(SRC)/generated
-GRAMMAR=grammar/ifcc.g4
+# Compiler and arguments
+CC := clang++
+CCARGS := -g -c -I $(ANTLR4_INCDIR) -I src/generated/grammar -std=c++17 -Wno-defaulted-function-deleted -Wno-unknown-warning-option
+LDARGS := -g 
 
-SOURCES := $(wildcard $(SRCDIR)/*.c)
+# Files
+ANTLR_SOURCES := src/generated/grammar/ifccBaseVisitor.cpp src/generated/grammar/ifccLexer.cpp src/generated/grammar/ifccParser.cpp src/generated/grammar/ifccVisitor.cpp
+SOURCES := $(shell find src -maxdepth 1 -name '*.cpp') $(ANTLR_SOURCES)
+HEADERS := $(shell find src -maxdepth 1 -name '*.h')
+OBJECTS := $(SOURCES:.cpp=.o)
+OBJECTS := $(OBJECTS:src/%=build/%)
+GRAMMAR := grammar/ifcc.g4
 
-CC=clang++
-CCARGS=-g -c -I $(ANTLR4_INCDIR) -I $(GENERATED)/grammar -std=c++17 -Wno-defaulted-function-deleted -Wno-unknown-warning-option
-LDARGS=-g
-
+# Default target
 all: ifcc
 
-ifcc: dirs antlr $(SOURCES) $(SRC)/visitor.h
-	$(CC) $(CCARGS) $(SRC)/main.cpp -o $(OUTPUT)/main.o 
-	$(CC) $(CCARGS) $(GENERATED)/grammar/ifccBaseVisitor.cpp -o $(OUTPUT)/ifccBaseVisitor.o 
-	$(CC) $(CCARGS) $(GENERATED)/grammar/ifccLexer.cpp -o $(OUTPUT)/ifccLexer.o 
-	$(CC) $(CCARGS) $(GENERATED)/grammar/ifccVisitor.cpp -o $(OUTPUT)/ifccVisitor.o 
-	$(CC) $(CCARGS) $(GENERATED)/grammar/ifccParser.cpp -o $(OUTPUT)/ifccParser.o 
-	$(CC) $(CCARGS) $(SRC)/visitor.cpp -o $(OUTPUT)/visitor.o 
-	$(CC) $(CCARGS) $(SRC)/visitor.cpp -o $(OUTPUT)/visitor.o 
-	$(CC) $(CCARGS) $(SRC)/Program.cpp -o $(OUTPUT)/Program.o 
-	$(CC) $(CCARGS) $(SRC)/IR.cpp -o $(OUTPUT)/IR.o 
-	$(CC) $(LDARGS) $(OUTPUT)/main.o $(OUTPUT)/ifccBaseVisitor.o $(OUTPUT)/ifccLexer.o $(OUTPUT)/ifccVisitor.o $(OUTPUT)/ifccParser.o $(OUTPUT)/visitor.o $(OUTPUT)/Program.o $(OUTPUT)/IR.o $(ANTLR4_LIBDIR)/$(ANTLR4_RUNTIME) -o ifcc
+# .o => ifcc
+ifcc: $(ANTLR_SOURCES) $(HEADERS) $(OBJECTS)
+	$(CC) $(LDARGS) $(OBJECTS) $(ANTLR4_LIBDIR)/$(ANTLR4_RUNTIME) -o ifcc
 
-antlr: $(GRAMMAR)
-	$(ANTLR4_BINDIR)/antlr4 -visitor -no-listener -Dlanguage=Cpp -o $(GENERATED) $(GRAMMAR)
+# .cpp => .o
+build/%.o: src/%.cpp
+	@mkdir -p build/generated/grammar
+	$(CC) $(CCARGS) $< -o $@
 
-dirs:
-	rm -rf $(OUTPUT) 	; mkdir -p $(OUTPUT) 
-	rm -rf $(GENERATED) ; mkdir -p $(GENERATED) 
+# .g4 => .cpp
+$(ANTLR_SOURCES): $(GRAMMAR)
+	$(ANTLR4_BINDIR)/antlr4 -visitor -no-listener -Dlanguage=Cpp -o src/generated $(GRAMMAR)
 
 test:
 	@cd tests && ./test.sh
 
-maintest : 
+maintest: 
 	@./ifcc maintest.c &>/dev/null 
 	@echo 'Output produced : '
 	@cat output.s
 	gcc output.s && ./a.out; echo $$?
 
 clean:
-	rm -rf $(OUTPUT)
-	rm -rf $(GENERATED)
+	rm -rf build/
+	rm -rf src/generated/
+	rm -rf src/out/
+
+.PHONY: all clean test maintest
