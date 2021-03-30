@@ -33,6 +33,30 @@ void IRInstr::gen_asm(std::ostream &o) {
                 o<<"\tmovl\t%eax," << index3 << "(%rbp)\n";
                 return;
             }
+            case greater: {
+                
+                int index = bb->cfg->symbols->getAddress(params[1]);
+                int index2 = bb->cfg->symbols->getAddress(params[2]);
+                o << "\tmovl\t" << index2 << "(%rbp), %eax\n";
+                o << "\tcmpl\t" << index << "(%rbp), %eax\n";
+                o << "\tsetg\t%al\n";
+                o << "\tmovzbl\t%al, %eax\n";
+                int index3 = bb->cfg->symbols->getAddress(params[0]);
+                o << "\tmovl\t%eax, " << index3 << "(%rbp)\n";
+                return;
+            }
+            case lower: {
+                
+                int index = bb->cfg->symbols->getAddress(params[1]);
+                int index2 = bb->cfg->symbols->getAddress(params[2]);
+                o<< "\tmovl\t" << index2 << "(%rbp), %eax\n";
+                o<< "\tcmpl\t" << index << "(%rbp), %eax\n";
+                o<< "\tsetl\t%al\n";
+                o<< "\tmovzbl\t%al, %eax\n";
+                int index3 = bb->cfg->symbols->getAddress(params[0]);
+                o<< "\tmovl\t%eax, " << index3 << "(%rbp)\n";
+                return;
+            }
             case mul: {
                 int index = bb->cfg->symbols->getAddress(params[1]);
                 o<<"\tmovl\t"<<index<<"(%rbp),%eax\n";
