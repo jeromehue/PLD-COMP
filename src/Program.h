@@ -23,7 +23,6 @@ protected:
 
 class DefFonction {
 
-
 public:
     // This class appears in IR.h 
     // without any detail

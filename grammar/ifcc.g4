@@ -6,7 +6,7 @@ grammar ifcc;
 */
 
 axiom           
-    :  prog       
+    :  prog
     ;
 
 function 
@@ -20,9 +20,19 @@ parameterlist
     :   TYPE ID (',' TYPE ID)*
     ;
 
+// As its name indicates, for testing purposes
+progtest: 'int' 'main' '(' ')' '{' 
+            declaration?
+            ifStatement
+            returnInstr    
+        '}' ;
+
+
+
+
 prog            
     : 
-        'int' 'main' '(' ')' '{' 
+       'int' 'main' '(' ')' '{' 
             declaration?
             statement*
             returnInstr    
@@ -66,6 +76,13 @@ equalityExpression
 statement       
     : assignmentExpr ';'
     ;
+
+ifStatement 
+    :   'if' '(' equalityExpression ')' '{'
+            statement*
+        '}'
+    ;
+
 
 assignmentExpr  
     : ID '=' arithExpr # assignArithExpr

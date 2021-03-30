@@ -13,72 +13,82 @@
 
 using namespace std;
 
-// Les différents types de noeuds
-enum nodeOp{
-    OP_ADD,
-    OP_SUB,
-    OP_MUL,
-    OP_ASSIGN,
-    OP_IDENT,
-    OP_CONST,
-    OP_RETURN
+/* Les différents types de noeuds */
+enum nodeOp {
+        OP_ADD,
+        OP_SUB,
+        OP_MUL,
+        OP_ASSIGN,
+        OP_IDENT,
+        OP_CONST,
+        OP_RETURN,
+        OP_BLOCK,
+        OP_FUNCTION
 };
 
 class Node {
    
 public:
-    
-    Node(int op, Node* left, Node* right, int arg0, int arg1) {
-        this->op        = op;
-        this->left      = left;
-        this->right     = right;
-        this->args[0]   = arg0;
-        this->args[1]   = arg1;
-    }
+        
+        Node(int op, Node* left, Node* right, int arg0, int arg1) {
+                this->op        = op;
+                this->ndlist.push_back(left);
+                this->ndlist.push_back(right);
+                this->args[0]   = arg0;
+                this->args[1]   = arg1;
+        }
 
     
-    void display() {
-        switch(op) {
-            case OP_ADD:
-                std::cout << "OP_ADD" << std::endl;
-                std::cout << "\tleft : "; 
-                left->display();
-                std::cout << "\tright : ";
-                right->display();
-                std::cout << std::endl;
-                break;
-            case OP_CONST:
-                std::cout << "OP_CONST" << std::endl;
-                break;
-            case OP_IDENT:
-                std::cout << "OP_IDENT" << std::endl;
-                break;
-            case OP_ASSIGN:
-                std::cout << "OP_ASSIGN | " << std::endl;
-                std::cout << "\tleft : "; 
-                left->display();
-                std::cout << "\tright : ";
-                right->display();
-                std::cout << std::endl;
-                break;
-            case OP_RETURN:
-                std::cout << "OP_RETURN" << std::endl;
-                /* In a non void case, we first generate the code for 
-                the expression, and copy the result in the special 
-                variable !retval. The translation IR->ASM will generate 
-                the code that places this walue where the ABI 
-                tells it should go.*/
-                break;
-            default:
-                std::cout << "Unknown Node" << std::endl;
-                break;
+        void display() {
+                switch(op) {
+                case OP_ADD:
+                        std::cout << "OP_ADD" << std::endl;
+                        std::cout << "\tleft : "; 
+                        ndlist[0]->display();
+                        std::cout << "\tright : ";
+                        ndlist[1]->display();
+                        std::cout << std::endl;
+                        break;
+
+                case OP_CONST:
+                        std::cout << "OP_CONST" << std::endl;
+                        break;
+
+                case OP_IDENT:
+                        std::cout << "OP_IDENT" << std::endl;
+                        break;
+                        
+                case OP_ASSIGN:
+                        std::cout << "OP_ASSIGN | " << std::endl;
+                        std::cout << "\tleft : "; 
+                        ndlist[0]->display();
+                        std::cout << "\tright : ";
+                        ndlist[1]->display();
+                        std::cout << std::endl;
+                        break;
+
+                case OP_RETURN:
+                        std::cout << "OP_RETURN" << std::endl;
+                        /* 
+                         * In a non void case, we first generate the code 
+                         * for the expression, and copy the result in the 
+                         * special variable !retval. The translation 
+                         * IR->ASM will generate the code that places 
+                         * this walue where the ABI tells it should go.
+                         * */
+                        break;
+                default:
+                        std::cout << "Unknown Node" << std::endl;
+                        break;
         }
     }
    
-    // The code generation is a recursive walk of the AST of
-    // of the function body.
-    // Each node of the AST has a methode buildIR(CFG* cfg) 
-    std::string  buildIR(CFG* cfg){
+        /* 
+         * The code generation is a recursive walk of the AST of
+         * the function body. Each node of the AST has a method 
+         * buildIR(CFG* cfg) 
+         */
+        std::string  buildIR(CFG* cfg){
 
         // Debug print
         std::cout << "Generating IR for : "; 
@@ -88,25 +98,26 @@ public:
         std::string sright, sleft;
         std::string var1, var2, var3;   
         std::vector<std::string> retvector;
+
         switch(op) {
-            case OP_ADD:
-                // Fetching data
-                var1 = left->buildIR(cfg); 
-                var2 = right->buildIR(cfg); 
+        case OP_ADD:
+                /* Fetching data */
+                var1 = ndlist[0]->buildIR(cfg); 
+                var2 = ndlist[1]->buildIR(cfg); 
                 var3 = cfg->create_new_tempvar(INT);
                 retvector.push_back(var3);
                 retvector.push_back(var1);
                 retvector.push_back(var2);
 
-                // Actual instruction
+                /* Actual instruction */
                 cfg->current_bb->add_IRInstr(IRInstr::add, INT, retvector);
                 return var3;
                 break;
-            case OP_SUB:
+        case OP_SUB:
                 //TODO Factoriser '+'/'-'
                 // Fetching data
-                var1 = left->buildIR(cfg); 
-                var2 = right->buildIR(cfg); 
+                var1 = ndlist[0]->buildIR(cfg); 
+                var2 = ndlist[1]->buildIR(cfg); 
                 var3 = cfg->create_new_tempvar(INT);
                 retvector.push_back(var3);
                 retvector.push_back(var1);
@@ -116,9 +127,9 @@ public:
                 cfg->current_bb->add_IRInstr(IRInstr::sub, INT, retvector);
                 return var3;
                 break;
-            case OP_MUL:
-                var1 = left->buildIR(cfg); 
-                var2 = right->buildIR(cfg); 
+        case OP_MUL:
+                var1 = ndlist[0]->buildIR(cfg); 
+                var2 = ndlist[1]->buildIR(cfg); 
                 var3 = cfg->create_new_tempvar(INT);
                 retvector.push_back(var3);
                 retvector.push_back(var1);
@@ -129,7 +140,7 @@ public:
                 return var3;
                 break;
 
-            case OP_CONST:
+        case OP_CONST:
                 var3 = cfg->create_new_tempvar(INT);
                 retvector.push_back(var3);
                 // Pas le choix, la constante est cast en string
@@ -138,15 +149,14 @@ public:
                 INT, retvector);
                 return var3;
                 break;
-            case OP_IDENT:
+        case OP_IDENT:
                 std::cout << "Generating IR for var @"<<args[0] <<" : " 
                 << cfg->symbols->getName(args[0])
                 << std::endl;
                 return cfg->symbols->getName(args[0]);
-            case OP_ASSIGN:
-
-                sleft  = left->buildIR(cfg);
-                sright = right->buildIR(cfg);
+        case OP_ASSIGN:
+                sleft  = ndlist[0]->buildIR(cfg);
+                sright = ndlist[1]->buildIR(cfg);
                 retvector.push_back(sleft);
                 retvector.push_back(sright);
                 
@@ -157,8 +167,8 @@ public:
                 );
                 return sright;
                 break;
-            case OP_RETURN:
-                sleft = left->buildIR(cfg);
+        case OP_RETURN:
+                sleft = ndlist[0]->buildIR(cfg);
                 sright = "!retval";
                 retvector.push_back(sright);
                 retvector.push_back(sleft);
@@ -168,24 +178,28 @@ public:
                     retvector
                 );
                 break;
-            default:
+        default:
                 std::cout << "Erreur lors de la génération de l'IR" 
                 << std::endl;
                 std::cout << "Fonctionnalité non implémentée"<< std::endl;
                 exit(EXIT_FAILURE);
                 break;
-        }
+                }
         return "";
-    }
+        }
 
-    // Operator
-    int op;
+        /* Operator */
+        int op;
 
-    // Left and right childs
-    Node *left, *right;
+        /* 
+         * List of AST nodes 
+         * For expressions, left is ndlist[0], right is ndlist[1]
+         * Used mostly for blocs 
+         */
+        std::vector<Node*> ndlist;        
 
-    // 0, 1 or 2 arguments
-    int args[1]; 
+        /* 0, 1 or 2 arguments */ 
+        int args[1]; 
 
 
 };
