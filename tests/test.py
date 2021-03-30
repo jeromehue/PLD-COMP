@@ -234,5 +234,7 @@ for jobname in jobs:
 
 print('\n')
 print(" RESULTS ".center(40, '='))
-print(str(nbSucces) + " out of " + str(nbTests) + 
-        " (" + str(round(  (nbSucces / nbTests) * 100,2))  +"%) tests passed.\n")
+print( (str(nbSucces) + " out of " + str(nbTests) + 
+        " (" + str(round(  (nbSucces / nbTests) * 100,2))  +"%) tests passed.").center(40, ' '))
+print("".center(40,'='))
+print("")
