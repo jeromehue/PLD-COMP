@@ -186,7 +186,7 @@ Any Visitor::visitAssignRelExpr(ifccParser::AssignRelExprContext *ctx)
         */  
         
         std::string var_name = ctx->ID()->getText();
-        int var_adr = symboltable.getAddress(var_name);
+        int var_adr = globalSymb.getAddress(var_name);
         Node* o = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
    
         int ref = ast_nodes.size();
