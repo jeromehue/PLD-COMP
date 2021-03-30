@@ -21,13 +21,13 @@ protected:
 
 };
 
-class DefFonction {
+class Function {
 
 public:
-    // This class appears in IR.h 
-    // without any detail
-    std::vector<Node*> funcInstr;
 
+        std::string name;
+        Symboltable* symb;
+        std::vector<Node*> funcInstr; 
 
 
 };
