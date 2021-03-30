@@ -61,7 +61,7 @@ Any Visitor::visitVar(ifccParser::VarContext *ctx)
     
         //Node definition
         std::string var_name = ctx->ID()->getText();
-        int var_adr = symboltable.getAddress(var_name);
+        int var_adr = globalSymb.getAddress(var_name);
         Node* var = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
         ast_nodes.push_back(var);
     
@@ -117,13 +117,14 @@ Any Visitor::visitInitDeclarator(ifccParser::InitDeclaratorContext *ctx)
 
         // Let's insert or var in the symbol table 
         std::string var_name = ctx->ID()->getText();
-        symboltable.store(var_name, 0);
+        globalSymb.store(var_name, 0);
+
 
         if (ctx->arithExpr()) {
         
                 // If assign, we create an IDENT node that's going to 
                 // be the left child of out ASSIGN node
-                int var_adr = symboltable.getAddress(var_name);
+                int var_adr = globalSymb.getAddress(var_name);
                 Node* var = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
 
                 // Now let's deal with the ASSIGN node
@@ -156,7 +157,7 @@ Any Visitor::visitAssignArithExpr(ifccParser::AssignArithExprContext *ctx)
         */  
         
         std::string var_name = ctx->ID()->getText();
-        int var_adr = symboltable.getAddress(var_name);
+        int var_adr = globalSymb.getAddress(var_name);
         Node* o = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
    
         int ref = ast_nodes.size();

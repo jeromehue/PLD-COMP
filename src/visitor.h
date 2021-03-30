@@ -1,13 +1,14 @@
 // Generatedgfrom ifcc.g4 by ANTLR 4.7.2
 
 #pragma once
+#include <vector>
 
 #include "antlr4-runtime.h"
 #include "ifccVisitor.h"
 #include "ifccBaseVisitor.h"
 #include "ASTNode.h"
 #include "symboltable.h"
-#include <vector>
+#include "Program.h"
 
 /**
  * This class provides an empty implementation of ifccVisitor, which can be
@@ -51,11 +52,13 @@ std::vector<Node*> getNodes() {
         return this->ast_nodes;
 }
 
-Symboltable *getST() {
-    return &symboltable;
+Symboltable *getglobalSymb() {
+    return &globalSymb;
 }
 
 protected:
-    std::vector<Node* > ast_nodes;
-    Symboltable symboltable;
+        std::vector<Function* > functions;
+        std::vector<Node* > ast_nodes;
+        Symboltable globalSymb;
+        Symboltable localSymb;
 };

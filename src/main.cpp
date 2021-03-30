@@ -76,7 +76,7 @@ int main(int argn, const char **argv) {
     std::cout << "\n### IR Generation ###" << std::endl;
 
     // One CFG for One Function
-    CFG* mainCFG = new CFG(visitor.getST());
+    CFG* mainCFG = new CFG(visitor.getglobalSymb());
     BasicBlock* inputBB;
     BasicBlock* outputBB;
     BasicBlock* mainBB = new BasicBlock(mainCFG, "main");
