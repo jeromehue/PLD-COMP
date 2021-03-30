@@ -1,8 +1,7 @@
-int toto() {
-        int n = 4;
-        return n;
-}
 int main() {
-    int a,b= 3,c;
+    int a,b,c;
+    a=5;
+    b=7;
+    c=a==b;
     return c;
 }

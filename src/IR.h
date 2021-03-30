@@ -42,7 +42,7 @@ public:
 		wmem,       //  6
 		call,       //  7 
 		cmp_eq,     //  8 
-		cmp_lt,     //  9  
+		cmp_uneq,     //  9  
 		cmp_le,      // 10
                 greater, //11
                 lower //12
@@ -91,7 +91,7 @@ public:
                         return " >> cmp_eq";
                         break;
                 case 9:
-                        return " >> cmp_lt";
+                        return " >> cmp_uneq";
                         break;
                 case 10:
                         return " >> cmp_le";

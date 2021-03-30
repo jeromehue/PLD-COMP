@@ -72,15 +72,8 @@ primaryExpression
 
 relationalExpression
 	: 
-	left=primaryExpression relOp=('<'|'>') right=primaryExpression    #RelExpr
-	;
-
-equalityExpression 
-	: 
-	relationalExpression
-	| equalityExpression '==' relationalExpression     
-	| equalityExpression '!=' relationalExpression 
-	;
+	left=primaryExpression relOp=('<'|'>'|'=='|'!=') right=primaryExpression    #RelExpr
+    ;
 	    
 statement       
 	: 
@@ -90,7 +83,7 @@ statement
 
 ifStatement 
 	:
-	'if' '(' equalityExpression ')' '{'
+	'if' '(' relationalExpression ')' '{'
 		statement*
         '}'
 	;

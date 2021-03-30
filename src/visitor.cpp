@@ -259,7 +259,7 @@ Any Visitor::visitRelExpr(ifccParser::RelExprContext* ctx)
 {
         cout << "Call to visit RelExpr" << std::endl;
 
-        char relop = ctx->relOp->getText().at(0);
+        string relop = ctx->relOp->getText();
         int ref = ast_nodes.size();
         visit(ctx->left);
         visit(ctx->right);
@@ -267,9 +267,7 @@ Any Visitor::visitRelExpr(ifccParser::RelExprContext* ctx)
    
         assert(ast_nodes.size() == ref+2);
  
-        switch(relop) 
-        {
-        case '<': {
+        if( relop == "<") {
                 cout << "inferieur" << std::endl;
                 Node* nop = new Node(
                     OP_LOWER, ast_nodes[ref+1], ast_nodes[ref], 0, 0);
@@ -277,9 +275,8 @@ Any Visitor::visitRelExpr(ifccParser::RelExprContext* ctx)
                 ast_nodes.pop_back();
                 ast_nodes.push_back(nop);
                 nop->display();
-                break;
         }
-        case '>': {
+        else if (relop == ">") {
                 cout << "superieur" << std::endl;
                 Node* nop = new Node(
                     OP_GREATER, ast_nodes[ref+1], ast_nodes[ref], 0, 0);
@@ -287,9 +284,23 @@ Any Visitor::visitRelExpr(ifccParser::RelExprContext* ctx)
                 ast_nodes.pop_back();
                 ast_nodes.push_back(nop);
                 nop->display();
-                break;
-        } 
-        default:
+        } else if (relop == "==") {
+                cout << "égale à" << std::endl;
+                Node* nop = new Node(
+                OP_EQUAL, ast_nodes[ref+1], ast_nodes[ref], 0, 0);
+                ast_nodes.pop_back();
+                ast_nodes.pop_back();
+                ast_nodes.push_back(nop);
+                nop->display();
+        } else if (relop == "différent de") {
+                cout << "superieur" << std::endl;
+                Node* nop = new Node(
+                OP_UNEQUAL, ast_nodes[ref+1], ast_nodes[ref], 0, 0);
+                ast_nodes.pop_back();
+                ast_nodes.pop_back();
+                ast_nodes.push_back(nop);
+                nop->display();
+        }else {
                 cout << "Erreur, opérateur non reconnu" << std::endl;
                 exit(EXIT_FAILURE);
         }
