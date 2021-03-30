@@ -75,6 +75,7 @@ equalityExpression
     ;    
 statement       
     : assignmentExpr ';'
+    | ifStatement
     ;
 
 ifStatement 
