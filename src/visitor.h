@@ -64,6 +64,7 @@ std::vector<Function * > getFunctions(){
 
 protected:
         std::vector<Function* > functions;
+        Function* curfct;
         std::vector<Node* > ast_nodes;
         Symboltable * globalSymb;
         Symboltable * localSymb;

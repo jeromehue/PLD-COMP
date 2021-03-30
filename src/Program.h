@@ -28,6 +28,7 @@ public:
         std::string name;
         Symboltable* symb;
         std::vector<Node*> funcInstr; 
+        int offset; 
         Function(std::string name)
         {
 		this->name=name;
@@ -35,6 +36,6 @@ public:
                 symb = new Symboltable();
                 funcInstr = std::vector<Node*>();
         }
-
+        
 
 };

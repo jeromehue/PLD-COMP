@@ -26,15 +26,15 @@ Any Visitor::visitReturnInstr(ifccParser::ReturnInstrContext *ctx)
     
         // Node definition
         Node* n = new Node(OP_RETURN, NULL, NULL,0, 0); 
-        ast_nodes.push_back(n);
+        curfct->funcInstr.push_back(n);
 
         // Setting the return expression as a child for 
         // our return node
-        int index = ast_nodes.size() - 1;
+        int index = curfct->funcInstr.size() - 1;
         visitChildren(ctx);
-        assert(ast_nodes.size() == index+2);
-        ast_nodes[index]->ndlist[0] = ast_nodes[index+1];
-        ast_nodes.pop_back();
+        assert(curfct->funcInstr.size() == index+2);
+        curfct->funcInstr[index]->ndlist[0] = curfct->funcInstr[index+1];
+        curfct->funcInstr.pop_back();
 
         // My job here is done
         return 0;
@@ -50,7 +50,7 @@ Any Visitor::visitNumber(ifccParser::NumberContext *ctx)
         // Node definition
         int a = stoi(ctx->CONST()->getText());
         Node* n = new Node(OP_CONST, NULL, NULL, a, 0);
-        ast_nodes.push_back(n);
+        curfct->funcInstr.push_back(n);
     
         return visitChildren(ctx);
 }
@@ -61,9 +61,9 @@ Any Visitor::visitVar(ifccParser::VarContext *ctx)
     
         //Node definition
         std::string var_name = ctx->ID()->getText();
-        int var_adr = localSymb->getAddress(var_name);
+        int var_adr = curfct->symb->getAddress(var_name);
         Node* var = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
-        ast_nodes.push_back(var);
+        curfct->funcInstr.push_back(var);
     
         return visitChildren(ctx);
 }
@@ -115,29 +115,29 @@ Any Visitor::visitInitDeclarator(ifccParser::InitDeclaratorContext *ctx)
         cout << " of " << ctx->ID()->getText() << std::endl;
 
 
-        // Let's insert or var in the symbol table 
+        // Let'ts insert or var in the symbol table 
         std::string var_name = ctx->ID()->getText();
-        localSymb->store(var_name, 0);
+        curfct->symb->store(var_name, 0);
 
 
         if (ctx->arithExpr()) {
         
                 // If assign, we create an IDENT node that's going to 
                 // be the left child of out ASSIGN node
-                int var_adr = localSymb->getAddress(var_name);
+                int var_adr = curfct->symb->getAddress(var_name);
                 Node* var = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
 
                 // Now let's deal with the ASSIGN node
                 Node* n = new Node(OP_ASSIGN, var, NULL, 0, 0);
-                ast_nodes.push_back(n);
+                curfct->funcInstr.push_back(n);
 
                 // Finishing with the expr node
 
-                int index = ast_nodes.size() - 1;
+                int index = curfct->funcInstr.size() - 1;
                 visitChildren(ctx);
-                assert(ast_nodes.size() == index+2);
-                ast_nodes[index]->ndlist[1] = ast_nodes[index+1];
-                ast_nodes.pop_back();
+                assert(curfct->funcInstr.size() == index+2);
+                curfct->funcInstr[index]->ndlist[1] = curfct->funcInstr[index+1];
+                curfct->funcInstr.pop_back();
         }
         
         return 0;
@@ -157,18 +157,18 @@ Any Visitor::visitAssignArithExpr(ifccParser::AssignArithExprContext *ctx)
         */  
         
         std::string var_name = ctx->ID()->getText();
-        int var_adr = localSymb->getAddress(var_name);
+        int var_adr = curfct->symb->getAddress(var_name);
         Node* o = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
    
-        int ref = ast_nodes.size();
+        int ref = curfct->funcInstr.size();
         // Expression 
         visitChildren(ctx);
-        assert(ast_nodes.size()== ref+1);
+        assert(curfct->funcInstr.size()== ref+1);
 
 
-        Node* n = new Node(OP_ASSIGN, o, ast_nodes.back(), 0, 0);
-        ast_nodes.pop_back(); 
-        ast_nodes.push_back(n);
+        Node* n = new Node(OP_ASSIGN, o, curfct->funcInstr.back(), 0, 0);
+        curfct->funcInstr.pop_back(); 
+        curfct->funcInstr.push_back(n);
 
         return 0; 
 }
@@ -186,18 +186,18 @@ Any Visitor::visitAssignRelExpr(ifccParser::AssignRelExprContext *ctx)
         */  
         
         std::string var_name = ctx->ID()->getText();
-        int var_adr = globalSymb.getAddress(var_name);
+        int var_adr = curfct->symb->getAddress(var_name);
         Node* o = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
    
-        int ref = ast_nodes.size();
+        int ref = curfct->funcInstr.size();
         // Expression 
         visitChildren(ctx);
-        assert(ast_nodes.size()== ref+1);
+        assert(curfct->funcInstr.size()== ref+1);
 
 
-        Node* n = new Node(OP_ASSIGN, o, ast_nodes.back(), 0, 0);
-        ast_nodes.pop_back(); 
-        ast_nodes.push_back(n);
+        Node* n = new Node(OP_ASSIGN, o, curfct->funcInstr.back(), 0, 0);
+        curfct->funcInstr.pop_back(); 
+        curfct->funcInstr.push_back(n);
 
         return 0; 
 }
@@ -207,42 +207,42 @@ Any Visitor::visitExpr(ifccParser::ExprContext* ctx)
         cout << "Call to visit Expr" << std::endl;
 
         char op = ctx->op->getText().at(0);
-        int ref = ast_nodes.size();
+        int ref = curfct->funcInstr.size();
         visit(ctx->left);
         visit(ctx->right);
     
    
-        assert(ast_nodes.size() == ref+2);
+        assert(curfct->funcInstr.size() == ref+2);
  
         switch(op) 
         {
         case '+': {
                 cout << "Addition" << std::endl;
                 Node* nop = new Node(
-                    OP_ADD, ast_nodes[ref+1], ast_nodes[ref], 0, 0);
-                ast_nodes.pop_back();
-                ast_nodes.pop_back();
-                ast_nodes.push_back(nop);
+                    OP_ADD, curfct->funcInstr[ref+1], curfct->funcInstr[ref], 0, 0);
+                curfct->funcInstr.pop_back();
+                curfct->funcInstr.pop_back();
+                curfct->funcInstr.push_back(nop);
                 nop->display();
                 break;
         }
         case '-': {
                 cout << "Subtraction" << std::endl;
                 Node* nop = new Node(
-                    OP_SUB, ast_nodes[ref+1], ast_nodes[ref], 0, 0);
-                ast_nodes.pop_back();
-                ast_nodes.pop_back();
-                ast_nodes.push_back(nop);
+                    OP_SUB, curfct->funcInstr[ref+1], curfct->funcInstr[ref], 0, 0);
+                curfct->funcInstr.pop_back();
+                curfct->funcInstr.pop_back();
+                curfct->funcInstr.push_back(nop);
                 nop->display();
                 break;
         } 
         case '*': {
                 cout << "Multiplication" << std::endl;
-                Node* nop = new Node(OP_MUL, ast_nodes[ref+1], 
-                                     ast_nodes[ref], 0, 0);
-                ast_nodes.pop_back();
-                ast_nodes.pop_back();
-                ast_nodes.push_back(nop);
+                Node* nop = new Node(OP_MUL, curfct->funcInstr[ref+1], 
+                                     curfct->funcInstr[ref], 0, 0);
+                curfct->funcInstr.pop_back();
+                curfct->funcInstr.pop_back();
+                curfct->funcInstr.push_back(nop);
                 nop->display();
                 break;
                 return 0;
@@ -260,45 +260,45 @@ Any Visitor::visitRelExpr(ifccParser::RelExprContext* ctx)
         cout << "Call to visit RelExpr" << std::endl;
 
         string relop = ctx->relOp->getText();
-        int ref = ast_nodes.size();
+        int ref = curfct->funcInstr.size();
         visit(ctx->left);
         visit(ctx->right);
     
    
-        assert(ast_nodes.size() == ref+2);
+        assert(curfct->funcInstr.size() == ref+2);
  
         if( relop == "<") {
                 cout << "inferieur" << std::endl;
                 Node* nop = new Node(
-                    OP_LOWER, ast_nodes[ref+1], ast_nodes[ref], 0, 0);
-                ast_nodes.pop_back();
-                ast_nodes.pop_back();
-                ast_nodes.push_back(nop);
+                    OP_LOWER, curfct->funcInstr[ref+1], curfct->funcInstr[ref], 0, 0);
+                curfct->funcInstr.pop_back();
+                curfct->funcInstr.pop_back();
+                curfct->funcInstr.push_back(nop);
                 nop->display();
         }
         else if (relop == ">") {
                 cout << "superieur" << std::endl;
                 Node* nop = new Node(
-                    OP_GREATER, ast_nodes[ref+1], ast_nodes[ref], 0, 0);
-                ast_nodes.pop_back();
-                ast_nodes.pop_back();
-                ast_nodes.push_back(nop);
+                    OP_GREATER, curfct->funcInstr[ref+1], curfct->funcInstr[ref], 0, 0);
+                curfct->funcInstr.pop_back();
+                curfct->funcInstr.pop_back();
+                curfct->funcInstr.push_back(nop);
                 nop->display();
         } else if (relop == "==") {
                 cout << "égale à" << std::endl;
                 Node* nop = new Node(
-                OP_EQUAL, ast_nodes[ref+1], ast_nodes[ref], 0, 0);
-                ast_nodes.pop_back();
-                ast_nodes.pop_back();
-                ast_nodes.push_back(nop);
+                OP_EQUAL, curfct->funcInstr[ref+1], curfct->funcInstr[ref], 0, 0);
+                curfct->funcInstr.pop_back();
+                curfct->funcInstr.pop_back();
+                curfct->funcInstr.push_back(nop);
                 nop->display();
         } else if (relop == "différent de") {
                 cout << "superieur" << std::endl;
                 Node* nop = new Node(
-                OP_UNEQUAL, ast_nodes[ref+1], ast_nodes[ref], 0, 0);
-                ast_nodes.pop_back();
-                ast_nodes.pop_back();
-                ast_nodes.push_back(nop);
+                OP_UNEQUAL, curfct->funcInstr[ref+1], curfct->funcInstr[ref], 0, 0);
+                curfct->funcInstr.pop_back();
+                curfct->funcInstr.pop_back();
+                curfct->funcInstr.push_back(nop);
                 nop->display();
         }else {
                 cout << "Erreur, opérateur non reconnu" << std::endl;
@@ -320,15 +320,15 @@ Any Visitor::visitFunction(ifccParser::FunctionContext* ctx)
         std::string name = ctx->ID()->getText();
         Function * f = new Function(name);
         (this->functions).push_back(f);
-        this->ast_nodes = f->funcInstr;//Here is a probleeemm
-        this->localSymb = f->symb;
+        this->curfct = f;
         visitChildren(ctx);
-        cout << "Display ast_nodes"<<endl;
-        for(int i=0; i < this->ast_nodes.size(); ++i) {
-                this->ast_nodes.at(i)->display();
+        /*
+        cout << "Display curfct->funcInstr"<<endl;
+        for(int i=0; i < this->curfct->funcInstr.size(); ++i) {
+                this->curfct->funcInstr.at(i)->display();
         }
-        cout <<"End display ast_nodes"<<endl;
-
+        cout <<"End display curfct->funcInstr"<<endl;
+        */
         cout << "Display funcInstr"<<endl;
         for(int i=0; i < f->funcInstr.size(); ++i) {
                 f->funcInstr.at(i)->display();
