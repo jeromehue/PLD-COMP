@@ -6,70 +6,112 @@ grammar ifcc;
 */
 
 axiom           
-    : prog       
+    :  prog
     ;
 
-prog            
-    : 
-        'int' 'main' '(' ')' '{' 
-            declaration?
-            statement*
-            RETURN primaryExpression ';' 
+procedure 
+	:
+	'void' ID '(' parameterlist? ')' '{'
+		declaration?
+		statement*
+        '}'
+        ;
+
+parameterlist 
+	:   
+	TYPE ID (',' TYPE ID)*
+	;
+
+function
+	: 
+	TYPE ID '(' parameterlist? ')' '{'
+		declaration?
+		statement*
+		returnInstr    
         '}' 
-    ;
+        ;
 
-blockItem       
-    : declaration
-    | statement
-    ;
+prog    : 
+        function*
+	'int' 'main' '(' ')' '{' 
+		declaration?
+		statement*
+		returnInstr    
+	'}' 
+	;
+
+// Declaration
 
 declaration     
-    : TYPE initDeclaratorList ';'
-    ;
+	: 
+	TYPE initDeclaratorList ';'
+	;
+
+initDeclaratorList
+	:   
+	initDeclarator (',' initDeclarator)*
+	;
+
+initDeclarator  
+	: 
+	ID 
+	| ID '=' arithExpr 
+	;
+
+returnInstr
+	:   
+	RETURN primaryExpression ';'
+	;
 
 primaryExpression
-    : CONST # number
-    | ID    # var
-    ;
+	: 
+	CONST # number
+	| ID    # var
+	;
 
 
 relationalExpression
-    : left=primaryExpression relOp=('<'|'>') right=primaryExpression    #RelExpr
-    ;
+	: 
+	left=primaryExpression relOp=('<'|'>') right=primaryExpression    #RelExpr
+	;
 
 equalityExpression 
-    : relationalExpression
-    | equalityExpression '==' relationalExpression     
-    | equalityExpression '!=' relationalExpression 
-    ;    
-
-initDeclaratorList
-    :   initDeclarator (',' initDeclarator)*
-    ;
-
-initDeclarator  
-    : ID 
-    | ID '=' arithExpr
-    ;
-
+	: 
+	relationalExpression
+	| equalityExpression '==' relationalExpression     
+	| equalityExpression '!=' relationalExpression 
+	;
+	    
 statement       
-    : assignmentExpr+ 
-    ;
+	: 
+	assignmentExpr ';'
+	| ifStatement
+	;
+
+ifStatement 
+	:
+	'if' '(' equalityExpression ')' '{'
+		statement*
+        '}'
+	;
+
 
 assignmentExpr  
-    : ID '=' arithExpr ';' # assignArithExpr
-    | ID '=' relationalExpression ';' # assignRelExpr
-    ;
+	: 
+	ID '=' arithExpr # assignArithExpr
+	| ID '=' relationalExpression # assignRelExpr
+	;
 
 
 arithExpr    
-    : primaryExpression                                 # prExpr
-    | '(' primaryExpression ')'                         # prExpr
-    | left=arithExpr op=('*'|'/') right=arithExpr       # Expr 
-    | left=arithExpr op=('+'|'-') right=arithExpr       # Expr 
-    | '(' left=arithExpr op=('*'|'/') right=arithExpr   ')'      # Expr 
-    | '(' left=arithExpr op=('+'|'-') right=arithExpr   ')'      # Expr 
-    ;
+	: 
+	primaryExpression                                   # prExpr
+	| '(' primaryExpression ')'                         # prExpr
+	| left=arithExpr op=('*'|'/') right=arithExpr       # Expr 
+	| left=arithExpr op=('+'|'-') right=arithExpr       # Expr 
+	| '(' left=arithExpr op=('*'|'/') right=arithExpr   ')'      # Expr 
+	| '(' left=arithExpr op=('+'|'-') right=arithExpr   ')'      # Expr 
+	;
             
 
 RETURN      : 'return' ;
