@@ -7,9 +7,8 @@
 #include "ifccLexer.h"
 #include "ifccParser.h"
 #include "ifccBaseVisitor.h"
-#include "ASTNode.h"
+#include "node.h"
 #include "visitor.h"
-#include "Program.h"
 
 using namespace antlr4;
 using namespace std;
@@ -17,8 +16,8 @@ using namespace std;
 static std::ofstream output;
 
 /*
- * “Sometimes, the elegant implementation is just a function. Not a method.
- * Not a class. Not a framework. Just a function.” 
+ * “Sometimes, the elegant implementation is just a function. 
+ * Not a method. Not a class. Not a framework. Just a function.” 
  *                                                      – John Carmack
  */                                                      
 

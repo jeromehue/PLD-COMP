@@ -1,4 +1,4 @@
-#include "IR.h"
+#include "ir.h"
 #include <iostream>
 
 void IRInstr::gen_asm(std::ostream &o) {

@@ -1,8 +1,9 @@
-#include "visitor.h"
-#include "ASTNode.h"
 #include <cassert>
 #include <vector>
 #include <string>
+
+#include "visitor.h"
+#include "node.h"
 
 // Improving readability
 using namespace antlrcpp;

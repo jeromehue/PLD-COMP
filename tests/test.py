@@ -232,7 +232,7 @@ for jobname in jobs:
     nbSucces = nbSucces +1
     print("\033[92mOK\x1b[0m ".rjust(17, '.'))
 
-print('\n')
+print("")
 print(" RESULTS ".center(40, '='))
 print( (str(nbSucces) + " out of " + str(nbTests) + 
         " (" + str(round(  (nbSucces / nbTests) * 100,2))  +"%) tests passed.").center(40, ' '))

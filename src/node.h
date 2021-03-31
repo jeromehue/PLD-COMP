@@ -8,8 +8,8 @@
 #pragma once
 
 #include <iostream>
-#include "IR.h"
-#include "symboltable.h"
+#include "ir.h"
+#include "symb.h"
 
 using namespace std;
 
@@ -300,3 +300,48 @@ public:
 
 
 };
+
+
+
+
+
+
+class Function {
+
+public:
+
+        std::string name;
+        Symboltable* symb;
+        std::vector<Node*> funcInstr; 
+        int offset; 
+        Function(std::string name)
+        {
+		this->name=name;
+                cout << "Creating Function named : " << this->name << endl;
+                symb = new Symboltable();
+                funcInstr = std::vector<Node*>();
+        }
+        
+        void computeOffset() {
+                int a = symb->getNextOffset();
+                std::cout << "True offset  : " << a << std::endl;
+                int round  = (-a+16) - (-a % 16 );
+                std::cout << "Offset rounded to 16 : " <<round<< std::endl;
+        }
+
+
+        /* Getters and Setters */
+        std::vector<Node*> getInstr() {
+                return this->funcInstr;
+        }
+
+        Symboltable* getSymboltable() {
+                return this->symb;
+        }
+};
+
+
+
+
+
+

@@ -6,9 +6,8 @@
 #include "antlr4-runtime.h"
 #include "ifccVisitor.h"
 #include "ifccBaseVisitor.h"
-#include "ASTNode.h"
-#include "symboltable.h"
-#include "Program.h"
+#include "node.h"
+#include "symb.h"
 
 /**
  * This class provides an empty implementation of ifccVisitor, which can be

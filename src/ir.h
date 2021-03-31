@@ -9,7 +9,7 @@
 
 
 // Personnal includes
-#include "symboltable.h"
+#include "symb.h"
 
 // Declarations from the parser -- replace with your own
 //#include "type.h"
