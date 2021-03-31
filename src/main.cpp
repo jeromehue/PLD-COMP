@@ -109,7 +109,40 @@ int main(int argn, const char **argv) {
 
         // Now generate the IR
         std::cout << "\n### IR Generation ###" << std::endl;
-        
+       
+        output.open("output.s");
+        for (int i = 0; i<functions.size(); ++i) {
+                std::string name = functions.at(i)->name;
+
+                 CFG* mainCFG =new CFG(functions.at(i)->getSymboltable());
+
+                // prologue
+                BasicBlock* BBinput = new BasicBlock(mainCFG,name);
+
+                // body
+                BasicBlock* BBbody = new BasicBlock(mainCFG, name + "Body");
+
+                // epilogue
+                BasicBlock* BBoutput=new BasicBlock(mainCFG, name+"Output");
+
+                // Default behaviour
+                BBbody->exit_true = BBoutput;
+                
+                mainCFG->add_bb(BBinput);
+                mainCFG->add_bb(BBbody);
+                mainCFG->add_bb(BBoutput);
+                mainCFG->current_bb = BBbody;
+                
+                std::vector<Node* > n = functions.at(i)->getInstr();
+                for(int i=0; i<n.size(); ++i) {
+                        n[i]->buildIR(mainCFG);
+                }
+
+
+                mainCFG->gen_asm(output);
+        }
+        output.close();
+        /*
         CFG* mainCFG = new CFG(functions.at(mfi)->getSymboltable());
 
         // prologue
@@ -141,7 +174,7 @@ int main(int argn, const char **argv) {
         output.open("output.s");
         mainCFG->gen_asm(output);
         output.close();
-
+        */
         /*
         for(int i=0; i<n.size(); ++i) {
                 n[i]->buildIR(mainCFG);

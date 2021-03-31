@@ -131,12 +131,16 @@ void CFG::gen_asm(std::ostream& o) {
         std::cout << "call to CFG::gen_asm" << std::endl;
         std::cout << "Number of bbs : " << bbs.size() << std::endl; 
         // Generate prologue
+        // !!!!!!!!!!!!!!!!!!!!!!!!!
+        // TODO FAIRE LE VRAI CALCUL POUR OFFSET (MIS A 256 POUR TEST) 
+        // !!!!!!!!!!!!!!!!!!!!!!!!!
         o << 
                 ".global " << bbs.at(0)->label << "\n"
-                "main:\n"
+                << bbs.at(0)->label << ":\n"
                 "\t# Prologue\n"
-                "\tpushq %rbp\n"
-                "\tmovq %rsp, %rbp\n"
+                "\tpushq\t%rbp\n"
+                "\tmovq\t%rsp, %rbp\n"
+                "\tsubq\t$256, %rsp"
                 "\n"
                 "\t# Body\n";
 
@@ -147,7 +151,7 @@ void CFG::gen_asm(std::ostream& o) {
         o << 
                 "\n"
                 "\t# Epilogue\n"
-                "\tpopq %rbp\n"
+                "\tleave\n"
                 "\tret\n";
 
 }
