@@ -196,6 +196,7 @@ public:
         /* x86 assembly code generation for this basic block  */
         void gen_asm(std::ostream &o) 
         {
+                std::cout << "Call to BB::gen_asm()" << std::endl;
                 for(int i = 0; i < (int)instrs.size(); ++i) {
                         instrs.at(i)->gen_asm(o);
                 }
@@ -254,6 +255,15 @@ public:
  * 
  * A few important comments:
  * 
+ * There is one cfg for each C function
+ *
+ * Each BB of the cfg has a label
+ *
+ * The CFG of a C function is composed of :
+ *      - an input BB (it will generate the prologue)
+ *      - an output BB  (it will generate the epilogue)
+ *      - an arbitrary number of other BBs for the body
+ *
  * The entry block is the one with the same label as the AST function name.
  * ( it could be the first of bbs, ot it could be defined by 
  * an attribute node )
@@ -261,7 +271,6 @@ public:
  * The exit block is the one with both exit pointers equal to nullptr.
  * ( again it could be identified in a more explicit way )
  *
- * There is one cfg for one function
  *
  */ 
 

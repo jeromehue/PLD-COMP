@@ -126,3 +126,28 @@ void IRInstr::gen_asm(std::ostream &o) {
 
     return;
 }
+
+void CFG::gen_asm(std::ostream& o) {
+        std::cout << "call to CFG::gen_asm" << std::endl;
+        std::cout << "Number of bbs : " << bbs.size() << std::endl; 
+        // Generate prologue
+        o << 
+                ".global " << bbs.at(0)->label << "\n"
+                "main:\n"
+                "\t# Prologue\n"
+                "\tpushq %rbp\n"
+                "\tmovq %rsp, %rbp\n"
+                "\n"
+                "\t# Body\n";
+
+        // Current bb is pointing to body function
+        this->current_bb->gen_asm(o);
+
+
+        o << 
+                "\n"
+                "\t# Epilogue\n"
+                "\tpopq %rbp\n"
+                "\tret\n";
+
+}

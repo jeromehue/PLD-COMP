@@ -16,6 +16,12 @@ using namespace std;
 
 static std::ofstream output;
 
+/*
+ * “Sometimes, the elegant implementation is just a function. Not a method.
+ * Not a class. Not a framework. Just a function.” 
+ *                                                      – John Carmack
+ */                                                      
+
 void prologue() {
     output << 
         ".global main\n"
@@ -103,17 +109,47 @@ int main(int argn, const char **argv) {
 
         // Now generate the IR
         std::cout << "\n### IR Generation ###" << std::endl;
-
+        
         CFG* mainCFG = new CFG(functions.at(mfi)->getSymboltable());
-        BasicBlock* mainBB =new BasicBlock(mainCFG,functions.at(mfi)->name);
 
-        mainCFG->current_bb = mainBB;
+        // prologue
+        BasicBlock* BBinput =
+                new BasicBlock(mainCFG,functions.at(mfi)->name);
+
+        // body
+        BasicBlock* BBbody =
+                new BasicBlock(mainCFG, "body");
+
+        // epilogue
+        BasicBlock* BBoutput = 
+                new BasicBlock(mainCFG, functions.at(mfi)->name+"Ouput");
+
+        // Default behaviour
+        BBbody->exit_true = BBoutput;
+
+        mainCFG->add_bb(BBinput);
+        mainCFG->add_bb(BBbody);
+        mainCFG->add_bb(BBoutput);
+        mainCFG->current_bb = BBbody;
+
+        
         for(int i=0; i<n.size(); ++i) {
                 n[i]->buildIR(mainCFG);
         }
 
-        functions.at(mfi)->computeOffset();
+
+        output.open("output.s");
+        mainCFG->gen_asm(output);
+        output.close();
+
         /*
+        for(int i=0; i<n.size(); ++i) {
+                n[i]->buildIR(mainCFG);
+        }*/
+        /*
+        output.open("output.s");
+        functions.at(mfi)->computeOffset();
+        
         // One CFG for One Function
         CFG* mainCFG = new CFG(visitor.getglobalSymb());
         BasicBlock* inputBB;
@@ -123,17 +159,18 @@ int main(int argn, const char **argv) {
         
         for(int i=0; i<n.size(); ++i) {
                 n[i]->buildIR(mainCFG);
-        }*/
-    // WIP : To be removed from here
-    std::cout << "\n### ASM Generation ###" << std::endl;
-    output.open("output.s");
-    prologue();
+        }
+         
+        // WIP : To be removed from here
+        std::cout << "\n### ASM Generation ###" << std::endl;
+        output.open("output.s");
+        prologue();
 
-    // Now the real thing
-    mainBB->gen_asm(output); 
+        // Now the real thing
+        mainBB->gen_asm(output); 
 
-    epilogue();
-    output.close();
-
+        epilogue();
+        output.close();
+        */
     return 0;
 }
