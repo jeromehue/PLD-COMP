@@ -6,20 +6,18 @@ grammar ifcc;
 */
 
 axiom           
-    :  prog
-    ;
+        :  prog
+        ;
 
 procedure 
-	:
-	'void' ID '(' parameterlist? ')' '{'
+	: 'void' ID '(' parameterlist? ')' '{'
 		declaration?
 		statement*
         '}'
         ;
 
 parameterlist 
-	:   
-	TYPE ID (',' TYPE ID)*
+	:   TYPE ID (',' TYPE ID)*
 	;
 
 function
@@ -32,74 +30,64 @@ function
         ;
 
 prog    
-	: 
-        (function | procedure)+
+	: (function | procedure)+
 	;
 
-// Declaration
 
 declaration     
-	: 
-	TYPE initDeclaratorList ';'
+	: TYPE initDeclaratorList ';'
 	;
 
 initDeclaratorList
-	:   
-	initDeclarator (',' initDeclarator)*
+	:   initDeclarator (',' initDeclarator)*
 	;
 
 initDeclarator  
-	: 
-	ID 
+	: ID 
 	| ID '=' arithExpr 
 	;
 
 returnInstr
-	:   
-	RETURN primaryExpression ';'
+	:   RETURN primaryExpression ';'
 	;
 
 primaryExpression
-	: 
-	CONST # number
+	: CONST # number
 	| ID    # var
 	;
 
 
 relationalExpression
-	: 
-	left=primaryExpression relOp=('<'|'>'|'=='|'!=') right=primaryExpression    #RelExpr
-    ;
+	: left=primaryExpression 
+          relOp=('<'|'>'|'=='|'!=') 
+          right=primaryExpression    #RelExpr
+        ;
 	    
 statement       
-	: 
-	assignmentExpr ';'
+	: assignmentExpr ';'
 	| ifStatement
 	;
 
 ifStatement 
-	:
-	'if' '(' relationalExpression ')' '{'
+	:'if' '(' relationalExpression ')' '{'
 		statement*
-        '}'
+         '}'
 	;
 
 
 assignmentExpr  
-	: 
-	ID '=' arithExpr # assignArithExpr
+	: ID '=' arithExpr # assignArithExpr
 	| ID '=' relationalExpression # assignRelExpr
 	;
 
 
 arithExpr    
-	: 
-	primaryExpression                                   # prExpr
-	| '(' primaryExpression ')'                         # prExpr
-	| left=arithExpr op=('*'|'/') right=arithExpr       # Expr 
-	| left=arithExpr op=('+'|'-') right=arithExpr       # Expr 
-	| '(' left=arithExpr op=('*'|'/') right=arithExpr   ')'      # Expr 
-	| '(' left=arithExpr op=('+'|'-') right=arithExpr   ')'      # Expr 
+	: primaryExpression                                     # prExpr
+	| '(' primaryExpression ')'                             # prExpr
+	| left=arithExpr op=('*'|'/') right=arithExpr           # Expr 
+	| left=arithExpr op=('+'|'-') right=arithExpr           # Expr 
+	| '(' left=arithExpr op=('*'|'/') right=arithExpr   ')' # Expr 
+	| '(' left=arithExpr op=('+'|'-') right=arithExpr   ')' # Expr 
 	;
             
 

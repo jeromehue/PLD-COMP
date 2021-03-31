@@ -13,7 +13,6 @@ int f2() {
 int main() 
 {    
         int a,b,c=42;
-        a=5;
-        b=7;
+        b=a + 4;
         return c;
 }

@@ -1,22 +1,20 @@
+/*************************************************************************
+                                Symboltable
+                             -------------------
+        start                   : 2021-03
+        copyright               : (C) 2021 by H4244
+*************************************************************************/
+
 #pragma once
+//---- Interface of the <Symboltable> class (symboltable.h file) ---------
 
-#include <string>
+
+//-------------------------------------------------------- Interfaces Used
 #include <map>
+#include <string>
 
 
-/*
- * A stocker dans la table :
- *      - Noms des variables (et constantes)
- *      - Fonctions et procédures
- *      - Variables temporaires générées par le compilateur
- * Pour toute variabe, garder en mémoire :
- *      - Nom
- *      - Type
- *      - Portée(pas forcément un attribut, à voir à l'implémentation)
- */
-
-
-// Since IR.h need a 'Type' type
+//------------------------------------------------------------------ Types 
 typedef  enum {
         INT = 0,
         CHAR = 1
@@ -28,11 +26,15 @@ struct Variable {
         bool defined;
 };
 
+
+//----------------------------------------------------------------- PUBLIC
+
 class Symboltable {
 public:
-    Symboltable(){
-        next_offset = -4;
-    }
+//--------------------------------------------------------- Public methods
+        Symboltable(){
+                next_offset = -4;
+        }
 
         int store(std::string name, int type) 
         {

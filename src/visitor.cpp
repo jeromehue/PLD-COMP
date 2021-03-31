@@ -19,7 +19,7 @@ Any Visitor::visitProg(ifccParser::ProgContext *ctx)
         return visitChildren(ctx);
 }
 
-Any Visitor::visitReturnInstr(ifccParser::ReturnInstrContext *ctx) 
+Any Visitor::visitReturnInstr(ifccParser::ReturnInstrContext *ctx)
 {    
         // Debug print
         cout << "Call to visitReturnInstr" << std::endl;
