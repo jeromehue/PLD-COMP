@@ -1,20 +1,18 @@
 #include "ir.h"
 #include <iostream>
 
-void IRInstr::gen_asm(std::ostream &o) {
-
-    //std::cout << "It worked, i'm on cpp file " << std::endl;
-    //std::cout << this->bb->cfg->symbols->getAddress("b") << std::endl;
-      switch(this->op) {
-            case ldconst: {
+void IRInstr::gen_asm(std::ostream &o)
+{
+        //std::cout << "It worked, i'm on cpp file " << std::endl;
+        //std::cout << this->bb->cfg->symbols->getAddress("b") << std::endl;
+        switch(this->op) {
+        case ldconst: {
                 // load a constant (#1) in a variable (#0)
-                
                 int index = bb->cfg->symbols->getAddress(params[0]);
                 o<<"\tmovl\t$"<<params[1]<<","<< index <<"(%rbp)\n";
                 return;
-            }
-            case add: {
-                
+        }
+        case add: {
                 int index = bb->cfg->symbols->getAddress(params[1]);
                 o<<"\tmovl\t"<<index<<"(%rbp),%eax\n";
                 int index2 = bb->cfg->symbols->getAddress(params[2]);
@@ -22,9 +20,8 @@ void IRInstr::gen_asm(std::ostream &o) {
                 int index3 = bb->cfg->symbols->getAddress(params[0]);
                 o<<"\tmovl\t%eax," << index3 << "(%rbp)\n";
                 return;
-            }
-            case sub: {
-                
+        }
+        case sub: {
                 int index = bb->cfg->symbols->getAddress(params[1]);
                 int index2 = bb->cfg->symbols->getAddress(params[2]);
                 o<<"\tmovl\t"<<index2<<"(%rbp),%eax\n";
@@ -32,8 +29,8 @@ void IRInstr::gen_asm(std::ostream &o) {
                 int index3 = bb->cfg->symbols->getAddress(params[0]);
                 o<<"\tmovl\t%eax," << index3 << "(%rbp)\n";
                 return;
-            }
-            case mul: {
+        }
+        case mul: {
                 int index = bb->cfg->symbols->getAddress(params[1]);
                 o<<"\tmovl\t"<<index<<"(%rbp),%eax\n";
                 int index2 = bb->cfg->symbols->getAddress(params[2]);
@@ -41,10 +38,8 @@ void IRInstr::gen_asm(std::ostream &o) {
                 int index3 = bb->cfg->symbols->getAddress(params[0]);
                 o<<"\tmovl\t%eax," << index3 << "(%rbp)\n";
                 return;
-
-            }
-            case greater: {
-                
+        }
+        case greater: {
                 int index = bb->cfg->symbols->getAddress(params[1]);
                 int index2 = bb->cfg->symbols->getAddress(params[2]);
                 o << "\tmovl\t" << index2 << "(%rbp), %eax\n";
@@ -54,9 +49,8 @@ void IRInstr::gen_asm(std::ostream &o) {
                 int index3 = bb->cfg->symbols->getAddress(params[0]);
                 o << "\tmovl\t%eax, " << index3 << "(%rbp)\n";
                 return;
-            }
-            case lower: {
-                
+        }
+        case lower: {
                 int index = bb->cfg->symbols->getAddress(params[1]);
                 int index2 = bb->cfg->symbols->getAddress(params[2]);
                 o<< "\tmovl\t" << index2 << "(%rbp), %eax\n";
@@ -66,9 +60,8 @@ void IRInstr::gen_asm(std::ostream &o) {
                 int index3 = bb->cfg->symbols->getAddress(params[0]);
                 o<< "\tmovl\t%eax, " << index3 << "(%rbp)\n";
                 return;
-            }
-            case cmp_eq: {
-                
+        }
+        case cmp_eq: {
                 int index = bb->cfg->symbols->getAddress(params[1]);
                 int index2 = bb->cfg->symbols->getAddress(params[2]);
                 o<< "\tmovl\t" << index2 << "(%rbp), %eax\n";
@@ -78,9 +71,9 @@ void IRInstr::gen_asm(std::ostream &o) {
                 int index3 = bb->cfg->symbols->getAddress(params[0]);
                 o<< "\tmovl\t%eax, " << index3 << "(%rbp)\n";
                 return;
-            }
-            case cmp_uneq: {
-                
+        }
+        case cmp_uneq: {
+
                 int index = bb->cfg->symbols->getAddress(params[1]);
                 int index2 = bb->cfg->symbols->getAddress(params[2]);
                 o<< "\tmovl\t" << index2 << "(%rbp), %eax\n";
@@ -90,16 +83,16 @@ void IRInstr::gen_asm(std::ostream &o) {
                 int index3 = bb->cfg->symbols->getAddress(params[0]);
                 o<< "\tmovl\t%eax, " << index3 << "(%rbp)\n";
                 return;
-            }
-            case wmem: {
-                //the value of variable var is written at address addr
+        }
+        case wmem: {
+                // The value of variable var is written at address addr
 
                 // Special case : return
-                if ( params[0] == "!retval" ) {
-                    std::cout << "return " << std::endl; 
-                    int index = bb->cfg->symbols->getAddress(params[1]);
-                    o<<"\tmovl\t"<<index<<"(%rbp),%eax\n";
-                    return;
+                if (params[0] == "!retval") {
+                        std::cout << "return " << std::endl;
+                        int index = bb->cfg->symbols->getAddress(params[1]);
+                        o<<"\tmovl\t"<<index<<"(%rbp),%eax\n";
+                        return;
                 }
 
                 // Fetch addresses from our variables names
@@ -111,30 +104,28 @@ void IRInstr::gen_asm(std::ostream &o) {
                 std::cout << "addr : " << params[0] << " "<< addr <<" \n";
                 std::cout << "var  : " << params[1] << " "<<var_index;
                 std::cout << std::endl;
-               
-                o<<"\tmovl\t"<<var_index<<"(%rbp),%eax\n";  
-                o<<"\tmovl\t%eax,"<<addr<<"(%rbp)\n";  
-                
+
+                o<<"\tmovl\t"<<var_index<<"(%rbp),%eax\n";
+                o<<"\tmovl\t%eax,"<<addr<<"(%rbp)\n";
                 return;
-            }
-            default:
+        }
+        default:
                 std::cout<<"gen_asm not implemented"<<std::endl;
                 //exit(EXIT_FAILURE);
                 return;
-        
         }
-
-    return;
+        return;
 }
 
-void CFG::gen_asm(std::ostream& o) {
+void CFG::gen_asm(std::ostream& o)
+{
         std::cout << "call to CFG::gen_asm" << std::endl;
-        std::cout << "Number of bbs : " << bbs.size() << std::endl; 
+        std::cout << "Number of bbs : " << bbs.size() << std::endl;
         // Generate prologue
         // !!!!!!!!!!!!!!!!!!!!!!!!!
-        // TODO FAIRE LE VRAI CALCUL POUR OFFSET (MIS A 256 POUR TEST) 
+        // TODO FAIRE LE VRAI CALCUL POUR OFFSET (MIS A 256 POUR TEST)
         // !!!!!!!!!!!!!!!!!!!!!!!!!
-        o << 
+        o <<
                 ".global " << bbs.at(0)->label << "\n"
                 << bbs.at(0)->label << ":\n"
                 "\t# Prologue\n"
@@ -147,11 +138,9 @@ void CFG::gen_asm(std::ostream& o) {
         // Current bb is pointing to body function
         this->current_bb->gen_asm(o);
 
-
-        o << 
+        o <<
                 "\n"
                 "\t# Epilogue\n"
                 "\tleave\n"
                 "\tret\n";
-
 }

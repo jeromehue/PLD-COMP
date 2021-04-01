@@ -1,6 +1,8 @@
 // Generatedgfrom ifcc.g4 by ANTLR 4.7.2
 
-#pragma once
+#ifndef VISITOR_H
+#define VISITOR_H
+
 #include <vector>
 
 #include "antlr4-runtime.h"
@@ -16,55 +18,60 @@
 class Visitor : public ifccBaseVisitor {
 public:
 
-virtual antlrcpp::Any visitAxiom(ifccParser::AxiomContext *ctx) override;
+        virtual antlrcpp::Any visitAxiom(ifccParser::AxiomContext *ctx) override;
 
-virtual antlrcpp::Any visitProg(ifccParser::ProgContext *ctx) override;
+        virtual antlrcpp::Any visitProg(ifccParser::ProgContext *ctx) override;
 
-virtual antlrcpp::Any visitReturnInstr(ifccParser::ReturnInstrContext *ctx) override;
+        virtual antlrcpp::Any visitReturnInstr(ifccParser::ReturnInstrContext *ctx) override;
 
-virtual antlrcpp::Any visitVar(ifccParser::VarContext *ctx) override;
+        virtual antlrcpp::Any visitVar(ifccParser::VarContext *ctx) override;
 
-virtual antlrcpp::Any visitNumber(ifccParser::NumberContext *ctx) override;
+        virtual antlrcpp::Any visitNumber(ifccParser::NumberContext *ctx) override;
 
-virtual antlrcpp::Any visitStatement(ifccParser::StatementContext *ctx) override;
+        virtual antlrcpp::Any visitStatement(ifccParser::StatementContext *ctx) override;
 
-virtual antlrcpp::Any visitInitDeclaratorList(ifccParser::InitDeclaratorListContext *ctx) override;
+        virtual antlrcpp::Any visitInitDeclaratorList(ifccParser::InitDeclaratorListContext *ctx) override;
 
-virtual antlrcpp::Any visitDeclaration(ifccParser::DeclarationContext *ctx) override;
+        virtual antlrcpp::Any visitDeclaration(ifccParser::DeclarationContext *ctx) override;
 
-virtual antlrcpp::Any visitAssignArithExpr(ifccParser::AssignArithExprContext *ctx) override;
+        virtual antlrcpp::Any visitAssignArithExpr(ifccParser::AssignArithExprContext *ctx) override;
 
-virtual antlrcpp::Any visitInitDeclarator(ifccParser::InitDeclaratorContext *ctx) override;
+        virtual antlrcpp::Any visitInitDeclarator(ifccParser::InitDeclaratorContext *ctx) override;
 
-virtual antlrcpp::Any visitExpr(ifccParser::ExprContext *ctx) override;
+        virtual antlrcpp::Any visitExpr(ifccParser::ExprContext *ctx) override;
 
-virtual antlrcpp::Any visitPrExpr(ifccParser::PrExprContext *ctx) override;
+        virtual antlrcpp::Any visitPrExpr(ifccParser::PrExprContext *ctx) override;
 
-virtual antlrcpp::Any visitRelExpr(ifccParser::RelExprContext *ctx) override;
+        virtual antlrcpp::Any visitRelExpr(ifccParser::RelExprContext *ctx) override;
 
-virtual antlrcpp::Any visitAssignRelExpr(ifccParser::AssignRelExprContext *ctx) override;
-virtual antlrcpp::Any visitIfStatement(ifccParser::IfStatementContext *ctx) override;
+        virtual antlrcpp::Any visitAssignRelExpr(ifccParser::AssignRelExprContext *ctx) override;
 
-virtual antlrcpp::Any visitFunction(ifccParser::FunctionContext* ctx) override;
+        virtual antlrcpp::Any visitIfStatement(ifccParser::IfStatementContext *ctx) override;
 
+        virtual antlrcpp::Any visitFunction(ifccParser::FunctionContext* ctx) override;
 
-// Getters
-std::vector<Node*> getNodes() {
-        return this->ast_nodes;
-}
+        // Getters
+        std::vector<Node*> getNodes()
+        {
+                return this->ast_nodes;
+        }
 
-Symboltable *getglobalSymb() {
-    return globalSymb;
-}
+        Symboltable *getglobalSymb()
+        {
+        return globalSymb;
+        }
 
-std::vector<Function * > getFunctions(){
-        return functions;
-}
+        std::vector<Function*> getFunctions()
+        {
+                return functions;
+        }
 
 protected:
-        std::vector<Function* > functions;
+        std::vector<Function*> functions;
         Function* curfct;
-        std::vector<Node* > ast_nodes;
+        std::vector<Node*> ast_nodes;
         Symboltable * globalSymb;
         Symboltable * localSymb;
 };
+
+#endif

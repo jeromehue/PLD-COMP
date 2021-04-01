@@ -5,7 +5,7 @@ include Makefile.local
 # Compiler and arguments
 CC := clang++
 CCARGS := -g -c -I $(ANTLR4_INCDIR) -I src/grammar -std=c++17 -Wno-defaulted-function-deleted -Wno-unknown-warning-option
-LDARGS := -g 
+LDARGS := -g
 
 # Files
 ANTLR_SOURCES := src/grammar/ifccBaseVisitor.cpp src/grammar/ifccLexer.cpp src/grammar/ifccParser.cpp src/grammar/ifccVisitor.cpp
@@ -38,7 +38,7 @@ test: ifcc
 	@cd tests && ./test.sh
 
 maintest: ifcc
-	@./ifcc maintest.c &>/dev/null 
+	@./ifcc maintest.c &>/dev/null
 	@echo 'Output produced : '
 	@cat output.s
 	gcc output.s && ./a.out; echo $$?

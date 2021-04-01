@@ -5,16 +5,16 @@
         copyright               : (C) 2021 by H4244
 *************************************************************************/
 
-#pragma once
-//---- Interface of the <Symboltable> class (symboltable.h file) ---------
+#ifndef SYMB_H
+#define SYMB_H
 
+//---- Interface of the <Symboltable> class (symboltable.h file) ---------
 
 //-------------------------------------------------------- Interfaces Used
 #include <map>
 #include <string>
 
-
-//------------------------------------------------------------------ Types 
+//------------------------------------------------------------------ Types
 typedef  enum {
         INT = 0,
         CHAR = 1
@@ -26,35 +26,33 @@ struct Variable {
         bool defined;
 };
 
-
 //----------------------------------------------------------------- PUBLIC
 
 class Symboltable {
 public:
 //--------------------------------------------------------- Public methods
-        Symboltable(){
+        Symboltable()
+        {
                 next_offset = -4;
         }
 
-        int store(std::string name, int type) 
+        int store(std::string name, int type)
         {
-
-        // Has the variable already been declared ?
+                // Has the variable already been declared ?
                 if(symbols.find(name) != symbols.end()) {
-                        std::cout  
-                        << "Erreur : la variable a déjà été déclarée" 
+                        std::cout
+                        << "Erreur : la variable a déjà été déclarée"
                         << std::endl;
-            
                         exit(EXIT_FAILURE);
                 }
-        
+
                 Variable v;
                 v.address   = next_offset;
                 v.type      = type;
                 v.defined   = false;
 
                 symbols.insert(std::pair<std::string, Variable>(name, v));
-                std::cout << " >> New entry in symbol table : " 
+                std::cout << " >> New entry in symbol table : "
                 << name << " @"<< v.address<< std::endl;
 
                 // Let's not forget to update next offset
@@ -63,53 +61,54 @@ public:
                 // Return var address
                 return v.address;
         }
-    
-    
-        int getNextOffset() 
+
+        int getNextOffset()
         {
                 return next_offset;
         }
-   
-        bool find(std::string variable) 
+
+        bool find(std::string variable)
         {
                 auto it = symbols.find(variable);
-                if (it == symbols.end()) 
+                if (it == symbols.end())
                         return false;
                 return true;
-        } 
-    
-        std::string getName(int index) 
+        }
+
+        std::string getName(int index)
         {
-                for (auto& it : symbols) { 
+                for (auto& it : symbols) {
                         if (it.second.address == index) {
                                 return it.first;
                         }
-                }    
+                }
                 std::cout << "Nom de variable introuvable" <<std::endl;
                 exit(EXIT_FAILURE);
         }
-     
-        int getAddress(std::string name) 
+
+        int getAddress(std::string name)
         {
                 auto it = symbols.find(name);
                 if (it == symbols.end()) {
-                        std::cout << "erreur, variable non déclarée" 
-                        << std::endl;
-                exit(EXIT_FAILURE);
+                        std::cout << "erreur, variable non déclarée"
+                                  << std::endl;
+                        exit(EXIT_FAILURE);
                 }
                 return it->second.address;
-        }   
+        }
 
-        void printSymbols() {
+        void printSymbols()
+        {
                 auto it = symbols.begin();
                 for (auto const& x : symbols) {
                         std::cout << x.first << std::endl;
                 }
-        } 
-    
+        }
+
         std::map<std::string, Variable> symbols;
 
 protected:
-        int next_offset; 
+        int next_offset;
 };
 
+#endif

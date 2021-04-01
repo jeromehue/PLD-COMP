@@ -5,36 +5,35 @@ grammar ifcc;
     http://port70.net/~nsz/c/c11/
 */
 
-axiom           
+axiom
         :  prog
         ;
 
-procedure 
+procedure
 	: 'void' ID '(' parameterlist? ')' '{'
 		declaration?
 		statement*
         '}'
         ;
 
-parameterlist 
+parameterlist
 	:   TYPE ID (',' TYPE ID)*
 	;
 
 function
-	: 
+	:
 	TYPE ID '(' parameterlist? ')' '{'
 		declaration?
 		statement*
-		returnInstr    
-        '}' 
+		returnInstr
+        '}'
         ;
 
-prog    
+prog
 	: (function | procedure)+
 	;
 
-
-declaration     
+declaration
 	: TYPE initDeclaratorList ';'
 	;
 
@@ -42,9 +41,9 @@ initDeclaratorList
 	:   initDeclarator (',' initDeclarator)*
 	;
 
-initDeclarator  
-	: ID 
-	| ID '=' arithExpr 
+initDeclarator
+	: ID
+	| ID '=' arithExpr
 	;
 
 returnInstr
@@ -56,40 +55,36 @@ primaryExpression
 	| ID    # var
 	;
 
-
 relationalExpression
-	: left=primaryExpression 
-          relOp=('<'|'>'|'=='|'!=') 
+	: left=primaryExpression
+          relOp=('<'|'>'|'=='|'!=')
           right=primaryExpression    #RelExpr
         ;
-	    
-statement       
+
+statement
 	: assignmentExpr ';'
 	| ifStatement
 	;
 
-ifStatement 
+ifStatement
 	:'if' '(' relationalExpression ')' '{'
 		statement*
          '}'
 	;
 
-
-assignmentExpr  
+assignmentExpr
 	: ID '=' arithExpr # assignArithExpr
 	| ID '=' relationalExpression # assignRelExpr
 	;
 
-
-arithExpr    
+arithExpr
 	: primaryExpression                                     # prExpr
 	| '(' primaryExpression ')'                             # prExpr
-	| left=arithExpr op=('*'|'/') right=arithExpr           # Expr 
-	| left=arithExpr op=('+'|'-') right=arithExpr           # Expr 
-	| '(' left=arithExpr op=('*'|'/') right=arithExpr   ')' # Expr 
-	| '(' left=arithExpr op=('+'|'-') right=arithExpr   ')' # Expr 
+	| left=arithExpr op=('*'|'/') right=arithExpr           # Expr
+	| left=arithExpr op=('+'|'-') right=arithExpr           # Expr
+	| '(' left=arithExpr op=('*'|'/') right=arithExpr   ')' # Expr
+	| '(' left=arithExpr op=('+'|'-') right=arithExpr   ')' # Expr
 	;
-            
 
 RETURN      : 'return' ;
 TYPE        : 'int';
