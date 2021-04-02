@@ -94,6 +94,7 @@ TYPE        : 'int' | 'char';
 INT_CONST   : [-]?[0-9]+;
 CHAR_CONST  : '\'' [a-zA-Z0-9] '\'' ;
 ID          : [_a-zA-Z][_a-zA-Z0-9]* ;
-COMMENT     : '/*' .*? '*/' -> skip ;
+COMMENT     : ('/*' .*? '*/') -> skip ;
+MCOMMENT    : ('//'~[\r\n]*[\r\n]) -> skip ;
 DIRECTIVE   : '#' .*? '\n' -> skip ;
 WS          : [ \t\r\n] -> channel(HIDDEN);
