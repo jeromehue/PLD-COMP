@@ -3,6 +3,7 @@
 
 void IRInstr::gen_asm(std::ostream &o)
 {
+        std::cout << "genrating asm for ir" << std::endl;
         //std::cout << "It worked, i'm on cpp file " << std::endl;
         //std::cout << this->bb->cfg->symbols->getAddress("b") << std::endl;
         switch(this->op) {
@@ -120,9 +121,23 @@ void IRInstr::gen_asm(std::ostream &o)
                 return;
         }
         case call: {
-                std::cout << "One we will generate asm for function call" 
+                std::cout << "One day we will generate asm for function call" 
                         << std::endl;
+                std::cout << "number of params  :" << this->params.size()-2 << std::endl;
+                
+                int nb_params = this->params.size() - 2;
+                if (nb_params == 1) {
+                        exit(EXIT_FAILURE);
+                } else if (nb_params == 2) {
+                        o<<"\tmovl\t$"<< this->params[2]<<",%edi\n";
+                        o<<"\tmovl\t$"<< this->params[3]<<",%esi\n";
+                } else {
                 exit(EXIT_FAILURE);
+                }
+                o << "\tcall\t" << this->params[1] << "\n";
+                int index3 = bb->cfg->symbols->getAddress(params[0]);
+                o<<"\tmovl\t%eax," << index3 << "(%rbp)\n";
+                std::cout << "Fin de la generation ir pour call" << std::endl;
                 break;
         }
         default:

@@ -289,8 +289,12 @@ public:
                         break;
                 case OP_CALL:
                         cout << "Generating IR for function call" << endl;
-                        std::cout << "arguments : " << this->ndlist.size()
+                        std::cout << "function name : " << this->strarg;
+                        std::cout << "; arguments : " << this->ndlist.size()
                         << std::endl;
+                        var3 = cfg->create_new_tempvar(INT);
+                        retvector.push_back(var3);
+                        retvector.push_back(this->strarg);
                         for(int i = 0; i< this->ndlist.size(); ++i) {
                                 std::cout << "arg " << i <<  std::endl;
                                 this->ndlist.at(i)->display();
@@ -304,6 +308,7 @@ public:
                         }
                         cfg->current_bb->add_IRInstr(IRInstr::call, 
                                                      INT, retvector);
+                        return var3;
                         break;
                 default:
                         std::cout << "Erreur lors de la génération de l'IR" << std::endl;
