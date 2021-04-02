@@ -89,12 +89,12 @@ arithExpr
 	| '(' left=arithExpr op=('+'|'-') right=arithExpr   ')' # Expr
 	;
 
-RETURN      : 'return' ;
-TYPE        : 'int' | 'char';
-INT_CONST   : [-]?[0-9]+;
-CHAR_CONST  : '\'' [a-zA-Z0-9] '\'' ;
-ID          : [_a-zA-Z][_a-zA-Z0-9]* ;
-COMMENT     : ('/*' .*? '*/') -> skip ;
-MCOMMENT    : ('//'~[\r\n]*[\r\n]) -> skip ;
-DIRECTIVE   : '#' .*? '\n' -> skip ;
-WS          : [ \t\r\n] -> channel(HIDDEN);
+RETURN          : 'return' ;
+TYPE            : 'int' | 'char';
+INT_CONST       : [-]?[0-9]+;
+CHAR_CONST      : '\'' [a-zA-Z0-9] '\'' ;
+ID              : [_a-zA-Z][_a-zA-Z0-9]* ;
+MULTINE_COMMENT : ('/*' .*? '*/') -> skip ;
+INLINE_COMMENT  : '//' ~[\r\n]* [\r\n] -> skip ;
+DIRECTIVE       : '#' .*? '\n' -> skip ;
+WS              : [ \t\r\n] -> channel(HIDDEN);
