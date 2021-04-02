@@ -35,14 +35,15 @@ public:
 		add,        //  2
 		sub,        //  3
 		mul,        //  4
-		rmem,       //  5
-		wmem,       //  6
-		call,       //  7
-		cmp_eq,     //  8
-		cmp_uneq,   //  9
-		cmp_le,     // 10
-                greater,    // 11
-                lower       // 12
+		div,        //  5
+		rmem,       //  6
+		wmem,       //  7
+		call,       //  8
+		cmp_eq,     //  9
+		cmp_uneq,   // 10
+		cmp_le,     // 11
+                greater,    // 12
+                lower       // 13
 	} Operation;
 
 	/** constructor */
@@ -59,19 +60,20 @@ public:
         static const std::string getOpByIndex(int index)
         {
                 switch(index) {
-                case 0: return " >> ldconst [dest,const]";
-                case 1: return " >> copy [dest, op1]";
-                case 2: return " >> add [dest, op1, op2]";
-                case 3: return " >> sub";
-                case 4: return " >> mul";
-                case 5: return " >> rmem";
-                case 6: return " >> wmem [addr, var]";
-                case 7: return " >> call";
-                case 8: return " >> cmp_eq";
-                case 9: return " >> cmp_uneq";
-                case 10: return " >> cmp_le";
-                case 11: return " >> greater";
-                case 12: return " >> lower";
+                case 0:  return " >> ldconst [dest,const]";
+                case 1:  return " >> copy [dest, op1]";
+                case 2:  return " >> add [dest, op1, op2]";
+                case 3:  return " >> sub";
+                case 4:  return " >> mul";
+                case 5:  return " >> div";
+                case 6:  return " >> rmem";
+                case 7:  return " >> wmem [addr, var]";
+                case 8:  return " >> call";
+                case 9:  return " >> cmp_eq";
+                case 10: return " >> cmp_uneq";
+                case 11: return " >> cmp_le";
+                case 12: return " >> greater";
+                case 13: return " >> lower";
                 default:
                         std::cout<<"Erreur : Opérateur inconnu"<<std::endl;
                         exit(EXIT_FAILURE);

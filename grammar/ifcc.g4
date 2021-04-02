@@ -11,7 +11,7 @@ axiom
 
 procedure
 	: 'void' ID '(' parameterlist? ')' '{'
-		declaration?
+		declaration*
 		statement*
         '}'
         ;
@@ -23,7 +23,7 @@ parameterlist
 function
 	:
 	TYPE ID '(' parameterlist? ')' '{'
-		declaration?
+		declaration*
 		statement*
 		returnInstr
         '}'
@@ -51,8 +51,9 @@ returnInstr
 	;
 
 primaryExpression
-	: CONST # number
-	| ID    # var
+	: INT_CONST  # number
+	| CHAR_CONST # char
+	| ID         # var
 	;
 
 relationalExpression
@@ -89,8 +90,9 @@ arithExpr
 	;
 
 RETURN      : 'return' ;
-TYPE        : 'int';
-CONST       : [-]?[0-9]+ ;
+TYPE        : 'int' | 'char';
+INT_CONST   : [-]?[0-9]+;
+CHAR_CONST  : '\'' [a-zA-Z0-9] '\'' ;
 ID          : [_a-zA-Z][_a-zA-Z0-9]* ;
 COMMENT     : '/*' .*? '*/' -> skip ;
 DIRECTIVE   : '#' .*? '\n' -> skip ;

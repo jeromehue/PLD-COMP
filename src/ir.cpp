@@ -39,6 +39,17 @@ void IRInstr::gen_asm(std::ostream &o)
                 o<<"\tmovl\t%eax," << index3 << "(%rbp)\n";
                 return;
         }
+        case div: {
+                // TODO: Fix division
+                int index = bb->cfg->symbols->getAddress(params[1]);
+                int index2 = bb->cfg->symbols->getAddress(params[2]);
+                o<<"\tmovl\t"<<index<<"(%rbp),%eax\n";
+                o<<"\tcltd\n";
+                o<<"\tidivl\t"<<index2<<"(%rbp)\n";
+                int index3 = bb->cfg->symbols->getAddress(params[0]);
+                o<<"\tmovl\t%eax," << index3 << "(%rbp)\n";
+                return;
+        }
         case greater: {
                 int index = bb->cfg->symbols->getAddress(params[1]);
                 int index2 = bb->cfg->symbols->getAddress(params[2]);
@@ -145,7 +156,6 @@ void CFG::gen_asm(std::ostream& o)
         this->current_bb->gen_asm(o);
 
         o <<
-                "\n"
                 "\t# Epilogue\n"
                 "\tleave\n"
                 "\tret\n";

@@ -27,6 +27,8 @@ public:
         virtual antlrcpp::Any visitVar(ifccParser::VarContext *ctx) override;
 
         virtual antlrcpp::Any visitNumber(ifccParser::NumberContext *ctx) override;
+        
+        virtual antlrcpp::Any visitChar(ifccParser::CharContext *ctx) override;
 
         virtual antlrcpp::Any visitStatement(ifccParser::StatementContext *ctx) override;
 
@@ -61,7 +63,7 @@ public:
 
         Symboltable *getglobalSymb()
         {
-        return globalSymb;
+                return globalSymb;
         }
 
         std::vector<Function*> getFunctions()
