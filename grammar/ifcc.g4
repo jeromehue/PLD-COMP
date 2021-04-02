@@ -11,7 +11,7 @@ axiom
 
 procedure
 	: 'void' ID '(' parameterlist? ')' '{'
-		declaration?
+		declaration*
 		statement*
         '}'
         ;
@@ -23,7 +23,7 @@ parameterlist
 function
 	:
 	TYPE ID '(' parameterlist? ')' '{'
-		declaration?
+		declaration*
 		statement*
 		returnInstr
         '}'
