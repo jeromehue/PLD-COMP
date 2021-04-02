@@ -191,7 +191,6 @@ for jobname in jobs:
     
     if gccstatus != 0 and pldstatus != 0:
         ## padawan correctly rejects invalid program -> test-case ok
-        # print("\033[92mOK\x1b[0m (rejects an invalid program)")
         print("\033[92mOK\x1b[0m ".rjust(17, '.')+ "(rejects an invalid program)")
         nbSucces = nbSucces + 1  
         continue
@@ -201,7 +200,6 @@ for jobname in jobs:
         continue
     elif gccstatus == 0 and pldstatus != 0:
         ## padawan wrongly rejects valid program -> error
-        # print("\033[91mFAILED\x1b[0m (rejects a valid program)")
         print("\033[91mFAILED\x1b[0m ".rjust(17, ".") +"(rejects a valid program)")
         if args.verbose:
             dumpfile("compile.txt")
@@ -220,8 +218,7 @@ for jobname in jobs:
         
     exepldstatus=command("./exe-pld","execute.txt")
     if open("gcc-execute.txt").read() != open("execute.txt").read() :
-        #print("\033[91mFAILED\x1b[0m (different results at execution)")
-        print("\033[91mFAILED\x1b[0m ".ljust(17,'.')+"(different results at execution)")
+        print("\033[91mFAILED\x1b[0m ".rjust(17,'.')+"(different results at execution)")
         if args.verbose:
             print("GCC:")
             dumpfile("gcc-execute.txt")
