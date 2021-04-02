@@ -109,6 +109,12 @@ void IRInstr::gen_asm(std::ostream &o)
                 o<<"\tmovl\t%eax,"<<addr<<"(%rbp)\n";
                 return;
         }
+        case call: {
+                std::cout << "One we will generate asm for function call" 
+                        << std::endl;
+                exit(EXIT_FAILURE);
+                break;
+        }
         default:
                 std::cout<<"gen_asm not implemented"<<std::endl;
                 //exit(EXIT_FAILURE);

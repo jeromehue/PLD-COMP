@@ -9,6 +9,7 @@
 #define NODE_H
 
 #include <iostream>
+#include <string>
 #include "ir.h"
 #include "symb.h"
 
@@ -277,9 +278,19 @@ public:
                         cout << "Generating IR for function call" << endl;
                         std::cout << "arguments : " << this->ndlist.size()
                         << std::endl;
+                        for(int i = 0; i< this->ndlist.size(); ++i) {
+                                std::cout << "arg " << i <<  std::endl;
+                                this->ndlist.at(i)->display();
+                                std::cout << std::endl;
+                                retvector.push_back(
+                                std::to_string(this->ndlist.at(i)->args[0]));
+                                std::cout << "pushed : " <<
+                                std::to_string(this->ndlist.at(i)->args[0])
+
+                                 << std::endl;
+                        }
                         cfg->current_bb->add_IRInstr(IRInstr::call, 
                                                      INT, retvector);
-                        exit(EXIT_FAILURE);
                         break;
                 default:
                         std::cout << "Erreur lors de la génération de l'IR" << std::endl;

@@ -368,6 +368,10 @@ Any Visitor::visitAssignFunction(ifccParser::AssignFunctionContext* ctx)
         Node* o = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
         Node* f = new Node(OP_CALL, NULL, NULL, v.size(), 0);
         f->strarg = ctx->ID(1)->getText();
+        // enleve les 2  NULL
+        f->ndlist.pop_back();
+        f->ndlist.pop_back();
+        
 
         for (int i = 0; i< v.size(); ++i) {
                 visit(ctx->primaryExpression(i));
