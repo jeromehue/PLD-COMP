@@ -44,12 +44,12 @@ maintest: ifcc
 	gcc output.s && ./a.out; echo $$?
 
 clean:
-	@rm -rf build/
-	@rm -rf src/grammar/
-	@rm -rf tests/out
-	@rm -rf output.s a.out
+	rm -rf build/
+	rm -rf src/grammar/
+	rm -rf tests/out
+	rm -rf output.s a.out
 # Old folders (keep this for now):
-	@rm -rf src/generated/
-	@rm -rf src/out/
+	rm -rf src/generated/
+	rm -rf src/out/
 
 .PHONY: all clean test maintest
