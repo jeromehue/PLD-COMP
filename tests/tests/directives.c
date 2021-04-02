@@ -2,6 +2,7 @@
 
 #define SOMETHING 5
 
-int main() {
-    return 0;
+int main()
+{
+        return 0;
 }
