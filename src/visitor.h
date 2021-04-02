@@ -46,10 +46,13 @@ public:
 
         virtual antlrcpp::Any visitAssignRelExpr(ifccParser::AssignRelExprContext *ctx) override;
 
+        virtual antlrcpp::Any visitAssignFunction(ifccParser::AssignFunctionContext *ctx) override;
+
         virtual antlrcpp::Any visitIfStatement(ifccParser::IfStatementContext *ctx) override;
 
         virtual antlrcpp::Any visitFunction(ifccParser::FunctionContext* ctx) override;
 
+        virtual antlrcpp::Any visitParameterlist(ifccParser::ParameterlistContext* ctx) override;
         // Getters
         std::vector<Node*> getNodes()
         {

@@ -168,10 +168,10 @@ public:
                 std::cout << "Writing IR instruction "<< op<<std::endl;
                 IRInstr* instr = new IRInstr(this, op, t, params);
                 this->instrs.push_back(instr);
-                std::cout << "Current BB instructions : \n" ;
+    /*            std::cout << "Current BB instructions : \n" ;
                 for (int i = 0; i < (int)instrs.size(); i++)
                         std::cout << *(instrs.at(i));
-        }
+      */  }
 
 	// No encapsulation whatsoever here. Feel free to do better.
 

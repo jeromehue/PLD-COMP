@@ -324,3 +324,76 @@ Any Visitor::visitFunction(ifccParser::FunctionContext* ctx)
         std::cout <<"End display funcInstr"<<endl;
         return 0;
 }
+
+Any Visitor::visitParameterlist(ifccParser::ParameterlistContext* ctx) 
+{
+        std::cout << "Call to visit parameter list" << std::endl;
+        auto v = ctx->ID();
+        auto vt = ctx->TYPE();
+        std::cout << "Number of parameters : " << v.size() << std::endl;
+        for (int i = 0; i < v.size(); ++i) {
+                
+                std::cout << " >> " << vt.at(i)->getText() 
+                          << " "<< v.at(i)->getText() << std::endl;
+                int type = 0;
+                std::string strtype = vt.at(i)->getText();
+                if ( strtype  == "int") {
+                        type = 0;
+                } else if (strtype == "char") {
+                        type = 1;
+                }         
+                curfct->symb->store(v.at(i)->getText(), type);
+        }
+        return 0;
+}
+
+Any Visitor::visitAssignFunction(ifccParser::AssignFunctionContext* ctx) 
+{
+        int ref = curfct->funcInstr.size();
+        // Debug print
+        std::cout <<"Call to AssignFunction " << std::endl;
+        std::cout << " >> Assigning " << ctx->ID(0)->getText()
+        << " to function " << ctx->ID(1)->getText() << std::endl;
+
+        // Node definition
+        /*
+         * n->left is going to be the variable
+         * n->right is going to be the function
+        */
+        
+        std::string var_name = ctx->ID(0)->getText();
+        int var_adr = curfct->symb->getAddress(var_name);
+        
+        auto v = ctx->primaryExpression();
+        Node* o = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
+        Node* f = new Node(OP_CALL, NULL, NULL, v.size(), 0);
+        f->strarg = ctx->ID(1)->getText();
+
+        for (int i = 0; i< v.size(); ++i) {
+                visit(ctx->primaryExpression(i));
+                f->addNode(curfct->funcInstr.back());
+                curfct->funcInstr.pop_back();
+        }
+        
+
+        std::cout << "decompte " << curfct->funcInstr.size() - ref 
+                << std::endl;
+        assert(ref == curfct->funcInstr.size()); 
+        Node* n = new Node(OP_ASSIGN, o, f, 0, 0);
+        curfct->funcInstr.push_back(n);
+
+        /*
+        int ref = curfct->funcInstr.size();
+        // Function
+        // Si on a une varible, la transformer en const
+        // Passer la liste de parametres en const
+        Node* funcnode = new Node(OP_FUNCTION, NULL, NULL, 0, 0);
+
+        Node* n = new Node(OP_ASSIGN, o, curfct->funcInstr.back(), 0, 0);
+        curfct->funcInstr.pop_back();
+        curfct->funcInstr.push_back(n);
+        */
+        return 0;
+
+}
+

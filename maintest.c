@@ -1,18 +1,11 @@
-int f1() 
-{    
-        int b = 5;
-        return b;
-}
-
-int f2() {
-        int a;
-        a = 3 + 5;
-        return a;
+int f1(int p1, int p2) {
+        p1 = p1 + p2;
+        return p1;
 }
 
 int main() 
 {    
-        int a,b,c=42;
-        b=a + 4;
-        return c;
+        int a  = 42;
+        a = f1(1,2);
+        return a;
 }

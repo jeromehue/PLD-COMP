@@ -23,12 +23,11 @@ enum nodeOp {
         OP_IDENT,
         OP_CONST,
         OP_RETURN,
-        OP_BLOCK,
-        OP_FUNCTION,
         OP_LOWER,
         OP_GREATER,
         OP_EQUAL,
-        OP_UNEQUAL
+        OP_UNEQUAL,
+        OP_CALL,
 };
 
 class Node {
@@ -117,7 +116,10 @@ public:
                          * IR->ASM will generate the code that places
                          * this walue where the ABI tells it should go.
                          * */
-
+                case OP_CALL:
+                        std::cout << "OP CALL " << this->strarg << " with "
+                                << this->args[0] << " arguments" << std::endl;
+                        break;
                 default:
                         std::cout << "Unknown Node" << std::endl;
                         break;
@@ -247,13 +249,15 @@ public:
                                   << cfg->symbols->getName(args[0])
                                   << std::endl;
                         return cfg->symbols->getName(args[0]);
+                        break;
 
                 case OP_ASSIGN:
                         sleft = ndlist[0]->buildIR(cfg);  // adresse variable
                         sright = ndlist[1]->buildIR(cfg); // adresse résultat expression
                         retvector.push_back(sleft);
                         retvector.push_back(sright);
-                        std::cout << "-------------> Assign node building ir " << sleft << std::endl;
+                        std::cout << "Assign node building ir " 
+                                << sleft << std::endl;
                         cfg->current_bb->add_IRInstr(
                             IRInstr::wmem, INT, retvector);
                         return sright;
@@ -269,7 +273,14 @@ public:
                             INT,
                             retvector);
                         break;
-
+                case OP_CALL:
+                        cout << "Generating IR for function call" << endl;
+                        std::cout << "arguments : " << this->ndlist.size()
+                        << std::endl;
+                        cfg->current_bb->add_IRInstr(IRInstr::call, 
+                                                     INT, retvector);
+                        exit(EXIT_FAILURE);
+                        break;
                 default:
                         std::cout << "Erreur lors de la génération de l'IR" << std::endl;
                         std::cout << "Fonctionnalité non implémentée" << std::endl;
@@ -277,6 +288,11 @@ public:
                         break;
                 }
                 return "";
+        }
+
+
+        void addNode(Node* n) {
+                ndlist.push_back(n);
         }
 
         /* Operator */
@@ -290,7 +306,9 @@ public:
         std::vector<Node *> ndlist;
 
         /* 0, 1 or 2 arguments */
-        int args[1];
+        int args[2];
+        
+        std::string strarg;
 };
 
 class Function {

@@ -73,8 +73,10 @@ ifStatement
 	;
 
 assignmentExpr
-	: ID '=' arithExpr # assignArithExpr
-	| ID '=' relationalExpression # assignRelExpr
+	: ID '=' arithExpr                      # assignArithExpr
+	| ID '=' relationalExpression           # assignRelExpr
+        | ID '=' ID '(' primaryExpression? ')'                 # assignFunction
+        | ID '=' ID '(' primaryExpression (',' primaryExpression)+ ')'# assignFunction
 	;
 
 arithExpr
