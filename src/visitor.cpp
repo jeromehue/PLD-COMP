@@ -74,15 +74,6 @@ Any Visitor::visitStatement(ifccParser::StatementContext *ctx)
         return visitChildren(ctx);
 }
 
-Any Visitor::visitIfStatement(ifccParser::IfStatementContext *ctx)
-{
-        //Debug print
-        std::cout << "Call to visit Statement " << std::endl;
-        exit(EXIT_FAILURE);
-
-        return 0;
-}
-
 Any Visitor::visitDeclaration (ifccParser::DeclarationContext *ctx)
 {
         // Debug print
@@ -161,6 +152,28 @@ Any Visitor::visitAssignArithExpr(ifccParser::AssignArithExprContext *ctx)
         Node* n = new Node(OP_ASSIGN, o, curfct->funcInstr.back(), 0, 0);
         curfct->funcInstr.pop_back();
         curfct->funcInstr.push_back(n);
+
+        return 0;
+}
+
+Any Visitor::visitIfStatement(ifccParser::IfStatementContext *ctx)
+{
+        //Debug print
+        std::cout << "Call to visit Statement " << std::endl;
+       
+        visit(ctx->relationalExpression);
+        visit(ctx->thenBloc);
+        visit(ctx->elseBloc);
+        int sizeStack = curfct->funcInstr.size();
+        Node* n = new Node(OP_IF, curfct->funcInstr[sizeStack-3], NULL, 0, 0);
+        n->pushBackToNdList(curfct->funcInstr[sizeStack-2]);
+        n->pushBackToNdList(curfct->funcInstr[sizeStack-1]);
+        
+        curfct->funcInstr.pop_back();
+        curfct->funcInstr.pop_back();
+        curfct->funcInstr.pop_back();
+        curfct->funcInstr.push_back(n);
+
 
         return 0;
 }

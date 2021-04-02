@@ -28,7 +28,8 @@ enum nodeOp {
         OP_LOWER,
         OP_GREATER,
         OP_EQUAL,
-        OP_UNEQUAL
+        OP_UNEQUAL,
+        OP_IF
 };
 
 class Node {
@@ -41,7 +42,10 @@ public:
                 this->args[0] = arg0;
                 this->args[1] = arg1;
         }
-
+        void pushBackToNdList(Node * node)
+        {
+                this->ndlist.push_back(node);
+        }
         void display()
         {
                 switch (op) {
@@ -107,6 +111,16 @@ public:
                         std::cout << std::endl;
                         break;
 
+                case OP_IF:
+                        std::cout << "OP_IF | " << std::endl;
+                        std::cout << "\texpresionn : ";
+                        ndlist[0]->display();
+                        std::cout << "\tthenbloc: ";
+                        ndlist[1]->display();
+                        std::cout << "\telsebloc: ";
+                        ndlist[2]->display();
+                        std::cout << std::endl;
+                        break;
                 case OP_RETURN:
                         std::cout << "OP_RETURN" << std::endl;
                         break;
@@ -258,7 +272,36 @@ public:
                             IRInstr::wmem, INT, retvector);
                         return sright;
                         break;
+                case OP_IF:
+                        //test
+                        BasicBlock * testBB = cfg->current_bb;
 
+                        //then
+                        irexpr=ndlist[0]->buildIR(cfg); // ir de l'expression
+                        BasicBlock * thenBB = new BasicBlock(cfg, "thenBB");
+                        testBB->exit_true=thenBB;
+                        
+                        //else
+                        irThen = ndlist[1]->buildIR(cfg);
+                        BasicBlock * elseBB = new BasicBlock(cfg, "elseBB");
+                        testBB->exit_false=elseBB;
+
+                        //after
+                        BasicBlock * afterBB = new BasicBlock(cfg, "afterBB");
+                        cfg->current_bb = afterBB;
+
+                        //liaison entre les if else avec le afterBB
+                        thenBB->exit_true=afterBB;
+                        thenBB->exit_false=NULL;
+                        elseBB->exit_false=NULL;
+                        elseBB->exit_true=afterBB;
+
+                        cfg->add_bb(thenBB);
+                        cfg->add_bb(elseBB);
+                        cfg->add_bb(afterBB);
+
+                        return;
+                        break;
                 case OP_RETURN:
                         sleft = ndlist[0]->buildIR(cfg);
                         sright = "!retval";

@@ -237,10 +237,14 @@ public:
                 bbs.push_back(bb);
         }
 
-	/*
-         * x86 code generation:
-         * could be encapsulated in a processor class
-         * in a retargetable compiler.
+	/*   case OP_UNEQUAL:
+                        std::cout << "OP_UNEQUAL | " << std::endl;
+                        std::cout << "\tleft : ";
+                        ndlist[0]->display();
+                        std::cout << "\tright : ";
+                        ndlist[1]->display();
+                        std::cout << std::endl;
+                        break;compiler.
          */
         void gen_asm(std::ostream& o);
 

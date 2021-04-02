@@ -67,9 +67,10 @@ statement
 	;
 
 ifStatement
-	:'if' '(' relationalExpression ')' '{'
-		statement*
+	:'if' '(' relationalExpression  ')' '{'
+		thenBloc = statement
          '}'
+	'else' '{' elseBloc = statement'}'
 	;
 
 assignmentExpr
