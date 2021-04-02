@@ -40,7 +40,6 @@ void IRInstr::gen_asm(std::ostream &o)
                 return;
         }
         case div: {
-                // TODO: Fix division
                 int index = bb->cfg->symbols->getAddress(params[1]);
                 int index2 = bb->cfg->symbols->getAddress(params[2]);
                 o<<"\tmovl\t"<<index<<"(%rbp),%eax\n";
