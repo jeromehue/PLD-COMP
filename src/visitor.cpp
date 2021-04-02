@@ -46,8 +46,22 @@ Any Visitor::visitNumber(ifccParser::NumberContext *ctx)
         std::cout << "Call to visitNumber" << std::endl;
 
         // Node definition
-        int a = stoi(ctx->CONST()->getText());
+        int a = stoi(ctx->INT_CONST()->getText());
         Node* n = new Node(OP_CONST, NULL, NULL, a, 0);
+        curfct->funcInstr.push_back(n);
+
+        return visitChildren(ctx);
+}
+
+Any Visitor::visitChar(ifccParser::CharContext *ctx)
+{
+        // Debug print
+        std::cout << "Call to visitChar" << std::endl;
+
+        // Node definition
+        std::string charConst = ctx->CHAR_CONST()->getText();
+        int value = charConst[1];
+        Node* n = new Node(OP_CONST, NULL, NULL, value, 0);
         curfct->funcInstr.push_back(n);
 
         return visitChildren(ctx);
