@@ -148,19 +148,43 @@ void IRInstr::gen_asm(std::ostream &o)
                 return;
         }
         case call: {
-                std::cout << "One day we will generate asm for function call" 
+                std::cout << "One day we'll generate asm for function call" 
                         << std::endl;
                 std::cout << "number of params  :" << this->params.size()-2 << std::endl;
                 
                 int nb_params = this->params.size() - 2;
                 if (nb_params == 1) {
-                        exit(EXIT_FAILURE);
+                        o<<"\tmovl\t$"<< this->params[2]<<",%edi\n";
                 } else if (nb_params == 2) {
                         o<<"\tmovl\t$"<< this->params[2]<<",%edi\n";
                         o<<"\tmovl\t$"<< this->params[3]<<",%esi\n";
-                } else {
-                exit(EXIT_FAILURE);
-                }
+                } else if (nb_params == 3){
+                        o<<"\tmovl\t$"<< this->params[2]<<",%edi\n";
+                        o<<"\tmovl\t$"<< this->params[3]<<",%esi\n";
+                        o<<"\tmovl\t$"<< this->params[4]<<",%edx\n";
+                } else if (nb_params == 4){
+                        o<<"\tmovl\t$"<< this->params[2]<<",%edi\n";
+                        o<<"\tmovl\t$"<< this->params[3]<<",%edi\n";
+                        o<<"\tmovl\t$"<< this->params[4]<<",%edx\n";
+                        o<<"\tmovl\t$"<< this->params[5]<<",%ecx\n";
+                } else if (nb_params == 5){
+                        o<<"\tmovl\t$"<< this->params[2]<<",%edi\n";
+                        o<<"\tmovl\t$"<< this->params[3]<<",%edi\n";
+                        o<<"\tmovl\t$"<< this->params[4]<<",%edx\n";
+                        o<<"\tmovl\t$"<< this->params[5]<<",%ecx\n";
+                        o<<"\tmovl\t$"<< this->params[6]<<",%r8d\n";
+                } else if (nb_params == 6){
+                        o<<"\tmovl\t$"<< this->params[2]<<",%edi\n";
+                        o<<"\tmovl\t$"<< this->params[3]<<",%edi\n";
+                        o<<"\tmovl\t$"<< this->params[4]<<",%edx\n";
+                        o<<"\tmovl\t$"<< this->params[5]<<",%ecx\n";
+                        o<<"\tmovl\t$"<< this->params[6]<<",%r8d\n";
+                        o<<"\tmovl\t$"<< this->params[7]<<",%r9d\n";
+                }else {
+                        std::cout << "Trop de paramètres (+de 6)" 
+                                << std::endl;
+                        exit(EXIT_FAILURE);
+                }               
                 o << "\tcall\t" << this->params[1] << "\n";
                 int index3 = bb->cfg->symbols->getAddress(params[0]);
                 o<<"\tmovl\t%eax," << index3 << "(%rbp)\n";
