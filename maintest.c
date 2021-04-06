@@ -1,13 +1,18 @@
 int f1(int p1, int p2, int p3) {
-        int a  =3;
-        p1 = p1 + p2 + a + p3;
+        p1 = p1+p2+p3;
         return p1;
+}
+
+int f2(int a, int b) {
+        a = a*b;
+        return a;
 }
 
 int main() 
 {    
-        int a  = 42, b =5;
-        int c =3, d=4,e=6,f=8;
-        a = f1(2, b, 4);
+        int a, b; 
+        a = f1(2, 4, 4);
+        b = f2(3);
+        a = a+b;
         return a;
 }

@@ -125,8 +125,10 @@ public:
                 std::cout <<"Offset rounded to 16 : "<< round << std::endl;
                 return round;
         }
+
         std::map<std::string, Variable> symbols;
 
+        static std::map<std::string, int > fct_params; 
 protected:
         int next_offset;
 };
