@@ -1,9 +1,12 @@
 #include <cassert>
+#include <map>
 #include <vector>
 #include <string>
 
 #include "visitor.h"
 #include "node.h"
+
+std::map<std::string, int > Symboltable::fct_params;
 
 // Improving readability
 using namespace antlrcpp;
@@ -375,6 +378,9 @@ Any Visitor::visitFunction(ifccParser::FunctionContext* ctx)
         for(int i=0; i < f->funcInstr.size(); ++i) {
                 f->funcInstr.at(i)->display();
         }
+        int nb = curfct->symb->getNbParams();
+        curfct->symb->fct_params.insert(
+                        std::pair<std::string,int>(name,nb));
         std::cout <<"End display funcInstr"<<endl;
         return 0;
 }

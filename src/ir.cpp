@@ -158,6 +158,19 @@ void IRInstr::gen_asm(std::ostream &o)
                         exit(EXIT_FAILURE);
                 }
 
+                std::string name = this->params[1];
+                int exp = 
+                this->bb->cfg->symbols->fct_params.find(name)->second;
+                std::cout << "calling " << name << " who has "
+                        << exp << " paramerers" << std::endl;
+                if (nb_params != exp ) {
+                        std::cout << "Error : function " << name <<
+                                " called, expected "<< exp << " arguments"
+                                << " but found " << nb_params << "."
+                                << std::endl;
+                        exit(EXIT_FAILURE);
+                }
+
 
                 string treg[6] = 
                 {"%edi","%esi","%edx","%ecx","%r8d", "%r9d"};
@@ -166,42 +179,7 @@ void IRInstr::gen_asm(std::ostream &o)
                         int idx = bb->cfg->symbols->getAddress(params[i+2]);
                         o<<"\tmovl\t"<<idx<<"(%rbp), " <<treg[i] << "\n";
                 }
-                /*
-                if (nb_params == 1) {
-                        int id1 = bb->cfg->symbols->getAddress(params[2]);
-                        o<<"\tmovl\t"<< id1 <<",%edi\n";
-                } else if (nb_params == 2) {
-                        int id1 = bb->cfg->symbols->getAddress(params[2]);
-                        int id2 = bb->cfg->symbols->getAddress(params[3]);
-                        o<<"\tmovl\t"<< id1 <<"(%rbp),%edi\n";
-                        o<<"\tmovl\t"<< id2 <<"(%rbp),%esi\n";
-                } else if (nb_params == 3){
-                        o<<"\tmovl\t$"<< this->params[2]<<",%edi\n";
-                        o<<"\tmovl\t$"<< this->params[3]<<",%esi\n";
-                        o<<"\tmovl\t$"<< this->params[4]<<",%edx\n";
-                } else if (nb_params == 4){
-                        o<<"\tmovl\t$"<< this->params[2]<<",%edi\n";
-                        o<<"\tmovl\t$"<< this->params[3]<<",%edi\n";
-                        o<<"\tmovl\t$"<< this->params[4]<<",%edx\n";
-                        o<<"\tmovl\t$"<< this->params[5]<<",%ecx\n";
-                } else if (nb_params == 5){
-                        o<<"\tmovl\t$"<< this->params[2]<<",%edi\n";
-                        o<<"\tmovl\t$"<< this->params[3]<<",%edi\n";
-                        o<<"\tmovl\t$"<< this->params[4]<<",%edx\n";
-                        o<<"\tmovl\t$"<< this->params[5]<<",%ecx\n";
-                        o<<"\tmovl\t$"<< this->params[6]<<",%r8d\n";
-                } else if (nb_params == 6){
-                        o<<"\tmovl\t$"<< this->params[2]<<",%edi\n";
-                        o<<"\tmovl\t$"<< this->params[3]<<",%edi\n";
-                        o<<"\tmovl\t$"<< this->params[4]<<",%edx\n";
-                        o<<"\tmovl\t$"<< this->params[5]<<",%ecx\n";
-                        o<<"\tmovl\t$"<< this->params[6]<<",%r8d\n";
-                        o<<"\tmovl\t$"<< this->params[7]<<",%r9d\n";
-                }else {
-                        std::cout << "Trop de paramètres (+de 6)" 
-                                << std::endl;
-                        exit(EXIT_FAILURE);
-                } */              
+                            
                 o << "\tcall\t" << this->params[1] << "\n";
                 int index3 = bb->cfg->symbols->getAddress(params[0]);
                 o<<"\tmovl\t%eax," << index3 << "(%rbp)\n";
@@ -217,45 +195,18 @@ void IRInstr::gen_asm(std::ostream &o)
 }
 
 
-void load_parameters(std::ostream& o, int nb_params) {
+void CFG::load_parameters(std::ostream& o, int nb_params) {
         o << "\n\t# nb params " << nb_params << std::endl;
         if (nb_params == 0) {
                 return ;
         }
-        switch (nb_params) {
-        case 1:
-                o <<  "\tmovl\t%edi, -4(%rbp) \n";
-                break;
-        case 2:
-                o <<  "\tmovl\t%edi, -4(%rbp)\n";
-                o <<  "\tmovl\t%esi, -8(%rbp)\n";
-                break;
-        case 3:
-                o <<  "\tmovl\t%edi, -4(%rbp)\n";
-                o <<  "\tmovl\t%esi, -8(%rbp)\n";
-                o <<  "\tmovl\t%edx, -12(%rbp)\n";
-                break;
-        case 4:
-                o <<  "\tmovl\t%edi, -4(%rbp)\n";
-                o <<  "\tmovl\t%edi, -8(%rbp)\n";
-                o <<  "\tmovl\t%edx, -12(%rbp)\n";
-                o <<  "\tmovl\t%ecx, -16(%rbp)\n";
-                break;
-        case 5:
-                o <<  "\tmovl\t%edi, -4(%rbp)\n";
-                o <<  "\tmovl\t%edi, -8(%rbp)\n";
-                o <<  "\tmovl\t%edx, -12(%rbp)\n";
-                o <<  "\tmovl\t%ecx, -16(%rbp)\n";
-                o <<  "\tmovl\t%r8d, -20(%rbp)\n";
-                break;
-        case 6:
-                o <<  "\tmovl\t%edi, -4(%rbp)\n";
-                o <<  "\tmovl\t%edi, -8(%rbp)\n";
-                o <<  "\tmovl\t%edx, -12(%rbp)\n";
-                o <<  "\tmovl\t%ecx, -16(%rbp)\n";
-                o <<  "\tmovl\t%r8d, -20(%rbp)\n";
-                o <<  "\tmovl\t%r8d, -24(%rbp)\n";
-                break;
+       
+
+        string tab_reg[6] = {"%edi","%esi","%edx","%ecx","%r8d", "%r9d"};
+        
+        for (int i =0; i < nb_params ; ++i) {
+                int index = -(i+1)*4;
+                o<<"\tmovl\t"<<tab_reg[i]<<","<<index<<"(%rbp)" << "\n";
         }
 }
 
@@ -264,10 +215,10 @@ void CFG::gen_asm(std::ostream& o)
 {
         std::cout << "call to CFG::gen_asm" << std::endl;
         std::cout << "Number of bbs : " << bbs.size() << std::endl;
-        // Generate prologue
-        // !!!!!!!!!!!!!!!!!!!!!!!!!
-        // TODO FAIRE LE VRAI CALCUL POUR OFFSET (MIS A 256 POUR TEST)
-        // !!!!!!!!!!!!!!!!!!!!!!!!!
+
+        int exp = this->symbols->fct_params.find("f2")->second;
+        std::cout << "f2 expected parameters " << exp << std::endl;
+
         std::cout << this->symbols->getNbParams() << std::endl;
         o <<
                 ".global " << bbs.at(0)->label << "\n"

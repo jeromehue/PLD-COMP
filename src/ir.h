@@ -252,6 +252,9 @@ public:
          */
         void gen_asm(std::ostream& o);
 
+        /* Helper function to generate asm */
+        void load_parameters(std::ostream& o, int nbParams);
+
         /*
          * helper method: inputs a IR reg or input variable,
          * returns e.g. "-24(%rbp)" for the proper value of 24
