@@ -50,6 +50,33 @@ void IRInstr::gen_asm(std::ostream &o)
                 o<<"\tmovl\t%eax," << index3 << "(%rbp)\n";
                 return;
         }
+        case bit_and: {
+                int index = bb->cfg->symbols->getAddress(params[1]);
+                o<<"\tmovl\t"<<index<<"(%rbp),%eax\n";
+                int index2 = bb->cfg->symbols->getAddress(params[2]);
+                o<<"\tandl\t"<<index2<<"(%rbp),%eax\n";
+                int index3 = bb->cfg->symbols->getAddress(params[0]);
+                o<<"\tmovl\t%eax," << index3 << "(%rbp)\n";
+                return;
+        }
+        case bit_xor: {
+                int index = bb->cfg->symbols->getAddress(params[1]);
+                o<<"\tmovl\t"<<index<<"(%rbp),%eax\n";
+                int index2 = bb->cfg->symbols->getAddress(params[2]);
+                o<<"\txorl\t"<<index2<<"(%rbp),%eax\n";
+                int index3 = bb->cfg->symbols->getAddress(params[0]);
+                o<<"\tmovl\t%eax," << index3 << "(%rbp)\n";
+                return;
+        }
+        case bit_or: {
+                int index = bb->cfg->symbols->getAddress(params[1]);
+                o<<"\tmovl\t"<<index<<"(%rbp),%eax\n";
+                int index2 = bb->cfg->symbols->getAddress(params[2]);
+                o<<"\torl\t"<<index2<<"(%rbp),%eax\n";
+                int index3 = bb->cfg->symbols->getAddress(params[0]);
+                o<<"\tmovl\t%eax," << index3 << "(%rbp)\n";
+                return;
+        }
         case greater: {
                 int index = bb->cfg->symbols->getAddress(params[1]);
                 int index2 = bb->cfg->symbols->getAddress(params[2]);

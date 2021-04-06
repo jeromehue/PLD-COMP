@@ -30,20 +30,23 @@ class IRInstr {
 public:
 	/** The instructions themselves -- feel free to subclass instead */
 	typedef enum {
-		ldconst,    //  0
-		copy,       //  1
-		add,        //  2
-		sub,        //  3
-		mul,        //  4
-		div,        //  5
-		rmem,       //  6
-		wmem,       //  7
-		call,       //  8
-		cmp_eq,     //  9
-		cmp_uneq,   // 10
-		cmp_le,     // 11
-                greater,    // 12
-                lower       // 13
+		ldconst,
+		copy,
+		add,
+		sub,
+		mul,
+		div,
+		bit_and,
+		bit_xor,
+                bit_or,
+		rmem,
+		wmem,
+		call,
+		cmp_eq,
+		cmp_uneq,
+		cmp_le,
+                greater,
+                lower 
 	} Operation;
 
 	/** constructor */
@@ -66,14 +69,17 @@ public:
                 case 3:  return " >> sub";
                 case 4:  return " >> mul";
                 case 5:  return " >> div";
-                case 6:  return " >> rmem";
-                case 7:  return " >> wmem [addr, var]";
-                case 8:  return " >> call";
-                case 9:  return " >> cmp_eq";
-                case 10: return " >> cmp_uneq";
-                case 11: return " >> cmp_le";
-                case 12: return " >> greater";
-                case 13: return " >> lower";
+                case 6:  return " >> bit_and";
+                case 7:  return " >> bit_xor";
+                case 8:  return " >> bit_or";
+                case 9:  return " >> rmem";
+                case 10: return " >> wmem [addr, var]";
+                case 11: return " >> call";
+                case 12: return " >> cmp_eq";
+                case 13: return " >> cmp_uneq";
+                case 14: return " >> cmp_le";
+                case 15: return " >> greater";
+                case 16: return " >> lower";
                 default:
                         std::cout<<"Erreur : Opérateur inconnu"<<std::endl;
                         exit(EXIT_FAILURE);
