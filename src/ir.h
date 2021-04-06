@@ -42,7 +42,10 @@ public:
 		cmp_uneq,   //  9
 		cmp_le,     // 10
                 greater,    // 11
-                lower       // 12
+                lower,       // 12
+                cmpl,        // 13
+                jmp,         // 14
+                label        // 15
 	} Operation;
 
 	/** constructor */
@@ -72,6 +75,9 @@ public:
                 case 10: return " >> cmp_le";
                 case 11: return " >> greater";
                 case 12: return " >> lower";
+                case 13: return " >> cmpl";
+                case 14: return " >> jmp";
+                case 15: return " >> label";
                 default:
                         std::cout<<"Erreur : Opérateur inconnu"<<std::endl;
                         exit(EXIT_FAILURE);

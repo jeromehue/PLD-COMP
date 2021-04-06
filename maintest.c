@@ -1,18 +1,11 @@
-int f1() 
-{    
-        int b = 5;
-        return b;
-}
-
-int f2() {
-        int a;
-        a = 3 + 5;
-        return a;
-}
-
-int main() 
-{    
-        int a,b,c=42;
-        b=a + 4;
-        return c;
+int main() {
+    int a, b;
+    a=1;
+    b=2;
+    if(a < 1) {
+        b = 2;
+    } else {
+        b = 3;
+    }
+    return b;
 }

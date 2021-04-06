@@ -159,18 +159,17 @@ Any Visitor::visitAssignArithExpr(ifccParser::AssignArithExprContext *ctx)
 Any Visitor::visitIfStatement(ifccParser::IfStatementContext *ctx)
 {
         //Debug print
-        std::cout << "Call to visit Statement " << std::endl;
+        std::cout << "Call to visit IF " << std::endl;
        
-        visit(ctx->relationalExpression);
-        visit(ctx->thenBloc);
+        visit(ctx->relationalExpression());
+        visit(ctx->thenBloc); 
         visit(ctx->elseBloc);
         int sizeStack = curfct->funcInstr.size();
-        Node* n = new Node(OP_IF, curfct->funcInstr[sizeStack-3], NULL, 0, 0);
-        n->pushBackToNdList(curfct->funcInstr[sizeStack-2]);
+        Node* n = new Node(OP_IF, curfct->funcInstr[sizeStack-3], curfct->funcInstr[sizeStack-2], 0, 0);
         n->pushBackToNdList(curfct->funcInstr[sizeStack-1]);
         
         curfct->funcInstr.pop_back();
-        curfct->funcInstr.pop_back();
+        curfct->funcInstr.pop_back(); 
         curfct->funcInstr.pop_back();
         curfct->funcInstr.push_back(n);
 

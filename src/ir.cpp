@@ -21,6 +21,22 @@ void IRInstr::gen_asm(std::ostream &o)
                 o<<"\tmovl\t%eax," << index3 << "(%rbp)\n";
                 return;
         }
+        case cmpl: {
+                int index = bb->cfg->symbols->getAddress(params[0]);
+                string elseLabel = params[1];
+                o<<"\tcmpl\t$0, "<<index<<"(%rbp)\n";
+                o<<"\tje\t"<<elseLabel<<"\n";
+                return;
+        } 
+        case jmp:{
+                string afterLabel = params[2];
+                o<<"\tjmp\t"<<afterLabel<<"\n";
+                return;
+        } 
+        case label: {
+                o<<bb->label<<":\n";
+                return;
+        } 
         case sub: {
                 int index = bb->cfg->symbols->getAddress(params[1]);
                 int index2 = bb->cfg->symbols->getAddress(params[2]);

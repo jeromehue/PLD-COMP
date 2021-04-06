@@ -9,6 +9,8 @@
 #define NODE_H
 
 #include <iostream>
+#include <sstream>
+#include <string>
 #include "ir.h"
 #include "symb.h"
 
@@ -80,7 +82,7 @@ public:
                         std::cout << "\tleft : ";
                         ndlist[0]->display();
                         std::cout << "\tright : ";
-                        ndlist[1]->display();
+                        ndlist[1]->display(); 
                         std::cout << std::endl;
                         break;
 
@@ -273,24 +275,38 @@ public:
                         return sright;
                         break;
                 case OP_IF:
+                       { 
+                        std::cout << "---------------START OP_IF \n ";
+
                         //test
                         BasicBlock * testBB = cfg->current_bb;
+                        var1 = ndlist[0]->buildIR(cfg); // ir de l'expression
+                        std::stringstream testBBAdressTostring;       
+                        testBBAdressTostring << &testBB; 
+                        std::cout << "---------------end TEST  \n ";
 
                         //then
-                        irexpr=ndlist[0]->buildIR(cfg); // ir de l'expression
-                        BasicBlock * thenBB = new BasicBlock(cfg, "thenBB");
-                        testBB->exit_true=thenBB;
-                        
+                        BasicBlock * thenBB = new BasicBlock(cfg, "thenBB " + testBBAdressTostring.str());
+                        cfg->current_bb = thenBB;
+                        ndlist[1]->buildIR(cfg);
+                        std::cout << "---------------end THEN \n ";
+
                         //else
-                        irThen = ndlist[1]->buildIR(cfg);
-                        BasicBlock * elseBB = new BasicBlock(cfg, "elseBB");
-                        testBB->exit_false=elseBB;
+                        BasicBlock * elseBB = new BasicBlock(cfg, "elseBB " + testBBAdressTostring.str());
+                        cfg->current_bb = elseBB;
+                        ndlist[2]->buildIR(cfg);
+                        std::cout << "---------------end OELSEP_IF \n ";
+
 
                         //after
-                        BasicBlock * afterBB = new BasicBlock(cfg, "afterBB");
+                        BasicBlock * afterBB = new BasicBlock(cfg, "afterBB " + testBBAdressTostring.str());
                         cfg->current_bb = afterBB;
+                        std::cout << "---------------end AFTER \n ";
+ 
 
                         //liaison entre les if else avec le afterBB
+                        testBB->exit_false=elseBB;
+                        testBB->exit_true=thenBB;
                         thenBB->exit_true=afterBB;
                         thenBB->exit_false=NULL;
                         elseBB->exit_false=NULL;
@@ -300,8 +316,16 @@ public:
                         cfg->add_bb(elseBB);
                         cfg->add_bb(afterBB);
 
-                        return;
+                        retvector.push_back(var1);
+                        retvector.push_back(elseBB->label);
+                        retvector.push_back(afterBB->label);
+
+                        testBB->add_IRInstr(IRInstr::cmpl, INT, retvector);
+                        thenBB->add_IRInstr(IRInstr::jmp, INT, retvector);
+                        elseBB->add_IRInstr(IRInstr::label, INT, retvector);
+                        afterBB->add_IRInstr(IRInstr::label, INT, retvector);
                         break;
+                       } 
                 case OP_RETURN:
                         sleft = ndlist[0]->buildIR(cfg);
                         sright = "!retval";
