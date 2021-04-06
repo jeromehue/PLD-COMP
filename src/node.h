@@ -326,32 +326,39 @@ public:
                             INT,
                             retvector);
                         break;
-                case OP_CALL:
+                case OP_CALL: 
+                {
                         cout << "Generating IR for function call" << endl;
                         std::cout << "function name : " << this->strarg;
                         std::cout << "; arguments : " << this->ndlist.size()
                         << std::endl;
+
                         var3 = cfg->create_new_tempvar(INT);
                         retvector.push_back(var3);
                         retvector.push_back(this->strarg);
+
                         for(int i = 0; i< this->ndlist.size(); ++i) {
-                                std::cout << "arg " << i <<  std::endl;
+                                std::cout << "argi n°" << i <<  std::endl;
                                 this->ndlist.at(i)->display();
                                 std::cout << std::endl;
-                                retvector.push_back(
-                                std::to_string(this->ndlist.at(i)->args[0]));
-                                std::cout << "pushed : " <<
-                                std::to_string(this->ndlist.at(i)->args[0])
 
-                                 << std::endl;
+                                
+                                // Either a const or var
+                                string tmp_var = ndlist.at(i)->buildIR(cfg);
+
+                                retvector.push_back(tmp_var);
+                                
+                                cout << "pushed : " << tmp_var << endl;
                         }
                         cfg->current_bb->add_IRInstr(IRInstr::call, 
                                                      INT, retvector);
                         return var3;
                         break;
+                }
                 default:
-                        std::cout << "Erreur lors de la génération de l'IR" << std::endl;
-                        std::cout << "Fonctionnalité non implémentée" << std::endl;
+                        std::cout << "Erreur lors de la génération de l'IR"                             << std::endl;
+                        std::cout << "Fonctionnalité non implémentée" 
+                                << std::endl;
                         exit(EXIT_FAILURE);
                         break;
                 }

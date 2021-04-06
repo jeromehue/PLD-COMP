@@ -154,10 +154,13 @@ void IRInstr::gen_asm(std::ostream &o)
                 
                 int nb_params = this->params.size() - 2;
                 if (nb_params == 1) {
-                        o<<"\tmovl\t$"<< this->params[2]<<",%edi\n";
+                        int id1 = bb->cfg->symbols->getAddress(params[2]);
+                        o<<"\tmovl\t"<< id1 <<",%edi\n";
                 } else if (nb_params == 2) {
-                        o<<"\tmovl\t$"<< this->params[2]<<",%edi\n";
-                        o<<"\tmovl\t$"<< this->params[3]<<",%esi\n";
+                        int id1 = bb->cfg->symbols->getAddress(params[2]);
+                        int id2 = bb->cfg->symbols->getAddress(params[3]);
+                        o<<"\tmovl\t"<< id1 <<"(%rbp),%edi\n";
+                        o<<"\tmovl\t"<< id2 <<"(%rbp),%esi\n";
                 } else if (nb_params == 3){
                         o<<"\tmovl\t$"<< this->params[2]<<",%edi\n";
                         o<<"\tmovl\t$"<< this->params[3]<<",%esi\n";
