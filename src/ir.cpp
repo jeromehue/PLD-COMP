@@ -153,6 +153,20 @@ void IRInstr::gen_asm(std::ostream &o)
                 std::cout << "number of params  :" << this->params.size()-2 << std::endl;
                 
                 int nb_params = this->params.size() - 2;
+                if (nb_params > 6) {
+                        std::cout << "Too much parameters" << std::endl;
+                        exit(EXIT_FAILURE);
+                }
+
+
+                string treg[6] = 
+                {"%edi","%esi","%edx","%ecx","%r8d", "%r9d"};
+
+                for (int i =0; i < nb_params ; ++i) {
+                        int idx = bb->cfg->symbols->getAddress(params[i+2]);
+                        o<<"\tmovl\t"<<idx<<"(%rbp), " <<treg[i] << "\n";
+                }
+                /*
                 if (nb_params == 1) {
                         int id1 = bb->cfg->symbols->getAddress(params[2]);
                         o<<"\tmovl\t"<< id1 <<",%edi\n";
@@ -187,7 +201,7 @@ void IRInstr::gen_asm(std::ostream &o)
                         std::cout << "Trop de paramètres (+de 6)" 
                                 << std::endl;
                         exit(EXIT_FAILURE);
-                }               
+                } */              
                 o << "\tcall\t" << this->params[1] << "\n";
                 int index3 = bb->cfg->symbols->getAddress(params[0]);
                 o<<"\tmovl\t%eax," << index3 << "(%rbp)\n";

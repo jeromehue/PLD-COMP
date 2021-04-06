@@ -403,7 +403,7 @@ public:
 
         void computeOffset()
         {
-                int a = symb->getNextOffset();
+                int a = symb->getNextOffset() - 4;
                 std::cout << "True offset  : " << a << std::endl;
                 int round = (-a + 16) - (-a % 16);
                 std::cout << "Offset rounded to 16 : " << round << std::endl;
