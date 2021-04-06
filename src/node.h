@@ -21,6 +21,9 @@ enum nodeOp {
         OP_SUB,
         OP_MUL,
         OP_DIV,
+        OP_BIT_AND,
+        OP_BIT_XOR,
+        OP_BIT_OR,
         OP_ASSIGN,
         OP_IDENT,
         OP_CONST,
@@ -196,7 +199,43 @@ public:
                         return var3;
                         break;
 
-                case OP_LOWER: //<
+                case OP_BIT_AND: // &
+                        var1 = ndlist[0]->buildIR(cfg);
+                        var2 = ndlist[1]->buildIR(cfg);
+                        var3 = cfg->create_new_tempvar(INT);
+                        retvector.push_back(var3);
+                        retvector.push_back(var2);
+                        retvector.push_back(var1);
+                        // Actual instruction
+                        cfg->current_bb->add_IRInstr(IRInstr::bit_and, INT, retvector);
+                        return var3;
+                        break;
+ 
+                case OP_BIT_XOR: // ^
+                        var1 = ndlist[0]->buildIR(cfg);
+                        var2 = ndlist[1]->buildIR(cfg);
+                        var3 = cfg->create_new_tempvar(INT);
+                        retvector.push_back(var3);
+                        retvector.push_back(var2);
+                        retvector.push_back(var1);
+                        // Actual instruction
+                        cfg->current_bb->add_IRInstr(IRInstr::bit_xor, INT, retvector);
+                        return var3;
+                        break;
+
+                case OP_BIT_OR: // |
+                        var1 = ndlist[0]->buildIR(cfg);
+                        var2 = ndlist[1]->buildIR(cfg);
+                        var3 = cfg->create_new_tempvar(INT);
+                        retvector.push_back(var3);
+                        retvector.push_back(var2);
+                        retvector.push_back(var1);
+                        // Actual instruction
+                        cfg->current_bb->add_IRInstr(IRInstr::bit_or, INT, retvector);
+                        return var3;
+                        break;
+
+                case OP_LOWER: // <
                         /* Fetching data */
                         var1 = ndlist[0]->buildIR(cfg);
                         var2 = ndlist[1]->buildIR(cfg);
@@ -209,7 +248,7 @@ public:
                         return var3;
                         break;
 
-                case OP_GREATER:
+                case OP_GREATER: // >
                         /* Fetching data */
                         var1 = ndlist[0]->buildIR(cfg);
                         var2 = ndlist[1]->buildIR(cfg);
