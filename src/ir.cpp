@@ -218,7 +218,7 @@ void IRInstr::gen_asm(std::ostream &o)
 
 
 void load_parameters(std::ostream& o, int nb_params) {
-        o << "\n# nb params " << nb_params << std::endl;
+        o << "\n\t# nb params " << nb_params << std::endl;
         if (nb_params == 0) {
                 return ;
         }
@@ -275,7 +275,7 @@ void CFG::gen_asm(std::ostream& o)
                 "\t# Prologue\n"
                 "\tpushq\t%rbp\n"
                 "\tmovq\t%rsp, %rbp\n"
-                "\tsubq\t$256, %rsp";
+                "\tsubq\t$" << this->symbols->getOffset() << ", %rsp";
                 load_parameters(o, this->symbols->getNbParams());
                 o <<"\n"
                 "\t# Body\n";

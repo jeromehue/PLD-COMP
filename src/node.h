@@ -401,12 +401,13 @@ public:
                 funcInstr = std::vector<Node *>();
         }
 
-        void computeOffset()
+        int computeOffset()
         {
                 int a = symb->getNextOffset() - 4;
                 std::cout << "True offset  : " << a << std::endl;
                 int round = (-a + 16) - (-a % 16);
-                std::cout << "Offset rounded to 16 : " << round << std::endl;
+                std::cout <<"Offset rounded to 16 : "<< round << std::endl;
+                return round;
         }
 
         /* Getters and Setters */
