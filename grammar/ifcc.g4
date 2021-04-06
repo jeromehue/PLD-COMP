@@ -44,16 +44,21 @@ initDeclaratorList
 initDeclarator
 	: ID
 	| ID '=' arithExpr
+	| ID '[' INT_CONST ']' '=' arrayInitialisation
 	;
+
+arrayInitialisation
+        : '{' (INT_CONST (',' INT_CONST)*)? '}'
+        ;
 
 returnInstr
 	:   RETURN primaryExpression ';'
 	;
 
 primaryExpression
-	: INT_CONST  # number
-	| CHAR_CONST # char
-	| ID         # var
+	: INT_CONST     # number
+	| CHAR_CONST    # char
+	| ID            # var
 	;
 
 relationalExpression
