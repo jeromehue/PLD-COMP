@@ -119,7 +119,9 @@ Any Visitor::visitInitDeclarator(ifccParser::InitDeclaratorContext *ctx)
         std::cout << "Call to visitInitDeclarator" << std::endl;
 
         if(ctx->arithExpr()) {
-                std::cout << " >> Declaration and affectaion" ;
+                std::cout << " >> Declaration and affectaion";
+        } else if (ctx->arrayInitialisation()) {
+                std::cout << " >> Declaration and affectation (Array)";
         } else {
                 std::cout << " >> Declaration w/o affectation";
         }
@@ -145,6 +147,18 @@ Any Visitor::visitInitDeclarator(ifccParser::InitDeclaratorContext *ctx)
                 assert(curfct->funcInstr.size() == index+2);
                 curfct->funcInstr[index]->ndlist[1] = curfct->funcInstr[index+1];
                 curfct->funcInstr.pop_back();
+        } else if (ctx->arrayInitialisation()) {
+                // Array size
+                int arraySize = stoi(ctx->INT_CONST()->getText());
+
+                // Array values
+                auto arrayValues = ctx->arrayInitialisation()->INT_CONST();
+                assert(arraySize == arrayValues.size());
+
+                for (int i = 0; i < arraySize; ++i) {
+                        int value = stoi(arrayValues.at(i)->getText());
+                        // TODO
+                }
         }
 
         return 0;
