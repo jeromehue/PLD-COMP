@@ -148,6 +148,50 @@ void IRInstr::gen_asm(std::ostream &o)
         return;
 }
 
+
+void load_parameters(std::ostream& o, int nb_params) {
+        o << "\n# nb params " << nb_params << std::endl;
+        if (nb_params == 0) {
+                return ;
+        }
+        switch (nb_params) {
+        case 1:
+                o <<  "\tmovl\t%edi, -4(%rbp) \n";
+                break;
+        case 2:
+                o <<  "\tmovl\t%edi, -4(%rbp)\n";
+                o <<  "\tmovl\t%esi, -8(%rbp)\n";
+                break;
+        case 3:
+                o <<  "\tmovl\t%edi, -4(%rbp)\n";
+                o <<  "\tmovl\t%esi, -8(%rbp)\n";
+                o <<  "\tmovl\t%edx, -12(%rbp)\n";
+                break;
+        case 4:
+                o <<  "\tmovl\t%edi, -4(%rbp)\n";
+                o <<  "\tmovl\t%edi, -8(%rbp)\n";
+                o <<  "\tmovl\t%edx, -12(%rbp)\n";
+                o <<  "\tmovl\t%ecx, -16(%rbp)\n";
+                break;
+        case 5:
+                o <<  "\tmovl\t%edi, -4(%rbp)\n";
+                o <<  "\tmovl\t%edi, -8(%rbp)\n";
+                o <<  "\tmovl\t%edx, -12(%rbp)\n";
+                o <<  "\tmovl\t%ecx, -16(%rbp)\n";
+                o <<  "\tmovl\t%r8d, -20(%rbp)\n";
+                break;
+        case 6:
+                o <<  "\tmovl\t%edi, -4(%rbp)\n";
+                o <<  "\tmovl\t%edi, -8(%rbp)\n";
+                o <<  "\tmovl\t%edx, -12(%rbp)\n";
+                o <<  "\tmovl\t%ecx, -16(%rbp)\n";
+                o <<  "\tmovl\t%r8d, -20(%rbp)\n";
+                o <<  "\tmovl\t%r8d, -24(%rbp)\n";
+                break;
+        }
+}
+
+
 void CFG::gen_asm(std::ostream& o)
 {
         std::cout << "call to CFG::gen_asm" << std::endl;
@@ -156,14 +200,16 @@ void CFG::gen_asm(std::ostream& o)
         // !!!!!!!!!!!!!!!!!!!!!!!!!
         // TODO FAIRE LE VRAI CALCUL POUR OFFSET (MIS A 256 POUR TEST)
         // !!!!!!!!!!!!!!!!!!!!!!!!!
+        std::cout << this->symbols->getNbParams() << std::endl;
         o <<
                 ".global " << bbs.at(0)->label << "\n"
                 << bbs.at(0)->label << ":\n"
                 "\t# Prologue\n"
                 "\tpushq\t%rbp\n"
                 "\tmovq\t%rsp, %rbp\n"
-                "\tsubq\t$256, %rsp"
-                "\n"
+                "\tsubq\t$256, %rsp";
+                load_parameters(o, this->symbols->getNbParams());
+                o <<"\n"
                 "\t# Body\n";
 
         // Current bb is pointing to body function

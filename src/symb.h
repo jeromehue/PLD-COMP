@@ -13,6 +13,7 @@
 //-------------------------------------------------------- Interfaces Used
 #include <map>
 #include <string>
+#include <algorithm>
 
 //------------------------------------------------------------------ Types
 typedef  enum {
@@ -24,6 +25,7 @@ struct Variable {
         int address;
         int type;
         bool defined;
+        bool isParam;
 };
 
 //----------------------------------------------------------------- PUBLIC
@@ -36,7 +38,8 @@ public:
                 next_offset = -4;
         }
 
-        int store(std::string name, int type)
+
+        int store(std::string name, int type, bool isParam = false)
         {
                 // Has the variable already been declared ?
                 if(symbols.find(name) != symbols.end()) {
@@ -47,9 +50,10 @@ public:
                 }
 
                 Variable v;
-                v.address   = next_offset;
-                v.type      = type;
-                v.defined   = false;
+                v.address       = next_offset;
+                v.type          = type;
+                v.defined       = false;
+                v.isParam       = isParam; 
 
                 symbols.insert(std::pair<std::string, Variable>(name, v));
                 std::cout << " >> New entry in symbol table : "
@@ -103,6 +107,15 @@ public:
                 for (auto const& x : symbols) {
                         std::cout << x.first << std::endl;
                 }
+        }
+
+        int getNbParams() {
+                int nb_params = 0;
+                for (auto const& x : symbols) {
+                        if (x.second.isParam)
+                                nb_params++;
+                }
+                return nb_params;
         }
 
         std::map<std::string, Variable> symbols;

@@ -366,7 +366,7 @@ Any Visitor::visitParameterlist(ifccParser::ParameterlistContext* ctx)
                 } else if (strtype == "char") {
                         type = 1;
                 }         
-                curfct->symb->store(v.at(i)->getText(), type);
+                curfct->symb->store(v.at(i)->getText(), type, true);
         }
         return 0;
 }

@@ -1,6 +1,7 @@
 int f1(int p1, int p2 ) {
-        p1 = p1 + p2;
-        return 1;
+        int a  = 3;
+        p1 = p1 + p2 + a;
+        return p1;
 }
 
 int main() 
