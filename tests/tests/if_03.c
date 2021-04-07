@@ -1,7 +1,7 @@
 int main() {
     int a, b,c;
-    a=12;
-    b=9;
+    a=14;
+    b=7;
     c=30;
     if(a < 14) {
         if(b==7)
@@ -15,6 +15,5 @@ int main() {
     } else {
         c=29;
     }
-    c=c + 45;
     return c;
 }

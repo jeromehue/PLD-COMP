@@ -44,7 +44,7 @@ public:
                 this->args[0] = arg0;
                 this->args[1] = arg1;
         }
-        void pushBackToNdList(Node * node)
+        void pushBackToNdList(Node * node) 
         {
                 this->ndlist.push_back(node);
         }
@@ -286,23 +286,28 @@ public:
                         std::cout << "---------------end TEST  \n ";
 
                         //then
-                        BasicBlock * thenBB = new BasicBlock(cfg, "thenBB " + testBBAdressTostring.str());
+                        BasicBlock * thenBB = new BasicBlock(cfg, "thenBB" + testBBAdressTostring.str());
+                        cfg->add_bb(thenBB);
                         cfg->current_bb = thenBB;
                         ndlist[1]->buildIR(cfg);
                         std::cout << "---------------end THEN \n ";
 
                         //else
-                        BasicBlock * elseBB = new BasicBlock(cfg, "elseBB " + testBBAdressTostring.str());
+                        BasicBlock * elseBB = new BasicBlock(cfg, "elseBB" + testBBAdressTostring.str());
                         cfg->current_bb = elseBB;
+                        elseBB->add_IRInstr(IRInstr::label, INT, retvector);
                         ndlist[2]->buildIR(cfg);
                         std::cout << "---------------end OELSEP_IF \n ";
 
 
                         //after
-                        BasicBlock * afterBB = new BasicBlock(cfg, "afterBB " + testBBAdressTostring.str());
+                        BasicBlock * afterBB = new BasicBlock(cfg, "afterBB" + testBBAdressTostring.str());
+                       
                         cfg->current_bb = afterBB;
                         std::cout << "---------------end AFTER \n ";
  
+                        cfg->add_bb(elseBB);
+                        cfg->add_bb(afterBB);
 
                         //liaison entre les if else avec le afterBB
                         testBB->exit_false=elseBB;
@@ -312,17 +317,13 @@ public:
                         elseBB->exit_false=NULL;
                         elseBB->exit_true=afterBB;
 
-                        cfg->add_bb(thenBB);
-                        cfg->add_bb(elseBB);
-                        cfg->add_bb(afterBB);
-
+                        
                         retvector.push_back(var1);
                         retvector.push_back(elseBB->label);
                         retvector.push_back(afterBB->label);
 
                         testBB->add_IRInstr(IRInstr::cmpl, INT, retvector);
                         thenBB->add_IRInstr(IRInstr::jmp, INT, retvector);
-                        elseBB->add_IRInstr(IRInstr::label, INT, retvector);
                         afterBB->add_IRInstr(IRInstr::label, INT, retvector);
                         break;
                        } 

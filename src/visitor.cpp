@@ -291,7 +291,7 @@ Any Visitor::visitRelExpr(ifccParser::RelExprContext* ctx)
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.push_back(nop);
                 nop->display();
-        } else if (relop == "différent de") {
+        } else if (relop == "!=") {
                 std::cout << "superieur" << std::endl;
                 Node* nop = new Node(
                 OP_UNEQUAL, curfct->funcInstr[ref+1], curfct->funcInstr[ref], 0, 0);

@@ -253,7 +253,7 @@ public:
                         break;compiler.
          */
         void gen_asm(std::ostream& o);
-
+        
         /*
          * helper method: inputs a IR reg or input variable,
          * returns e.g. "-24(%rbp)" for the proper value of 24
@@ -277,7 +277,7 @@ public:
                 std::cout<<"Creating new tempvar :"<<var_name<<std::endl;
                 return var_name;
         }
-
+        int getsizebbs();
 	int get_var_index(std::string name);
 	Type get_var_type(std::string name);
 

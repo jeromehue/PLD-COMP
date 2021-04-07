@@ -132,6 +132,27 @@ void IRInstr::gen_asm(std::ostream &o)
         }
         return;
 }
+int CFG::getsizebbs()
+{
+        return bbs.size();
+}
+
+void writeBB(BasicBlock* bb, std::ostream& o) {
+        bb->gen_asm(o);
+        if( bb->exit_true != nullptr) {
+                if(bb->exit_false != nullptr) {
+                        writeBB(bb->exit_true, o);
+                        writeBB(bb->exit_false, o);
+                } else {
+                        //writeBB(bb->exit_true, o);    
+                }
+        } else {
+                std::cout<<"basicBlock sans exitTrue ni exitFalse\n";
+        }
+        
+}
+
+
 
 void CFG::gen_asm(std::ostream& o)
 {
@@ -152,7 +173,9 @@ void CFG::gen_asm(std::ostream& o)
                 "\t# Body\n";
 
         // Current bb is pointing to body function
-        this->current_bb->gen_asm(o);
+        for(BasicBlock* bb: bbs) {
+          bb->gen_asm(o);
+       }
 
         o <<
                 "\n"
