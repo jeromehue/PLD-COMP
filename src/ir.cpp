@@ -3,8 +3,7 @@
 
 void IRInstr::gen_asm(std::ostream &o)
 {
-        std::cout << "genrating asm for ir" << std::endl;
-        //std::cout << "It worked, i'm on cpp file " << std::endl;
+        //std::cout << "genrating asm for ir" << std::endl;
         //std::cout << this->bb->cfg->symbols->getAddress("b") << std::endl;
         switch(this->op) {
         case ldconst: {
@@ -217,9 +216,9 @@ void CFG::gen_asm(std::ostream& o)
         std::cout << "Number of bbs : " << bbs.size() << std::endl;
 
         int exp = this->symbols->fct_params.find("f2")->second;
-        std::cout << "f2 expected parameters " << exp << std::endl;
+        std::cout << " >> f2 expected numbers of parameters " << 
+                exp << std::endl;
 
-        std::cout << this->symbols->getNbParams() << std::endl;
         o <<
                 ".global " << bbs.at(0)->label << "\n"
                 << bbs.at(0)->label << ":\n"

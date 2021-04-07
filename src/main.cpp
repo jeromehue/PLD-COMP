@@ -63,7 +63,7 @@ int main(int argn, const char **argv) {
         tree::ParseTree *tree = parser.axiom();
 
         if (parser.getNumberOfSyntaxErrors() != 0) {
-                cout << "erreur of syntax";
+                cout << "Syntax error";
                 return 1;
         }
 
@@ -106,7 +106,7 @@ int main(int argn, const char **argv) {
         std::vector<Node *> n = functions.at(mfi)->getInstr();
 
         // Now generate the IR
-        std::cout << "\n### IR Generation ###" << std::endl;
+        std::cout << "\n### IR Generation ###\n" << std::endl;
 
         output.open("output.s");
         for (int i = 0; i < functions.size(); ++i) {

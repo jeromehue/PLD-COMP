@@ -386,7 +386,7 @@ Any Visitor::visitFunction(ifccParser::FunctionContext* ctx)
         int nb = curfct->symb->getNbParams();
         curfct->symb->fct_params.insert(
                         std::pair<std::string,int>(name,nb));
-        std::cout <<"End display funcInstr"<<endl;
+        //std::cout <<"End display funcInstr"<<endl;
         return 0;
 }
 
