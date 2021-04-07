@@ -52,7 +52,7 @@ arrayInitialisation
         ;
 
 returnInstr
-	:   RETURN primaryExpression ';'
+	:   RETURN arithExpr ';'
 	;
 
 primaryExpression

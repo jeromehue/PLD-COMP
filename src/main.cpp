@@ -40,9 +40,14 @@ void epilogue() {
 
 int main(int argn, const char **argv) {
         stringstream in;
-        if (argn == 2) {
+        if (argn >= 2) {
                 ifstream lecture(argv[1]);
                 in << lecture.rdbuf();
+                for(int i=2; i< argn; ++i) {
+                        if (argv[2] == string("-v")) {
+                                std::cout << "Verbose on" << std::endl;
+                        }
+                }
         }
 
         ANTLRInputStream input(in.str());

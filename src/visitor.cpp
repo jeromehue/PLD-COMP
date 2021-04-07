@@ -244,7 +244,6 @@ Any Visitor::visitExpr(ifccParser::ExprContext* ctx)
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.push_back(nop);
-                nop->display();
                 break;
         }
         case '-': {
@@ -254,7 +253,6 @@ Any Visitor::visitExpr(ifccParser::ExprContext* ctx)
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.push_back(nop);
-                nop->display();
                 break;
         }
         case '*': {
@@ -264,7 +262,6 @@ Any Visitor::visitExpr(ifccParser::ExprContext* ctx)
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.push_back(nop);
-                nop->display();
                 break;
         }
         case '/': {
@@ -274,7 +271,6 @@ Any Visitor::visitExpr(ifccParser::ExprContext* ctx)
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.push_back(nop);
-                nop->display();
                 break;
         }
         case '&': {
@@ -284,7 +280,6 @@ Any Visitor::visitExpr(ifccParser::ExprContext* ctx)
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.push_back(nop);
-                nop->display();
                 break;
         }
         case '^': {
@@ -294,7 +289,6 @@ Any Visitor::visitExpr(ifccParser::ExprContext* ctx)
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.push_back(nop);
-                nop->display();
                 break;
         }
         case '|': {
@@ -304,7 +298,6 @@ Any Visitor::visitExpr(ifccParser::ExprContext* ctx)
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.push_back(nop);
-                nop->display();
                 break;
         }
         default:
@@ -333,7 +326,6 @@ Any Visitor::visitRelExpr(ifccParser::RelExprContext* ctx)
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.push_back(nop);
-                nop->display();
         } else if (relop == ">") {
                 std::cout << "superieur" << std::endl;
                 Node* nop = new Node(
@@ -341,7 +333,6 @@ Any Visitor::visitRelExpr(ifccParser::RelExprContext* ctx)
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.push_back(nop);
-                nop->display();
         } else if (relop == "==") {
                 std::cout << "égale à" << std::endl;
                 Node* nop = new Node(
@@ -349,7 +340,6 @@ Any Visitor::visitRelExpr(ifccParser::RelExprContext* ctx)
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.push_back(nop);
-                nop->display();
         } else if (relop == "différent de") {
                 std::cout << "superieur" << std::endl;
                 Node* nop = new Node(
@@ -357,7 +347,6 @@ Any Visitor::visitRelExpr(ifccParser::RelExprContext* ctx)
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.push_back(nop);
-                nop->display();
         } else {
                 std::cout << "Erreur, opérateur non reconnu" << std::endl;
                 exit(EXIT_FAILURE);
@@ -388,10 +377,12 @@ Any Visitor::visitFunction(ifccParser::FunctionContext* ctx)
         }
         std::cout <<"End display curfct->funcInstr"<<endl;
         */
+        /*
         std::cout << "Display funcInstr"<<endl;
         for(int i=0; i < f->funcInstr.size(); ++i) {
                 f->funcInstr.at(i)->display();
         }
+        */
         int nb = curfct->symb->getNbParams();
         curfct->symb->fct_params.insert(
                         std::pair<std::string,int>(name,nb));
