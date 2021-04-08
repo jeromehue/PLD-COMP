@@ -79,8 +79,13 @@ blockStatement
 ifStatement
 	:'if' '(' relationalExpression  ')' '{'
 		thenBloc = blockStatement
-         '}'
-	'else' '{' elseBloc = blockStatement '}'
+    '}'
+	'else' '{'
+		elseBloc = blockStatement 
+	'}'#ifElse 
+	| 'if' '(' relationalExpression  ')' '{'
+		thenBloc = blockStatement
+    '}'#if 
 	;
 
 assignmentExpr

@@ -29,7 +29,7 @@ void IRInstr::gen_asm(std::ostream &o)
                 return;
         } 
         case jmp:{
-                string afterLabel = params[2];
+                string afterLabel = params[params.size()-1];
                 o<<"\tjmp\t"<<afterLabel<<"\n";
                 return;
         } 
