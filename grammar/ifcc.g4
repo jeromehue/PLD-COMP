@@ -51,6 +51,8 @@ initDeclarator
 functionCall 
         : ID '(' primaryExpression? ')'
         | ID '(' primaryExpression (',' primaryExpression)+ ')'            
+        | label='putchar' '(' (CHAR_CONST|ID) ')'
+        | label='getchar()' 
         ;
 
 arrayInitialisation
@@ -109,6 +111,7 @@ assignmentExpr
         | ID '=' ID '(' primaryExpression? ')'  # assignFunction
         | ID '=' ID '(' primaryExpression 
         (',' primaryExpression)+ ')'            # assignFunction
+        | ID '=' 'getchar()'                    # assignGetchar
 	;
 
 arithExpr

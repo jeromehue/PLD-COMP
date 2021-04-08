@@ -50,7 +50,9 @@ public:
                 cmpl,
                 jmp,
                 label,
-                array_access
+                array_access,
+                putchar,
+                getchar,
 
 	} Operation;
 
@@ -89,6 +91,8 @@ public:
                 case 18: return " >> jmp";
                 case 19: return " >> label";
                 case 20: return " >> array_access";
+                case 21: return " >> putchar";
+                case 22: return " >> getchar";
                 default:
                         std::cout<<"Erreur : Opérateur inconnu"<<std::endl;
                         exit(EXIT_FAILURE);
