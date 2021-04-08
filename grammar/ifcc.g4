@@ -70,6 +70,7 @@ relationalExpression
 statement
 	: assignmentExpr ';'
 	| ifStatement
+	| whileStatement	
 	;
 
 blockStatement
@@ -86,6 +87,12 @@ ifStatement
 	| 'if' '(' relationalExpression  ')' '{'
 		thenBloc = blockStatement
     '}'#if 
+	;
+
+whileStatement
+	: 'while' '(' relationalExpression ')' '{'
+		whileBlockStatement = blockStatement
+	'}'
 	;
 
 assignmentExpr

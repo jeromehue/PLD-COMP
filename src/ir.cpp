@@ -269,7 +269,7 @@ void CFG::gen_asm(std::ostream& o)
 
         // Current bb is pointing to body function
         for(BasicBlock* bb: bbs) {
-          bb->gen_asm(o);
+                bb->gen_asm(o);
        }
 
         o <<

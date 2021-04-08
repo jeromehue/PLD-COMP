@@ -285,6 +285,38 @@ Any Visitor::visitIf(ifccParser::IfContext *ctx)
 
         return 0;
 } 
+
+Any Visitor::visitWhileStatement(ifccParser::WhileStatementContext *ctx){
+          //Debug print
+        std::cout << "Call to visit WHILE " << std::endl;
+        
+        //conditionNode
+        visit(ctx->relationalExpression());
+        Node* conditionNode = curfct->funcInstr[curfct->funcInstr.size()-1];
+        curfct->funcInstr.pop_back();
+
+        //whileBlockNode
+        int startingStackSize = curfct->funcInstr.size();
+        visit(ctx -> whileBlockStatement);
+        int afterWhileSizeStack = curfct->funcInstr.size();
+
+        Node* whileBlockNode = new Node(OP_BLOCK,0, 0);
+        for(int i = startingStackSize; i < afterWhileSizeStack; ++i){
+              whileBlockNode->pushBackToNdList(curfct->funcInstr[i]);
+        } 
+        for(int i = startingStackSize; i < afterWhileSizeStack; ++i){
+              curfct->funcInstr.pop_back();
+        } 
+
+        //whileBlockNode
+        Node* whileNode = new Node(OP_WHILE, conditionNode, whileBlockNode, 0, 0);
+
+        curfct->funcInstr.push_back(whileNode);
+
+        return 0;
+} 
+
+
 Any Visitor::visitAssignRelExpr(ifccParser::AssignRelExprContext *ctx)
 {
         // Debug print
