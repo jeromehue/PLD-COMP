@@ -55,6 +55,9 @@ public:
         virtual antlrcpp::Any visitFunction(ifccParser::FunctionContext* ctx) override;
 
         virtual antlrcpp::Any visitParameterlist(ifccParser::ParameterlistContext* ctx) override;
+
+        virtual antlrcpp::Any visitBlockStatement(ifccParser::BlockStatementContext* ctx) override;
+
         // Getters
         std::vector<Node*> getNodes()
         {

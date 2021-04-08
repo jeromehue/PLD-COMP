@@ -135,7 +135,7 @@ int main(int argn, const char **argv) {
                 for (int i = 0; i < n.size(); ++i) {
                         n[i]->buildIR(mainCFG);
                 }
-
+                std::cout<<" taille du maincfg : "<<mainCFG->getsizebbs()<<std::endl;
                 mainCFG->gen_asm(output);
         }
         output.close();

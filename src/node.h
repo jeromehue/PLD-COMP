@@ -33,8 +33,10 @@ enum nodeOp {
         OP_EQUAL,
         OP_UNEQUAL,
         OP_CALL,
+        OP_IF,
+        OP_BLOCK
 };
-
+static int counter=0;
 class Node {
 public:
         Node(int op, Node *left, Node *right, int arg0, int arg1)
@@ -45,7 +47,16 @@ public:
                 this->args[0] = arg0;
                 this->args[1] = arg1;
         }
-
+        Node(int op, int arg0, int arg1)
+        {
+                this->op = op;
+                this->args[0] = arg0;
+                this->args[1] = arg1;
+        }
+        void pushBackToNdList(Node * node) 
+        {
+                this->ndlist.push_back(node);
+        }
         void display()
         {
                 switch (op) {
@@ -80,7 +91,7 @@ public:
                         std::cout << "\tleft : ";
                         ndlist[0]->display();
                         std::cout << "\tright : ";
-                        ndlist[1]->display();
+                        ndlist[1]->display(); 
                         std::cout << std::endl;
                         break;
 
@@ -111,6 +122,19 @@ public:
                         std::cout << std::endl;
                         break;
 
+                case OP_IF:
+                        std::cout << "OP_IF | " << std::endl;
+                        std::cout << "\texpresionn : ";
+                        ndlist[0]->display();
+                        std::cout << "\tthenbloc: ";
+                        ndlist[1]->display();
+                        std::cout << "\telsebloc: ";
+                        ndlist[2]->display();
+                        std::cout << std::endl;
+                        break;
+                case OP_BLOCK:
+
+                        break;
                 case OP_RETURN:
                         std::cout << "OP_RETURN" << std::endl;
                         break;
@@ -315,7 +339,72 @@ public:
                             IRInstr::wmem, INT, retvector);
                         return sright;
                         break;
+                case OP_BLOCK:
+                        for(Node* node : ndlist){
+                                node->buildIR(cfg);
+                        } 
+                        break;
+                case OP_IF:
+                       { 
+                        counter++;
+                        std::cout << "---------------START OP_IF \n ";
 
+                        //test
+                        BasicBlock * testBB = cfg->current_bb;
+                        var1 = ndlist[0]->buildIR(cfg); // ir de l'expression
+                        std::stringstream testBBAdressTostring;  //give a different name to each basicBlock 
+                        testBBAdressTostring << &testBB; 
+                        std::cout << "---------------end TEST  \n ";
+
+                        //then
+                        string elselabel="elseBB" + to_string(counter);//testBBAdressTostring.str();
+                        string afterlabel="afterBB"+to_string(counter);//testBBAdressTostring.str();
+                        retvector.push_back(var1);
+                        retvector.push_back(elselabel);
+                        retvector.push_back(afterlabel);
+                        BasicBlock * thenBB = new BasicBlock(cfg, "thenBB" + testBBAdressTostring.str());
+                        cfg->add_bb(thenBB);
+                        cfg->current_bb = thenBB;
+                        ndlist[1]->buildIR(cfg);
+                        cfg->current_bb->add_IRInstr(IRInstr::jmp, INT, retvector);
+                        std::cout << "---------------end THEN \n ";
+                        
+                        //BasicBlock * jumpBB = new BasicBlock(cfg, "jumpBB");
+                        //cfg->add_bb(jumpBB);
+                        //else
+                        BasicBlock * elseBB = new BasicBlock(cfg, elselabel);
+                        cfg->current_bb = elseBB;
+                        elseBB->add_IRInstr(IRInstr::label, INT, retvector);
+                        cfg->add_bb(elseBB);
+                        ndlist[2]->buildIR(cfg);
+                        std::cout << "---------------end OELSEP_IF \n ";
+                        
+                        cfg->current_bb->add_IRInstr(IRInstr::jmp, INT, retvector);
+                        
+
+                        //after
+                        BasicBlock * afterBB = new BasicBlock(cfg, afterlabel);
+                       
+                        cfg->current_bb = afterBB;
+                        std::cout << "---------------end AFTER \n ";
+                        cfg->add_bb(afterBB);
+
+                        //liaison entre les if else avec le afterBB
+                        testBB->exit_false=elseBB;
+                        testBB->exit_true=thenBB;
+                        thenBB->exit_true=afterBB;
+                        thenBB->exit_false=NULL;
+                        elseBB->exit_false=NULL;
+                        elseBB->exit_true=afterBB;
+
+                        
+                        
+
+                        testBB->add_IRInstr(IRInstr::cmpl, INT, retvector);
+                       // thenBB->add_IRInstr(IRInstr::jmp, INT, retvector);
+                        afterBB->add_IRInstr(IRInstr::label, INT, retvector);
+                        break;
+                       } 
                 case OP_RETURN:
                         sleft = ndlist[0]->buildIR(cfg);
                         sright = "!retval";

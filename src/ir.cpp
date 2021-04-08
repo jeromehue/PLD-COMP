@@ -21,6 +21,22 @@ void IRInstr::gen_asm(std::ostream &o)
                 o<<"\tmovl\t%eax," << index3 << "(%rbp)\n";
                 return;
         }
+        case cmpl: {
+                int index = bb->cfg->symbols->getAddress(params[0]);
+                string elseLabel = params[1];
+                o<<"\tcmpl\t$0, "<<index<<"(%rbp)\n";
+                o<<"\tje\t"<<elseLabel<<"\n";
+                return;
+        } 
+        case jmp:{
+                string afterLabel = params[2];
+                o<<"\tjmp\t"<<afterLabel<<"\n";
+                return;
+        } 
+        case label: {
+                o<<bb->label<<":\n";
+                return;
+        } 
         case sub: {
                 int index = bb->cfg->symbols->getAddress(params[1]);
                 int index2 = bb->cfg->symbols->getAddress(params[2]);
@@ -192,6 +208,27 @@ void IRInstr::gen_asm(std::ostream &o)
         }
         return;
 }
+int CFG::getsizebbs()
+{
+        return bbs.size();
+}
+
+void writeBB(BasicBlock* bb, std::ostream& o) {
+        bb->gen_asm(o);
+        if( bb->exit_true != nullptr) {
+                if(bb->exit_false != nullptr) {
+                        writeBB(bb->exit_true, o);
+                        writeBB(bb->exit_false, o);
+                } else {
+                        //writeBB(bb->exit_true, o);    
+                }
+        } else {
+                std::cout<<"basicBlock sans exitTrue ni exitFalse\n";
+        }
+        
+}
+
+
 
 
 void CFG::load_parameters(std::ostream& o, int nb_params) {
@@ -231,7 +268,9 @@ void CFG::gen_asm(std::ostream& o)
                 "\t# Body\n";
 
         // Current bb is pointing to body function
-        this->current_bb->gen_asm(o);
+        for(BasicBlock* bb: bbs) {
+          bb->gen_asm(o);
+       }
 
         o <<
                 "\t# Epilogue\n"

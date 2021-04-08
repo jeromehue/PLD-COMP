@@ -46,7 +46,10 @@ public:
 		cmp_uneq,
 		cmp_le,
                 greater,
-                lower 
+                lower,
+                cmpl,
+                jmp,
+                label
 	} Operation;
 
 	/** constructor */
@@ -80,6 +83,9 @@ public:
                 case 14: return " >> cmp_le";
                 case 15: return " >> greater";
                 case 16: return " >> lower";
+                case 17: return " >> cmpl";
+                case 18: return " >> jmp";
+                case 19: return " >> label";
                 default:
                         std::cout<<"Erreur : Opérateur inconnu"<<std::endl;
                         exit(EXIT_FAILURE);
@@ -247,10 +253,14 @@ public:
                 bbs.push_back(bb);
         }
 
-	/*
-         * x86 code generation:
-         * could be encapsulated in a processor class
-         * in a retargetable compiler.
+	/*   case OP_UNEQUAL:
+                        std::cout << "OP_UNEQUAL | " << std::endl;
+                        std::cout << "\tleft : ";
+                        ndlist[0]->display();
+                        std::cout << "\tright : ";
+                        ndlist[1]->display();
+                        std::cout << std::endl;
+                        break;compiler.
          */
         void gen_asm(std::ostream& o);
 
@@ -280,7 +290,7 @@ public:
                 std::cout<<"Creating new tempvar :"<<var_name<<std::endl;
                 return var_name;
         }
-
+        int getsizebbs();
 	int get_var_index(std::string name);
 	Type get_var_type(std::string name);
 
