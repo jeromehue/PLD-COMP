@@ -221,6 +221,21 @@ void IRInstr::gen_asm(std::ostream &o)
 
                 break;
         }
+        case putchar:
+        {
+                int index = bb->cfg->symbols->getAddress(params[0]);
+                o<< "\tmovl\t" << index << "(%rbp), %edi\n";
+                o<< "\tcall\tputchar\n";
+        }
+        case getchar:
+        {
+                std::cout << "getchar gen asm " << std::endl;
+                o<< "\tmovl\t$0,%eax\n";
+                o<< "\tcall\tgetchar\n";
+                int index = bb->cfg->symbols->getAddress(params[0]);
+                o<< "\tmovl\t%eax," << index << "(%rbp)\n";
+
+        } 
         default:
                 std::cout<<"gen_asm not implemented"<<std::endl;
                 //exit(EXIT_FAILURE);

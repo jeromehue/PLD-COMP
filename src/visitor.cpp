@@ -585,7 +585,42 @@ Any Visitor::visitParameterlist(ifccParser::ParameterlistContext* ctx)
 Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext* ctx) 
 {
         std::cout << "Call to FunctionCall " << std::endl;
-        
+      
+        /* Putchar or Getchar special case*/ 
+        if ( ctx->label ) {
+                
+                std::cout << ctx->label->getText() << std::endl;
+               
+                /*Our function node */
+                Node* f = new Node(OP_CALL, NULL, NULL, 1, 0);
+                f->ndlist.pop_back();
+                f->ndlist.pop_back();
+                
+                /*Its only parameter*/
+                Node* n;
+
+                if (ctx->CHAR_CONST()) {
+                        std::cout << "char const"<< std::endl;
+                std::string charConst = ctx->CHAR_CONST()->getText();
+                        int value = charConst[1];
+                        n = new Node(OP_CONST, NULL, NULL, value, 0);
+                } else if (ctx->ID()) { 
+                        std::cout << "id " << std::endl;
+                        std::string var_name = ctx->ID()->getText();
+                        int var_adr = curfct->symb->getAddress(var_name);
+                        n = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
+                } else {
+                
+                }
+
+
+                f->strarg = ctx->label->getText();
+                f->addNode(n);
+                curfct->funcInstr.push_back(f);
+
+                return 0;
+        }
+
         /* Our function parameters */ 
         auto v = ctx->primaryExpression();
 
@@ -672,3 +707,30 @@ Any Visitor::visitAssignFunction(ifccParser::AssignFunctionContext* ctx)
 
 }
 
+
+
+Any Visitor::visitAssignGetchar(ifccParser::AssignGetcharContext* ctx){
+        std::cout << "Call to visitAssignGetChar" << std::endl;
+        
+        int ref = curfct->funcInstr.size();
+
+        
+        std::string var_name = ctx->ID()->getText();
+        int var_adr = curfct->symb->getAddress(var_name);
+        
+        Node* o = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
+        Node* f = new Node(OP_CALL, NULL, NULL, 0, 0);
+        f->strarg = "getchar";
+        // enleve les 2  NULL
+        f->ndlist.pop_back();
+        f->ndlist.pop_back();
+        
+        assert(ref == curfct->funcInstr.size()); 
+        
+        Node* n = new Node(OP_ASSIGN, o, f, 0, 0);
+        curfct->funcInstr.push_back(n);
+
+        return 0;
+
+
+} 

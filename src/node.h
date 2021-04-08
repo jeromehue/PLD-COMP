@@ -514,6 +514,24 @@ public:
                         << std::endl;
 
 
+                        if (this->strarg == "putchar") {
+                                string tmp_var = ndlist.at(0)->buildIR(cfg);
+                                retvector.push_back(tmp_var);
+                                cfg->current_bb->add_IRInstr(
+                                                IRInstr::putchar, 
+                                                INT, retvector);
+                                return "";
+                        } else if (this->strarg == "getchar") {
+                                var3 = cfg->create_new_tempvar(INT);
+                                retvector.push_back(var3);
+                                cfg->current_bb->add_IRInstr(
+                                                IRInstr::getchar, 
+                                                INT, retvector);
+                                return var3;
+
+                                exit(EXIT_FAILURE);
+                        }
+
                         var3 = cfg->create_new_tempvar(INT);
                         retvector.push_back(var3);
                         retvector.push_back(this->strarg);

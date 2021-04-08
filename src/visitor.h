@@ -48,6 +48,8 @@ public:
 
         virtual antlrcpp::Any visitAssignRelExpr(ifccParser::AssignRelExprContext *ctx) override;
 
+        virtual antlrcpp::Any visitAssignGetchar(ifccParser::AssignGetcharContext *ctx) override;
+
         virtual antlrcpp::Any visitAssignFunction(ifccParser::AssignFunctionContext *ctx) override;
 
         virtual antlrcpp::Any visitIf(ifccParser::IfContext *ctx) override;
