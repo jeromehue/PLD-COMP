@@ -195,6 +195,30 @@ Any Visitor::visitInitDeclarator(ifccParser::InitDeclaratorContext *ctx)
                 int base = - curfct->symb->getOffset();
                 array->display();
                 curfct->funcInstr.push_back(array);
+        } else if (ctx->functionCall()) {
+
+                std::cout << "initializing with a function call" <<
+                std::endl;
+                
+                // If assign, we create an IDENT node that's going to
+                // be the left child of out ASSIGN node
+                int var_adr = curfct->symb->getAddress(var_name);
+                Node* var = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
+
+
+                // Now let's deal with the ASSIGN node
+                Node* n = new Node(OP_ASSIGN, var, NULL, 0, 0);
+                curfct->funcInstr.push_back(n);
+
+                // Finishing with the expr node
+                int index = curfct->funcInstr.size() -1;
+                visitChildren(ctx);
+                assert(curfct->funcInstr.size() == index+2);
+                curfct->funcInstr[index]->ndlist[1] = curfct->funcInstr[index+1];
+                curfct->funcInstr.pop_back();
+
+                std::cout << "initializing with a function call - Done" <<
+                std::endl;
         }
 
         return 0;
@@ -557,6 +581,42 @@ Any Visitor::visitParameterlist(ifccParser::ParameterlistContext* ctx)
         }
         return 0;
 }
+
+Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext* ctx) 
+{
+        std::cout << "Call to FunctionCall " << std::endl;
+        
+        /* Our function parameters */ 
+        auto v = ctx->primaryExpression();
+
+        /*Creating function node*/
+        Node* f = new Node(OP_CALL, NULL, NULL, v.size(), 0);
+
+        /*Setting up function name*/
+        f->strarg = ctx->ID()->getText();
+        
+        /*Removing constructor defaull NULL nodes*/
+        f->ndlist.pop_back();
+        f->ndlist.pop_back();
+        
+        /*Adding parameters node to our function */
+        for (int i = 0; i< v.size(); ++i) {
+                visit(ctx->primaryExpression(i));
+                f->addNode(curfct->funcInstr.back());
+                curfct->funcInstr.pop_back();
+        }
+        
+        /*
+         * Pushing this function call on top of 
+         * our current function insructions
+         */
+        curfct->funcInstr.push_back(f);
+
+        
+        return 0;
+}
+
+
 
 Any Visitor::visitAssignFunction(ifccParser::AssignFunctionContext* ctx) 
 {
