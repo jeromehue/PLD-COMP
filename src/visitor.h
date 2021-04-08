@@ -52,6 +52,8 @@ public:
 
         virtual antlrcpp::Any visitIf(ifccParser::IfContext *ctx) override;
 
+        virtual antlrcpp::Any visitWhileStatement(ifccParser::WhileStatementContext *ctx) override;
+
         virtual antlrcpp::Any visitIfElse(ifccParser::IfElseContext *ctx) override;
 
         virtual antlrcpp::Any visitFunction(ifccParser::FunctionContext* ctx) override;
@@ -61,6 +63,8 @@ public:
         virtual antlrcpp::Any visitBlockStatement(ifccParser::BlockStatementContext* ctx) override;
 
         virtual antlrcpp::Any visitTab(ifccParser::TabContext* ctx) override;
+        virtual antlrcpp::Any visitFunctionCall(ifccParser::FunctionCallContext* ctx) override;
+
 
         // Getters
         std::vector<Node*> getNodes()

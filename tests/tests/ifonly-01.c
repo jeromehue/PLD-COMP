@@ -6,8 +6,6 @@ int main()
         c = 1000;
         if (a < b)
         {
-                c = 5;
-                b = 50;
         }
         c = c + b;
         return c;

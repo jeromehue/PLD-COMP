@@ -38,9 +38,11 @@ enum nodeOp {
         OP_IF,
         OP_BLOCK,
         OP_ARRAY,
-        OP_ARRAY_ELEMENT
+        OP_ARRAY_ELEMENT,
+        OP_WHILE
 };
-static int counter=0;
+static int counter = 0;
+static int counterWhile = 0 ;
 class Node {
 public:
         Node(int op, Node *left, Node *right, int arg0, int arg1)
@@ -143,6 +145,13 @@ public:
                         std::cout << "\tthenbloc: ";
                         ndlist[1]->display();
                         break;
+                case OP_WHILE:
+                        std::cout << "OP_WHILE | " << std::endl;
+                        std::cout << "\texpresionn : ";
+                        ndlist[0]->display();
+                        std::cout << "\twhileBlockStatement: ";
+                        ndlist[1]->display(); 
+                        break; 
                 case OP_BLOCK:
 
                         break;
@@ -449,6 +458,42 @@ public:
 
                         testBB->add_IRInstr(IRInstr::cmpl, INT, retvector);
                         afterBB->add_IRInstr(IRInstr::label, INT, retvector);
+                        break;
+                } 
+                case OP_WHILE:
+                { 
+                        counterWhile++;
+                        BasicBlock * beforeWhileBB = cfg->current_bb;
+
+                        //test
+                        string testLabel = "testWhileBB" + to_string(counterWhile);
+                        string afterlabel="afterWhileBB"+to_string(counterWhile);
+
+                        BasicBlock* testWhileBB = new BasicBlock(cfg, testLabel);
+                        cfg->add_bb(testWhileBB);
+
+                        BasicBlock* afterWhileBB = new BasicBlock(cfg, afterlabel);
+                       
+                        testWhileBB->add_IRInstr(IRInstr::label,INT,retvector);                        
+
+                        cfg->current_bb = testWhileBB;
+                        var1 = ndlist[0]->buildIR(cfg); // ir de l'expression
+                        retvector.push_back(var1);
+                        retvector.push_back(afterlabel);
+                        testWhileBB->add_IRInstr(IRInstr::cmpl, INT, retvector);
+                        
+                        //body
+                        BasicBlock* bodyBB = new BasicBlock(cfg, "bodyBB" + to_string(counterWhile));
+                        cfg->add_bb(bodyBB);
+                        cfg->current_bb = bodyBB;
+                        ndlist[1]->buildIR(cfg);
+                        retvector.push_back(testLabel);
+                        cfg->current_bb->add_IRInstr(IRInstr::jmp, INT, retvector);
+
+                        //after
+                        cfg->current_bb = afterWhileBB;
+                        afterWhileBB->add_IRInstr(IRInstr::label,INT,retvector);
+                        cfg->add_bb(afterWhileBB);
                         break;
                 } 
                 case OP_RETURN:
