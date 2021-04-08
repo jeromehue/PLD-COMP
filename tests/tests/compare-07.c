@@ -1,7 +1,8 @@
-int main(){
- int a,b,c;
- a=48;
- b=12;
- c = 48!=12; 
- return c;
+int main()
+{
+        int a, b, c;
+        a = 48;
+        b = 12;
+        c = 48 != 12;
+        return c;
 }
