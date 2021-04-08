@@ -9,20 +9,13 @@ axiom
         :  prog
         ;
 
-procedure
-	: 'void' ID '(' parameterlist? ')' '{'
-		declaration*
-		statement*
-        '}'
-        ;
-
 parameterlist
 	:   TYPE ID (',' TYPE ID)*
 	;
 
 function
 	:
-	TYPE ID '(' parameterlist? ')' '{'
+	(TYPE | 'void') ID '(' parameterlist? ')' '{'
 		declaration*
 		statement*
 		returnInstr?
@@ -30,7 +23,7 @@ function
         ;
 
 prog
-	: (function | procedure)+
+	: (function)+
 	;
 
 declaration

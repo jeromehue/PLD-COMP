@@ -1,10 +1,8 @@
-int multiply(int a, int b) {
-        return a*b;
-}
+void parameters(int a, int b) {}
 
 int main()
 {
-        int a = 2, b;
-        b =getchar();
-        return b;
+        int a = 2;
+        parameters(a, 5);
+        return a;
 }
