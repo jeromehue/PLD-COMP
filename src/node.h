@@ -286,14 +286,22 @@ public:
                         std::cout << "---------------end TEST  \n ";
 
                         //then
+                        string elselabel="elseBB" + testBBAdressTostring.str();
+                        string afterlabel="afterBB"+testBBAdressTostring.str();
+                        retvector.push_back(var1);
+                        retvector.push_back(elselabel);
+                        retvector.push_back(afterlabel);
                         BasicBlock * thenBB = new BasicBlock(cfg, "thenBB" + testBBAdressTostring.str());
                         cfg->add_bb(thenBB);
                         cfg->current_bb = thenBB;
                         ndlist[1]->buildIR(cfg);
+                        cfg->current_bb->add_IRInstr(IRInstr::jmp, INT, retvector);
                         std::cout << "---------------end THEN \n ";
-
+                        
+                        //BasicBlock * jumpBB = new BasicBlock(cfg, "jumpBB");
+                        //cfg->add_bb(jumpBB);
                         //else
-                        BasicBlock * elseBB = new BasicBlock(cfg, "elseBB" + testBBAdressTostring.str());
+                        BasicBlock * elseBB = new BasicBlock(cfg, elselabel);
                         cfg->current_bb = elseBB;
                         elseBB->add_IRInstr(IRInstr::label, INT, retvector);
                         ndlist[2]->buildIR(cfg);
@@ -301,7 +309,7 @@ public:
 
 
                         //after
-                        BasicBlock * afterBB = new BasicBlock(cfg, "afterBB" + testBBAdressTostring.str());
+                        BasicBlock * afterBB = new BasicBlock(cfg, afterlabel);
                        
                         cfg->current_bb = afterBB;
                         std::cout << "---------------end AFTER \n ";
@@ -318,12 +326,11 @@ public:
                         elseBB->exit_true=afterBB;
 
                         
-                        retvector.push_back(var1);
-                        retvector.push_back(elseBB->label);
-                        retvector.push_back(afterBB->label);
+                        
 
                         testBB->add_IRInstr(IRInstr::cmpl, INT, retvector);
-                        thenBB->add_IRInstr(IRInstr::jmp, INT, retvector);
+                       // thenBB->add_IRInstr(IRInstr::jmp, INT, retvector);
+                        elseBB->add_IRInstr(IRInstr::jmp, INT, retvector);
                         afterBB->add_IRInstr(IRInstr::label, INT, retvector);
                         break;
                        } 
