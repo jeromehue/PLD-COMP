@@ -10,10 +10,16 @@ int main() {
         else
         {
             if(c == 30){
-                 c= 25;
+                 if(c==30){
+                     c = 29;
+                     c = c + 3 ;
+                 } else{
+                     c = 31;
+                 } 
             } else{
                  c= 24;
             } 
         }
+        c = c + 5;
     return c;
 }

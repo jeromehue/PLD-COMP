@@ -13,11 +13,11 @@ int main() {
     a=a+6;
     if(c>6)
     {
-        c=24;
+        c= c + 24;
     }
     else
     {
-        c=1;
+        c= c + 1;
     }
     if(a>8)
     {
@@ -27,5 +27,6 @@ int main() {
     {
         c=c+1;
     }
+    c = c+ 5;
     return c;
 }

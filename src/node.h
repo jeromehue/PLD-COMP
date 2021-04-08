@@ -319,9 +319,12 @@ public:
                         BasicBlock * elseBB = new BasicBlock(cfg, elselabel);
                         cfg->current_bb = elseBB;
                         elseBB->add_IRInstr(IRInstr::label, INT, retvector);
+                        cfg->add_bb(elseBB);
                         ndlist[2]->buildIR(cfg);
                         std::cout << "---------------end OELSEP_IF \n ";
-                        cfg->add_bb(elseBB);
+                        
+                        cfg->current_bb->add_IRInstr(IRInstr::jmp, INT, retvector);
+                        
 
                         //after
                         BasicBlock * afterBB = new BasicBlock(cfg, afterlabel);
@@ -343,7 +346,6 @@ public:
 
                         testBB->add_IRInstr(IRInstr::cmpl, INT, retvector);
                        // thenBB->add_IRInstr(IRInstr::jmp, INT, retvector);
-                        elseBB->add_IRInstr(IRInstr::jmp, INT, retvector);
                         afterBB->add_IRInstr(IRInstr::label, INT, retvector);
                         break;
                        } 

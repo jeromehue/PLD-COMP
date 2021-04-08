@@ -155,6 +155,10 @@ Any Visitor::visitAssignArithExpr(ifccParser::AssignArithExprContext *ctx)
 
         return 0;
 }
+Any Visitor::visitBlockStatement(ifccParser::BlockStatementContext* ctx) {
+        return visitChildren(ctx);
+}
+
 
 Any Visitor::visitIfStatement(ifccParser::IfStatementContext *ctx)
 {

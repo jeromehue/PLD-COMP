@@ -66,11 +66,15 @@ statement
 	| ifStatement
 	;
 
+blockStatement
+	:statement* 
+	;
+
 ifStatement
 	:'if' '(' relationalExpression  ')' '{'
-		thenBloc = statement*
+		thenBloc = blockStatement
          '}'
-	'else' '{' elseBloc = statement*'}'
+	'else' '{' elseBloc = blockStatement '}'
 	;
 
 assignmentExpr
