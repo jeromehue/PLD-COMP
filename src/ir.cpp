@@ -228,6 +228,7 @@ void IRInstr::gen_asm(ostream &o)
                 int index = bb->cfg->symbols->getAddress(params[0]);
                 o<< "\tmovl\t" << index << "(%rbp), %edi\n";
                 o<< "\tcall\tputchar\n";
+                break;
         }
         case getchar:
         {
@@ -236,7 +237,7 @@ void IRInstr::gen_asm(ostream &o)
                 o<< "\tcall\tgetchar\n";
                 int index = bb->cfg->symbols->getAddress(params[0]);
                 o<< "\tmovl\t%eax," << index << "(%rbp)\n";
-
+                break;
         } 
         default:
                 cout<<"gen_asm not implemented"<<endl;
