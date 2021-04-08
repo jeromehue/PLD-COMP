@@ -281,7 +281,7 @@ public:
                         //test
                         BasicBlock * testBB = cfg->current_bb;
                         var1 = ndlist[0]->buildIR(cfg); // ir de l'expression
-                        std::stringstream testBBAdressTostring;       
+                        std::stringstream testBBAdressTostring;  //give a different name to each basicBlock 
                         testBBAdressTostring << &testBB; 
                         std::cout << "---------------end TEST  \n ";
 
