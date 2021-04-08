@@ -126,7 +126,6 @@ void IRInstr::gen_asm(std::ostream &o)
                 return;
         }
         case cmp_uneq: {
-
                 int index = bb->cfg->symbols->getAddress(params[1]);
                 int index2 = bb->cfg->symbols->getAddress(params[2]);
                 o<< "\tmovl\t" << index2 << "(%rbp), %eax\n";
@@ -199,6 +198,27 @@ void IRInstr::gen_asm(std::ostream &o)
                 int index3 = bb->cfg->symbols->getAddress(params[0]);
                 o<<"\tmovl\t%eax," << index3 << "(%rbp)\n";
                 std::cout << "Fin de la generation ir pour call" << std::endl;
+                break;
+        }
+        case array_access: {
+                // movl    -4(%rbp), %eax
+                // cltq
+                // movl    -20(%rbp,%rax,4), %eax
+                // movl    %eax, -8(%rbp)
+                int index = bb->cfg->symbols->getAddress(params[1]);
+                o<< "\tmovl\t" << index << "(%rbp), %eax\n";
+                o<< "\tcltq\n";
+                
+                std::string firstElement = "tab" + params[0] + "0";
+                std::cout << "Array starts at index " << firstElement << std::endl;
+                int startIndex = bb->cfg->symbols->getAddress(firstElement);
+                o<< "\tmovl\t" << startIndex << "(%rbp,%rax,4), %eax\n";
+
+                
+                std::cout << params[2] << std::endl;
+                int dest = bb->cfg->symbols->getAddress(params[2]);
+                o<< "\tmovl\t%eax, " << dest << "(%rbp)\n";
+
                 break;
         }
         default:

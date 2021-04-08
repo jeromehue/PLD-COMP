@@ -84,9 +84,27 @@ Any Visitor::visitVar(ifccParser::VarContext *ctx)
 }
 
 Any Visitor::visitTab(ifccParser::TabContext *ctx) 
-{
-        std::cout << "visit tab not implemented" << std::endl;
-        exit(EXIT_FAILURE);
+{       
+        std::string var_name = ctx->ID(0)->getText();
+        std::cout << " >> VisitTab: " << var_name << std::endl;
+
+        Node* n;
+        if (ctx->INT_CONST()) {
+                int value = stoi(ctx->INT_CONST()->getText());
+                n = new Node(OP_CONST, NULL, NULL, value, 0);
+        } else {
+                std::string id_name = ctx->ID(1)->getText();
+                int var_adr = curfct->symb->getAddress(id_name);
+                n = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
+        }
+        
+        Node* arrayElement = new Node(OP_ARRAY_ELEMENT, n, NULL, 0, 0);
+        arrayElement->strarg = var_name;
+        curfct->funcInstr.push_back(arrayElement);
+        
+        arrayElement->display();
+
+        return 0;
 }
 
 Any Visitor::visitStatement(ifccParser::StatementContext *ctx)
@@ -169,7 +187,7 @@ Any Visitor::visitInitDeclarator(ifccParser::InitDeclaratorContext *ctx)
                         array->addNode(c);
 
                         std::string v_name = "tab" + var_name + 
-                                to_string(i);
+                                to_string(arraySize - i - 1);
                         curfct->symb->store(v_name, INT); // TODO: Could be CHAR
                 }
                 std::cout << curfct->symb->getOffset() 

@@ -37,7 +37,8 @@ enum nodeOp {
         OP_IFELSE,
         OP_IF,
         OP_BLOCK,
-        OP_ARRAY
+        OP_ARRAY,
+        OP_ARRAY_ELEMENT
 };
 static int counter=0;
 class Node {
@@ -162,6 +163,9 @@ public:
                 case OP_ARRAY: 
                         cout << "OP ARRAY "<< this->strarg;
                         cout << ", size : " << ndlist.size() << endl;
+                        break;
+                case OP_ARRAY_ELEMENT: 
+                        cout << "OP ARRAY ELEMENT "<< this->strarg;
                         break;
                 default:
                         std::cout << "Unknown Node" << std::endl;
@@ -490,7 +494,7 @@ public:
                 case OP_ARRAY: {
                         std::cout << "Generating IR for OP_ARRAY" << 
                                 std::endl;
-                        for (int i = 0; i< ndlist.size(); ++i) {
+                        for (int i = 0; i < ndlist.size(); ++i) {
                                 cout << "creating tempvar" << endl;
                                 //std::string tmp_var = 
                                  //       ndlist.at(i)->buildIR(cfg);
@@ -514,8 +518,30 @@ public:
                         }
                         break;
                 }
+                case OP_ARRAY_ELEMENT: {
+                        std::cout << "Generating IR for OP_ARRAY_ELEMENT" << 
+                                std::endl;
+                        std::string var_name = ndlist.at(0)->buildIR(cfg);
+                        std::cout << ">>>>>" << var_name << std::endl;
+
+                        retvector.push_back(this->strarg);
+                        retvector.push_back(var_name);
+                        
+                        std::string dest = cfg->create_new_tempvar(INT);
+                        retvector.push_back(dest);
+                        
+                        cfg->current_bb->add_IRInstr(IRInstr::array_access, INT, retvector);
+
+                        // movl    -4(%rbp), %eax
+                        // cltq
+                        // movl    -20(%rbp,%rax,4), %eax
+                        // movl    %eax, -8(%rbp)
+
+                        return dest;
+                }
                 default:
-                        std::cout << "Erreur lors de la génération de l'IR"                             << std::endl;
+                        std::cout << "Erreur lors de la génération de l'IR"
+                                << std::endl;
                         std::cout << "Fonctionnalité non implémentée" 
                                 << std::endl;
                         exit(EXIT_FAILURE);
