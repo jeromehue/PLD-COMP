@@ -67,96 +67,96 @@ public:
         {
                 switch (op) {
                 case OP_ADD:
-                        std::cout << "OP_ADD" << std::endl;
-                        std::cout << "\tleft : ";
+                        cout << "OP_ADD" << endl;
+                        cout << "\tleft : ";
                         ndlist[0]->display();
-                        std::cout << "\tright : ";
+                        cout << "\tright : ";
                         ndlist[1]->display();
-                        std::cout << std::endl;
+                        cout << endl;
                         break;
 
                 case OP_CONST:
-                        std::cout << "OP_CONST" << std::endl;
+                        cout << "OP_CONST" << endl;
                         break;
 
                 case OP_IDENT:
-                        std::cout << "OP_IDENT" << std::endl;
+                        cout << "OP_IDENT" << endl;
                         break;
 
                 case OP_ASSIGN:
-                        std::cout << "OP_ASSIGN | " << std::endl;
-                        std::cout << "\tleft : ";
+                        cout << "OP_ASSIGN | " << endl;
+                        cout << "\tleft : ";
                         ndlist[0]->display();
-                        std::cout << "\tright : ";
+                        cout << "\tright : ";
                         ndlist[1]->display();
-                        std::cout << std::endl;
+                        cout << endl;
                         break;
 
                 case OP_LOWER:
-                        std::cout << "OP_LOWER | " << std::endl;
-                        std::cout << "\tleft : ";
+                        cout << "OP_LOWER | " << endl;
+                        cout << "\tleft : ";
                         ndlist[0]->display();
-                        std::cout << "\tright : ";
+                        cout << "\tright : ";
                         ndlist[1]->display(); 
-                        std::cout << std::endl;
+                        cout << endl;
                         break;
 
                 case OP_GREATER:
-                        std::cout << "OP_GREATER | " << std::endl;
-                        std::cout << "\tleft : ";
+                        cout << "OP_GREATER | " << endl;
+                        cout << "\tleft : ";
                         ndlist[0]->display();
-                        std::cout << "\tright : ";
+                        cout << "\tright : ";
                         ndlist[1]->display();
-                        std::cout << std::endl;
+                        cout << endl;
                         break;
 
                 case OP_EQUAL:
-                        std::cout << "OP_EQUAL | " << std::endl;
-                        std::cout << "\tleft : ";
+                        cout << "OP_EQUAL | " << endl;
+                        cout << "\tleft : ";
                         ndlist[0]->display();
-                        std::cout << "\tright : ";
+                        cout << "\tright : ";
                         ndlist[1]->display();
-                        std::cout << std::endl;
+                        cout << endl;
                         break;
 
                 case OP_UNEQUAL:
-                        std::cout << "OP_UNEQUAL | " << std::endl;
-                        std::cout << "\tleft : ";
+                        cout << "OP_UNEQUAL | " << endl;
+                        cout << "\tleft : ";
                         ndlist[0]->display();
-                        std::cout << "\tright : ";
+                        cout << "\tright : ";
                         ndlist[1]->display();
-                        std::cout << std::endl;
+                        cout << endl;
                         break;
 
                 case OP_IFELSE:
-                        std::cout << "OP_IFELSE | " << std::endl;
-                        std::cout << "\texpresionn : ";
+                        cout << "OP_IFELSE | " << endl;
+                        cout << "\texpresionn : ";
                         ndlist[0]->display();
-                        std::cout << "\tthenbloc: ";
+                        cout << "\tthenbloc: ";
                         ndlist[1]->display();
-                        std::cout << "\telsebloc: ";
+                        cout << "\telsebloc: ";
                         ndlist[2]->display();
-                        std::cout << std::endl;
+                        cout << endl;
                         break;
                 case OP_IF:
-                        std::cout << "OP_IF | " << std::endl;
-                        std::cout << "\texpresionn : ";
+                        cout << "OP_IF | " << endl;
+                        cout << "\texpresionn : ";
                         ndlist[0]->display();
-                        std::cout << "\tthenbloc: ";
+                        cout << "\tthenbloc: ";
                         ndlist[1]->display();
                         break;
                 case OP_WHILE:
-                        std::cout << "OP_WHILE | " << std::endl;
-                        std::cout << "\texpresionn : ";
+                        cout << "OP_WHILE | " << endl;
+                        cout << "\texpresionn : ";
                         ndlist[0]->display();
-                        std::cout << "\twhileBlockStatement: ";
+                        cout << "\twhileBlockStatement: ";
                         ndlist[1]->display(); 
                         break; 
                 case OP_BLOCK:
 
                         break;
                 case OP_RETURN:
-                        std::cout << "OP_RETURN" << std::endl;
+                        cout << "OP_RETURN" << endl;
                         break;
                         /*
                          * In a non void case, we first generate the code
@@ -167,7 +167,7 @@ public:
                          * */
                 case OP_CALL:
                         cout << "OP CALL " << this->strarg << " with "
-                                << this->args[0] << " arguments" << std::endl;
+                                << this->args[0] << " arguments" << endl;
                         break;
                 case OP_ARRAY: 
                         cout << "OP ARRAY "<< this->strarg;
@@ -177,7 +177,7 @@ public:
                         cout << "OP ARRAY ELEMENT "<< this->strarg;
                         break;
                 default:
-                        std::cout << "Unknown Node" << std::endl;
+                        cout << "Unknown Node" << endl;
                         break;
                 }
         }
@@ -187,16 +187,16 @@ public:
          * the function body. Each node of the AST has a method
          * buildIR(CFG* cfg)
          */
-        std::string buildIR(CFG *cfg)
+        string buildIR(CFG *cfg)
         {
                 // Debug print
-                std::cout << "Generating IR for : ";
+                cout << "Generating IR for : ";
                 this->display();
 
                 // Avoid jumps that bypasses var init.
-                std::string sright, sleft;
-                std::string var1, var2, var3;
-                std::vector<std::string> retvector;
+                string sright, sleft;
+                string var1, var2, var3;
+                vector<string> retvector;
 
                 switch (op) {
                 case OP_ADD:
@@ -349,9 +349,9 @@ public:
                         break;
 
                 case OP_IDENT:
-                        std::cout << "Generating IR for var @" << args[0] << " : "
+                        cout << "Generating IR for var @" << args[0] << " : "
                                   << cfg->symbols->getName(args[0])
-                                  << std::endl;
+                                  << endl;
                         return cfg->symbols->getName(args[0]);
                         break;
 
@@ -360,8 +360,8 @@ public:
                         sright = ndlist[1]->buildIR(cfg); // adresse résultat expression
                         retvector.push_back(sleft);
                         retvector.push_back(sright);
-                        std::cout << "Assign node building ir " 
-                                << sleft << std::endl;
+                        cout << "Assign node building ir " 
+                                << sleft << endl;
                         cfg->current_bb->add_IRInstr(
                             IRInstr::wmem, INT, retvector);
                         return sright;
@@ -378,7 +378,7 @@ public:
                         //test
                         BasicBlock * testBB = cfg->current_bb;
                         var1 = ndlist[0]->buildIR(cfg); // ir de l'expression
-                        std::stringstream testBBAdressTostring;  //give a different name to each basicBlock 
+                        stringstream testBBAdressTostring;  //give a different name to each basicBlock 
                         testBBAdressTostring << &testBB; 
 
                         //then
@@ -407,7 +407,7 @@ public:
                         BasicBlock * afterBB = new BasicBlock(cfg, afterlabel);
                        
                         cfg->current_bb = afterBB;
-                        std::cout << "---------------end AFTER \n ";
+                        cout << "---------------end AFTER \n ";
                         cfg->add_bb(afterBB);
 
                         //liaison entre les if else avec le afterBB
@@ -509,9 +509,9 @@ public:
                 case OP_CALL: 
                 {
                         cout << "Generating IR for function call" << endl;
-                        std::cout << "function name : " << this->strarg;
-                        std::cout << "; arguments : " << this->ndlist.size()
-                        << std::endl;
+                        cout << "function name : " << this->strarg;
+                        cout << "; arguments : " << this->ndlist.size()
+                        << endl;
 
 
                         if (this->strarg == "putchar") {
@@ -537,9 +537,9 @@ public:
                         retvector.push_back(this->strarg);
 
                         for(int i = 0; i< this->ndlist.size(); ++i) {
-                                std::cout << "argi n°" << i <<  std::endl;
+                                cout << "argi n°" << i <<  endl;
                                 this->ndlist.at(i)->display();
-                                std::cout << std::endl;
+                                cout << endl;
 
                                 
                                 // Either a const or var
@@ -555,19 +555,19 @@ public:
                         break;
                 }
                 case OP_ARRAY: {
-                        std::cout << "Generating IR for OP_ARRAY" << 
-                                std::endl;
+                        cout << "Generating IR for OP_ARRAY" << 
+                                endl;
                         for (int i = 0; i < ndlist.size(); ++i) {
                                 cout << "creating tempvar" << endl;
-                                //std::string tmp_var = 
+                                //string tmp_var = 
                                  //       ndlist.at(i)->buildIR(cfg);
                                 /*
                                 cout << "name to be written " <<
                                         ("tab" + strarg + to_string(i))
-                                        << std::endl;
+                                        << endl;
                                 cout << "Var to be written in adr "<<
                                         ndlist.at(i)->args[0] << 
-                                        std::endl;
+                                        endl;
                                 */
                                 retvector.push_back("tab" + strarg + 
                                                 to_string(i));
@@ -582,15 +582,15 @@ public:
                         break;
                 }
                 case OP_ARRAY_ELEMENT: {
-                        std::cout << "Generating IR for OP_ARRAY_ELEMENT" << 
-                                std::endl;
-                        std::string var_name = ndlist.at(0)->buildIR(cfg);
-                        std::cout << ">>>>>" << var_name << std::endl;
+                        cout << "Generating IR for OP_ARRAY_ELEMENT" << 
+                                endl;
+                        string var_name = ndlist.at(0)->buildIR(cfg);
+                        cout << ">>>>>" << var_name << endl;
 
                         retvector.push_back(this->strarg);
                         retvector.push_back(var_name);
                         
-                        std::string dest = cfg->create_new_tempvar(INT);
+                        string dest = cfg->create_new_tempvar(INT);
                         retvector.push_back(dest);
                         
                         cfg->current_bb->add_IRInstr(IRInstr::array_access, INT, retvector);
@@ -603,10 +603,10 @@ public:
                         return dest;
                 }
                 default:
-                        std::cout << "Erreur lors de la génération de l'IR"
-                                << std::endl;
-                        std::cout << "Fonctionnalité non implémentée" 
-                                << std::endl;
+                        cout << "Erreur lors de la génération de l'IR"
+                                << endl;
+                        cout << "Fonctionnalité non implémentée" 
+                                << endl;
                         exit(EXIT_FAILURE);
                         break;
                 }
@@ -626,40 +626,40 @@ public:
          * For expressions, left is ndlist[0], right is ndlist[1]
          * Used mostly for blocs
          */
-        std::vector<Node *> ndlist;
+        vector<Node *> ndlist;
 
         /* 0, 1 or 2 arguments */
         int args[2];
         
-        std::string strarg;
+        string strarg;
 };
 
 class Function {
 public:
-        std::string name;
+        string name;
         Symboltable *symb;
-        std::vector<Node *> funcInstr;
+        vector<Node *> funcInstr;
         int offset;
 
-        Function(std::string name)
+        Function(string name)
         {
                 this->name = name;
                 cout << "Creating Function named : " << this->name << endl;
                 symb = new Symboltable();
-                funcInstr = std::vector<Node *>();
+                funcInstr = vector<Node *>();
         }
 
         int computeOffset()
         {
                 int a = symb->getNextOffset() - 4;
-                std::cout << "True offset  : " << a << std::endl;
+                cout << "True offset  : " << a << endl;
                 int round = (-a + 16) - (-a % 16);
-                std::cout <<"Offset rounded to 16 : "<< round << std::endl;
+                cout <<"Offset rounded to 16 : "<< round << endl;
                 return round;
         }
 
         /* Getters and Setters */
-        std::vector<Node *> getInstr()
+        vector<Node *> getInstr()
         {
                 return this->funcInstr;
         }

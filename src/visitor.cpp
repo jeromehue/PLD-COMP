@@ -6,10 +6,11 @@
 #include "visitor.h"
 #include "node.h"
 
-std::map<std::string, int > Symboltable::fct_params;
+map<string, int > Symboltable::fct_params;
 
 // Improving readability
 using namespace antlrcpp;
+using namespace std;
 
 Any Visitor::visitAxiom(ifccParser::AxiomContext *ctx)
 {
@@ -18,14 +19,14 @@ Any Visitor::visitAxiom(ifccParser::AxiomContext *ctx)
 
 Any Visitor::visitProg(ifccParser::ProgContext *ctx)
 {
-        std::cout << "Call to visitProg" << std::endl;
+        cout << "Call to visitProg" << endl;
         return visitChildren(ctx);
 }
 
 Any Visitor::visitReturnInstr(ifccParser::ReturnInstrContext *ctx)
 {
         // Debug print
-        std::cout << "Call to visitReturnInstr" << std::endl;
+        cout << "Call to visitReturnInstr" << endl;
 
         // Node definition
         Node* n = new Node(OP_RETURN, NULL, NULL,0, 0);
@@ -46,7 +47,7 @@ Any Visitor::visitReturnInstr(ifccParser::ReturnInstrContext *ctx)
 Any Visitor::visitNumber(ifccParser::NumberContext *ctx)
 {
         // Debug print
-        std::cout << "Call to visitNumber" << std::endl;
+        cout << "Call to visitNumber" << endl;
 
         // Node definition
         int a = stoi(ctx->INT_CONST()->getText());
@@ -59,10 +60,10 @@ Any Visitor::visitNumber(ifccParser::NumberContext *ctx)
 Any Visitor::visitChar(ifccParser::CharContext *ctx)
 {
         // Debug print
-        std::cout << "Call to visitChar" << std::endl;
+        cout << "Call to visitChar" << endl;
 
         // Node definition
-        std::string charConst = ctx->CHAR_CONST()->getText();
+        string charConst = ctx->CHAR_CONST()->getText();
         int value = charConst[1];
         Node* n = new Node(OP_CONST, NULL, NULL, value, 0);
         curfct->funcInstr.push_back(n);
@@ -72,10 +73,10 @@ Any Visitor::visitChar(ifccParser::CharContext *ctx)
 
 Any Visitor::visitVar(ifccParser::VarContext *ctx)
 {
-        std::cout << "Call to visitVar" << std::endl;
+        cout << "Call to visitVar" << endl;
 
         //Node definition
-        std::string var_name = ctx->ID()->getText();
+        string var_name = ctx->ID()->getText();
         int var_adr = curfct->symb->getAddress(var_name);
         Node* var = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
         curfct->funcInstr.push_back(var);
@@ -85,15 +86,15 @@ Any Visitor::visitVar(ifccParser::VarContext *ctx)
 
 Any Visitor::visitTab(ifccParser::TabContext *ctx) 
 {       
-        std::string var_name = ctx->ID(0)->getText();
-        std::cout << " >> VisitTab: " << var_name << std::endl;
+        string var_name = ctx->ID(0)->getText();
+        cout << " >> VisitTab: " << var_name << endl;
 
         Node* n;
         if (ctx->INT_CONST()) {
                 int value = stoi(ctx->INT_CONST()->getText());
                 n = new Node(OP_CONST, NULL, NULL, value, 0);
         } else {
-                std::string id_name = ctx->ID(1)->getText();
+                string id_name = ctx->ID(1)->getText();
                 int var_adr = curfct->symb->getAddress(id_name);
                 n = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
         }
@@ -110,7 +111,7 @@ Any Visitor::visitTab(ifccParser::TabContext *ctx)
 Any Visitor::visitStatement(ifccParser::StatementContext *ctx)
 {
         // Debug print
-        std::cout << "Call to visitStatement" << std::endl;
+        cout << "Call to visitStatement" << endl;
 
         return visitChildren(ctx);
 }
@@ -118,7 +119,7 @@ Any Visitor::visitStatement(ifccParser::StatementContext *ctx)
 Any Visitor::visitDeclaration (ifccParser::DeclarationContext *ctx)
 {
         // Debug print
-        std::cout << "Call to visitDeclaration" << std::endl;
+        cout << "Call to visitDeclaration" << endl;
         // TODO: Handle variable type here, or change grammar
         return visitChildren(ctx);
 }
@@ -126,7 +127,7 @@ Any Visitor::visitDeclaration (ifccParser::DeclarationContext *ctx)
 Any Visitor::visitInitDeclaratorList(ifccParser::InitDeclaratorListContext *ctx)
 {
         // Debug print
-        std::cout << "Call to visitInitDeclaratorList" << std::endl;
+        cout << "Call to visitInitDeclaratorList" << endl;
 
         return visitChildren(ctx);
 
@@ -134,19 +135,19 @@ Any Visitor::visitInitDeclaratorList(ifccParser::InitDeclaratorListContext *ctx)
 
 Any Visitor::visitInitDeclarator(ifccParser::InitDeclaratorContext *ctx)
 {
-        std::cout << "Call to visitInitDeclarator" << std::endl;
+        cout << "Call to visitInitDeclarator" << endl;
 
         if(ctx->arithExpr()) {
-                std::cout << " >> Declaration and affectaion";
+                cout << " >> Declaration and affectaion";
         } else if (ctx->arrayInitialisation()) {
-                std::cout << " >> Declaration and affectation (Array)";
+                cout << " >> Declaration and affectation (Array)";
         } else {
-                std::cout << " >> Declaration w/o affectation";
+                cout << " >> Declaration w/o affectation";
         }
-        std::cout << " of " << ctx->ID()->getText() << std::endl;
+        cout << " of " << ctx->ID()->getText() << endl;
 
         // Let'ts insert our var in the symbol table
-        std::string var_name = ctx->ID()->getText();
+        string var_name = ctx->ID()->getText();
         if (!ctx->arrayInitialisation()) {
         curfct->symb->store(var_name, INT); // TODO: Could be CHAR
         }
@@ -182,23 +183,23 @@ Any Visitor::visitInitDeclarator(ifccParser::InitDeclaratorContext *ctx)
                 // been added to the symbol table
                 for (int i = 0; i < arraySize; ++i) {
                         int value = stoi(arrayValues.at(i)->getText());
-                        std::cout << " >> "<<value << std::endl; 
+                        cout << " >> "<<value << endl; 
                         Node* c = new Node(OP_CONST, NULL, NULL, value, 0);
                         array->addNode(c);
 
-                        std::string v_name = "tab" + var_name + 
+                        string v_name = "tab" + var_name + 
                                 to_string(arraySize - i - 1);
                         curfct->symb->store(v_name, INT); // TODO: Could be CHAR
                 }
-                std::cout << curfct->symb->getOffset() 
-                                << std::endl;
+                cout << curfct->symb->getOffset() 
+                                << endl;
                 int base = - curfct->symb->getOffset();
                 array->display();
                 curfct->funcInstr.push_back(array);
         } else if (ctx->functionCall()) {
 
-                std::cout << "initializing with a function call" <<
-                std::endl;
+                cout << "initializing with a function call" <<
+                endl;
                 
                 // If assign, we create an IDENT node that's going to
                 // be the left child of out ASSIGN node
@@ -217,8 +218,8 @@ Any Visitor::visitInitDeclarator(ifccParser::InitDeclaratorContext *ctx)
                 curfct->funcInstr[index]->ndlist[1] = curfct->funcInstr[index+1];
                 curfct->funcInstr.pop_back();
 
-                std::cout << "initializing with a function call - Done" <<
-                std::endl;
+                cout << "initializing with a function call - Done" <<
+                endl;
         }
 
         return 0;
@@ -227,9 +228,9 @@ Any Visitor::visitInitDeclarator(ifccParser::InitDeclaratorContext *ctx)
 Any Visitor::visitAssignArithExpr(ifccParser::AssignArithExprContext *ctx)
 {
         // Debug print
-        std::cout <<"Call to AssignArithExpr " << std::endl;
-        std::cout << " >> Assigning " << ctx->ID()->getText()
-        << " to " << ctx->arithExpr()->getText() << std::endl;
+        cout <<"Call to AssignArithExpr " << endl;
+        cout << " >> Assigning " << ctx->ID()->getText()
+        << " to " << ctx->arithExpr()->getText() << endl;
 
         // Node definition
         /*
@@ -237,7 +238,7 @@ Any Visitor::visitAssignArithExpr(ifccParser::AssignArithExprContext *ctx)
          * n->right is going to be an expression
         */
 
-        std::string var_name = ctx->ID()->getText();
+        string var_name = ctx->ID()->getText();
         int var_adr = curfct->symb->getAddress(var_name);
         Node* o = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
 
@@ -260,7 +261,7 @@ Any Visitor::visitBlockStatement(ifccParser::BlockStatementContext* ctx) {
 Any Visitor::visitIfElse(ifccParser::IfElseContext *ctx)
 {
         //Debug print
-        std::cout << "Call to visit IF " << std::endl;
+        cout << "Call to visit IF " << endl;
         
         //conditionNode
         visit(ctx->relationalExpression());
@@ -306,7 +307,7 @@ Any Visitor::visitIfElse(ifccParser::IfElseContext *ctx)
 Any Visitor::visitIf(ifccParser::IfContext *ctx)
 {
          //Debug print
-        std::cout << "Call to visit IF " << std::endl;
+        cout << "Call to visit IF " << endl;
         
         //conditionNode
         visit(ctx->relationalExpression());
@@ -336,7 +337,7 @@ Any Visitor::visitIf(ifccParser::IfContext *ctx)
 
 Any Visitor::visitWhileStatement(ifccParser::WhileStatementContext *ctx){
           //Debug print
-        std::cout << "Call to visit WHILE " << std::endl;
+        cout << "Call to visit WHILE " << endl;
         
         //conditionNode
         visit(ctx->relationalExpression());
@@ -368,9 +369,9 @@ Any Visitor::visitWhileStatement(ifccParser::WhileStatementContext *ctx){
 Any Visitor::visitAssignRelExpr(ifccParser::AssignRelExprContext *ctx)
 {
         // Debug print
-        std::cout <<"Call to AssignRelExpr " << std::endl;
-        std::cout << " >> Assigning " << ctx->ID()->getText()
-        << " to " << ctx->relationalExpression()->getText() << std::endl;
+        cout <<"Call to AssignRelExpr " << endl;
+        cout << " >> Assigning " << ctx->ID()->getText()
+        << " to " << ctx->relationalExpression()->getText() << endl;
 
         // Node definition
         /*
@@ -378,7 +379,7 @@ Any Visitor::visitAssignRelExpr(ifccParser::AssignRelExprContext *ctx)
          * n->right is going to be an expression
         */
 
-        std::string var_name = ctx->ID()->getText();
+        string var_name = ctx->ID()->getText();
         int var_adr = curfct->symb->getAddress(var_name);
         Node* o = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
 
@@ -396,7 +397,7 @@ Any Visitor::visitAssignRelExpr(ifccParser::AssignRelExprContext *ctx)
 
 Any Visitor::visitExpr(ifccParser::ExprContext* ctx)
 {
-        std::cout << "Call to visit Expr" << std::endl;
+        cout << "Call to visit Expr" << endl;
 
         char op = ctx->op->getText().at(0);
         int ref = curfct->funcInstr.size();
@@ -407,7 +408,7 @@ Any Visitor::visitExpr(ifccParser::ExprContext* ctx)
 
         switch(op) {
         case '+': {
-                std::cout << "Addition" << std::endl;
+                cout << "Addition" << endl;
                 Node* nop = new Node(
                     OP_ADD, curfct->funcInstr[ref+1], curfct->funcInstr[ref], 0, 0);
                 curfct->funcInstr.pop_back();
@@ -416,7 +417,7 @@ Any Visitor::visitExpr(ifccParser::ExprContext* ctx)
                 break;
         }
         case '-': {
-                std::cout << "Subtraction" << std::endl;
+                cout << "Subtraction" << endl;
                 Node* nop = new Node(
                     OP_SUB, curfct->funcInstr[ref+1], curfct->funcInstr[ref], 0, 0);
                 curfct->funcInstr.pop_back();
@@ -425,7 +426,7 @@ Any Visitor::visitExpr(ifccParser::ExprContext* ctx)
                 break;
         }
         case '*': {
-                std::cout << "Multiplication" << std::endl;
+                cout << "Multiplication" << endl;
                 Node* nop = new Node(OP_MUL, curfct->funcInstr[ref+1],
                                      curfct->funcInstr[ref], 0, 0);
                 curfct->funcInstr.pop_back();
@@ -434,7 +435,7 @@ Any Visitor::visitExpr(ifccParser::ExprContext* ctx)
                 break;
         }
         case '/': {
-                std::cout << "Division" << std::endl;
+                cout << "Division" << endl;
                 Node* nop = new Node(OP_DIV, curfct->funcInstr[ref+1],
                                      curfct->funcInstr[ref], 0, 0);
                 curfct->funcInstr.pop_back();
@@ -443,7 +444,7 @@ Any Visitor::visitExpr(ifccParser::ExprContext* ctx)
                 break;
         }
         case '&': {
-                std::cout << "Bitwise AND" << std::endl;
+                cout << "Bitwise AND" << endl;
                 Node* nop = new Node(OP_BIT_AND, curfct->funcInstr[ref+1],
                                      curfct->funcInstr[ref], 0, 0);
                 curfct->funcInstr.pop_back();
@@ -452,7 +453,7 @@ Any Visitor::visitExpr(ifccParser::ExprContext* ctx)
                 break;
         }
         case '^': {
-                std::cout << "Bitwise XOR" << std::endl;
+                cout << "Bitwise XOR" << endl;
                 Node* nop = new Node(OP_BIT_XOR, curfct->funcInstr[ref+1],
                                      curfct->funcInstr[ref], 0, 0);
                 curfct->funcInstr.pop_back();
@@ -461,7 +462,7 @@ Any Visitor::visitExpr(ifccParser::ExprContext* ctx)
                 break;
         }
         case '|': {
-                std::cout << "Bitwise OR" << std::endl;
+                cout << "Bitwise OR" << endl;
                 Node* nop = new Node(OP_BIT_OR, curfct->funcInstr[ref+1],
                                      curfct->funcInstr[ref], 0, 0);
                 curfct->funcInstr.pop_back();
@@ -470,7 +471,7 @@ Any Visitor::visitExpr(ifccParser::ExprContext* ctx)
                 break;
         }
         default:
-                std::cout << "Erreur, opérateur non reconnu" << std::endl;
+                cout << "Erreur, opérateur non reconnu" << endl;
                 exit(EXIT_FAILURE);
         }
 
@@ -479,7 +480,7 @@ Any Visitor::visitExpr(ifccParser::ExprContext* ctx)
 
 Any Visitor::visitRelExpr(ifccParser::RelExprContext* ctx)
 {
-        std::cout << "Call to visit RelExpr" << std::endl;
+        cout << "Call to visit RelExpr" << endl;
 
         string relop = ctx->relOp->getText();
         int ref = curfct->funcInstr.size();
@@ -489,21 +490,21 @@ Any Visitor::visitRelExpr(ifccParser::RelExprContext* ctx)
         assert(curfct->funcInstr.size() == ref+2);
 
         if (relop == "<") {
-                std::cout << "inferieur" << std::endl;
+                cout << "inferieur" << endl;
                 Node* nop = new Node(
                     OP_LOWER, curfct->funcInstr[ref+1], curfct->funcInstr[ref], 0, 0);
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.push_back(nop);
         } else if (relop == ">") {
-                std::cout << "superieur" << std::endl;
+                cout << "superieur" << endl;
                 Node* nop = new Node(
                     OP_GREATER, curfct->funcInstr[ref+1], curfct->funcInstr[ref], 0, 0);
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.push_back(nop);
         } else if (relop == "==") {
-                std::cout << "égale à" << std::endl;
+                cout << "égale à" << endl;
                 Node* nop = new Node(
                 OP_EQUAL, curfct->funcInstr[ref+1], curfct->funcInstr[ref], 0, 0);
                 curfct->funcInstr.pop_back();
@@ -511,14 +512,14 @@ Any Visitor::visitRelExpr(ifccParser::RelExprContext* ctx)
                 curfct->funcInstr.push_back(nop);
                 nop->display();
         } else if (relop == "!=") {
-                std::cout << "superieur" << std::endl;
+                cout << "superieur" << endl;
                 Node* nop = new Node(
                 OP_UNEQUAL, curfct->funcInstr[ref+1], curfct->funcInstr[ref], 0, 0);
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.push_back(nop);
         } else {
-                std::cout << "Erreur, opérateur non reconnu" << std::endl;
+                cout << "Erreur, opérateur non reconnu" << endl;
                 exit(EXIT_FAILURE);
         }
 
@@ -527,51 +528,51 @@ Any Visitor::visitRelExpr(ifccParser::RelExprContext* ctx)
 
 Any Visitor::visitPrExpr(ifccParser::PrExprContext* ctx)
 {
-        std::cout << "Call to visit prExpression" << std::endl;
+        cout << "Call to visit prExpression" << endl;
         return visitChildren(ctx);
 }
 
 Any Visitor::visitFunction(ifccParser::FunctionContext* ctx)
 {
-        std::cout << "Call to visitFunction " << std::endl;
-        std::cout << ctx->getText() << endl;
-        std::string name = ctx->ID()->getText();
+        cout << "Call to visitFunction " << endl;
+        cout << ctx->getText() << endl;
+        string name = ctx->ID()->getText();
         Function * f = new Function(name);
         (this->functions).push_back(f);
         this->curfct = f;
         visitChildren(ctx);
         /*
-        std::cout << "Display curfct->funcInstr"<<endl;
+        cout << "Display curfct->funcInstr"<<endl;
         for(int i=0; i < this->curfct->funcInstr.size(); ++i) {
                 this->curfct->funcInstr.at(i)->display();
         }
-        std::cout <<"End display curfct->funcInstr"<<endl;
+        cout <<"End display curfct->funcInstr"<<endl;
         */
         /*
-        std::cout << "Display funcInstr"<<endl;
+        cout << "Display funcInstr"<<endl;
         for(int i=0; i < f->funcInstr.size(); ++i) {
                 f->funcInstr.at(i)->display();
         }
         */
         int nb = curfct->symb->getNbParams();
         curfct->symb->fct_params.insert(
-                        std::pair<std::string,int>(name,nb));
-        //std::cout <<"End display funcInstr"<<endl;
+                        pair<string,int>(name,nb));
+        //cout <<"End display funcInstr"<<endl;
         return 0;
 }
 
 Any Visitor::visitParameterlist(ifccParser::ParameterlistContext* ctx) 
 {
-        std::cout << "Call to visit parameter list" << std::endl;
+        cout << "Call to visit parameter list" << endl;
         auto v = ctx->ID();
         auto vt = ctx->TYPE();
-        std::cout << "Number of parameters : " << v.size() << std::endl;
+        cout << "Number of parameters : " << v.size() << endl;
         for (int i = 0; i < v.size(); ++i) {
                 
-                std::cout << " >> " << vt.at(i)->getText() 
-                          << " "<< v.at(i)->getText() << std::endl;
+                cout << " >> " << vt.at(i)->getText() 
+                          << " "<< v.at(i)->getText() << endl;
                 int type = 0;
-                std::string strtype = vt.at(i)->getText();
+                string strtype = vt.at(i)->getText();
                 if ( strtype  == "int") {
                         type = 0;
                 } else if (strtype == "char") {
@@ -584,12 +585,12 @@ Any Visitor::visitParameterlist(ifccParser::ParameterlistContext* ctx)
 
 Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext* ctx) 
 {
-        std::cout << "Call to FunctionCall " << std::endl;
+        cout << "Call to FunctionCall " << endl;
       
         /* Putchar or Getchar special case*/ 
         if ( ctx->label ) {
                 
-                std::cout << ctx->label->getText() << std::endl;
+                cout << ctx->label->getText() << endl;
                
                 /*Our function node */
                 Node* f = new Node(OP_CALL, NULL, NULL, 1, 0);
@@ -600,13 +601,13 @@ Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext* ctx)
                 Node* n;
 
                 if (ctx->CHAR_CONST()) {
-                        std::cout << "char const"<< std::endl;
-                std::string charConst = ctx->CHAR_CONST()->getText();
+                        cout << "char const"<< endl;
+                string charConst = ctx->CHAR_CONST()->getText();
                         int value = charConst[1];
                         n = new Node(OP_CONST, NULL, NULL, value, 0);
                 } else if (ctx->ID()) { 
-                        std::cout << "id " << std::endl;
-                        std::string var_name = ctx->ID()->getText();
+                        cout << "id " << endl;
+                        string var_name = ctx->ID()->getText();
                         int var_adr = curfct->symb->getAddress(var_name);
                         n = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
                 } else {
@@ -657,9 +658,9 @@ Any Visitor::visitAssignFunction(ifccParser::AssignFunctionContext* ctx)
 {
         int ref = curfct->funcInstr.size();
         // Debug print
-        std::cout <<"Call to AssignFunction " << std::endl;
-        std::cout << " >> Assigning " << ctx->ID(0)->getText()
-        << " to function " << ctx->ID(1)->getText() << std::endl;
+        cout <<"Call to AssignFunction " << endl;
+        cout << " >> Assigning " << ctx->ID(0)->getText()
+        << " to function " << ctx->ID(1)->getText() << endl;
 
         // Node definition
         /*
@@ -667,7 +668,7 @@ Any Visitor::visitAssignFunction(ifccParser::AssignFunctionContext* ctx)
          * n->right is going to be the function
         */
         
-        std::string var_name = ctx->ID(0)->getText();
+        string var_name = ctx->ID(0)->getText();
         int var_adr = curfct->symb->getAddress(var_name);
         
         auto v = ctx->primaryExpression();
@@ -686,8 +687,8 @@ Any Visitor::visitAssignFunction(ifccParser::AssignFunctionContext* ctx)
         }
         
 
-        std::cout << "decompte " << curfct->funcInstr.size() - ref 
-                << std::endl;
+        cout << "decompte " << curfct->funcInstr.size() - ref 
+                << endl;
         assert(ref == curfct->funcInstr.size()); 
         Node* n = new Node(OP_ASSIGN, o, f, 0, 0);
         curfct->funcInstr.push_back(n);
@@ -710,12 +711,12 @@ Any Visitor::visitAssignFunction(ifccParser::AssignFunctionContext* ctx)
 
 
 Any Visitor::visitAssignGetchar(ifccParser::AssignGetcharContext* ctx){
-        std::cout << "Call to visitAssignGetChar" << std::endl;
+        cout << "Call to visitAssignGetChar" << endl;
         
         int ref = curfct->funcInstr.size();
 
         
-        std::string var_name = ctx->ID()->getText();
+        string var_name = ctx->ID()->getText();
         int var_adr = curfct->symb->getAddress(var_name);
         
         Node* o = new Node(OP_IDENT, NULL, NULL, var_adr, 0);

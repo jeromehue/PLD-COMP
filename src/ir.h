@@ -8,10 +8,6 @@
 
 #include "symb.h"
 
-// Declarations from the parser -- replace with your own
-// #include "type.h"
-// #include "symbole.h"
-
 using namespace std;
 
 class BasicBlock;
@@ -58,7 +54,7 @@ public:
 
 	/** constructor */
 	IRInstr(BasicBlock* bb_, Operation op,
-                Type t, std::vector<std::string> params)
+                Type t, vector<string> params)
         {
                 this->bb= bb_;
                 this->op = op;
@@ -67,7 +63,7 @@ public:
         }
 
         /**< Helper function */
-        static const std::string getOpByIndex(int index)
+        static const string getOpByIndex(int index)
         {
                 switch(index) {
                 case 0:  return " >> ldconst [dest,const]";
@@ -94,7 +90,7 @@ public:
                 case 21: return " >> putchar";
                 case 22: return " >> getchar";
                 default:
-                        std::cout<<"Erreur : Opérateur inconnu"<<std::endl;
+                        cout<<"Erreur : Opérateur inconnu"<<endl;
                         exit(EXIT_FAILURE);
                 }
         }
@@ -102,14 +98,14 @@ public:
         /** Actual code generation */
 
         /**< x86 assembly code generation for this IR instruction */
-        void gen_asm(std::ostream &o);
+        void gen_asm(ostream &o);
 
         inline friend ostream& operator<<(ostream& os,IRInstr& instr)
         {
                 os << getOpByIndex(instr.op) << " Args : ";
                 for (int i=0; i< (int)instr.params.size(); ++i)
                         os << instr.params.at(i) << " ";
-                os << std::endl;
+                os << endl;
                 return os;
         }
 
@@ -126,7 +122,7 @@ private:
          * For call: label, d, params;
          * for wmem and rmem: choose yourself *
          */
-	std::vector<std::string> params;
+	vector<string> params;
 
         /*
          * if you subclass IRInstr, each IRInstr subclass has its
@@ -168,32 +164,32 @@ private:
  */
 class BasicBlock {
 public:
-        BasicBlock(CFG* cfg, std::string entry_label)
+        BasicBlock(CFG* cfg, string entry_label)
         {
                 this->cfg =cfg;
                 this->label = entry_label;
         }
 
         /* x86 assembly code generation for this basic block  */
-        void gen_asm(std::ostream &o)
+        void gen_asm(ostream &o)
         {
-                std::cout << "Call to BB::gen_asm()" << std::endl;
+                cout << "Call to BB::gen_asm()" << endl;
                 for(int i = 0; i < (int)instrs.size(); ++i) {
                         instrs.at(i)->gen_asm(o);
                 }
         }
 
 	void add_IRInstr (IRInstr::Operation op, Type t,
-                          std::vector<std::string> params )
+                          vector<string> params )
         {
-                std::cout << "Writing IR instruction "<< op<<std::endl;
+                cout << "Writing IR instruction "<< op<<endl;
                 IRInstr* instr = new IRInstr(this, op, t, params);
                 this->instrs.push_back(instr);
                 /*For debug only*/
 
-                std::cout << "Current BB instructions : \n" ;
+                cout << "Current BB instructions : \n" ;
                 for (int i = 0; i < (int)instrs.size(); i++)
-                        std::cout << *(instrs.at(i));
+                        cout << *(instrs.at(i));
         }
 
 	// No encapsulation whatsoever here. Feel free to do better.
@@ -209,20 +205,20 @@ public:
 
         /**< label of the BB, also will be the label
         in the generated code */
-        std::string label;
+        string label;
 	
         /** < the CFG where this block belongs */
 	CFG* cfg;
 
         /** < the instructions themselves. */
-        std::vector<IRInstr*> instrs;
+        vector<IRInstr*> instrs;
 
         /*
          * when generating IR code for an if(expr) or while(expr) etc,
          * store here the name of the variable that holds the value
          * of expr
          */
-        std::string test_var_name;
+        string test_var_name;
 };
 
 /*
@@ -261,58 +257,58 @@ public:
         }
 
 	/*   case OP_UNEQUAL:
-                        std::cout << "OP_UNEQUAL | " << std::endl;
-                        std::cout << "\tleft : ";
+                        cout << "OP_UNEQUAL | " << endl;
+                        cout << "\tleft : ";
                         ndlist[0]->display();
-                        std::cout << "\tright : ";
+                        cout << "\tright : ";
                         ndlist[1]->display();
-                        std::cout << std::endl;
+                        cout << endl;
                         break;compiler.
          */
-        void gen_asm(std::ostream& o);
+        void gen_asm(ostream& o);
 
         /* Helper function to generate asm */
-        void load_parameters(std::ostream& o, int nbParams);
+        void load_parameters(ostream& o, int nbParams);
 
         /*
          * helper method: inputs a IR reg or input variable,
          * returns e.g. "-24(%rbp)" for the proper value of 24
          */
-	std::string IR_reg_to_asm(std::string reg);
+	string IR_reg_to_asm(string reg);
 
-	void gen_asm_prologue(std::ostream& o);
-	void gen_asm_epilogue(std::ostream& o);
+	void gen_asm_prologue(ostream& o);
+	void gen_asm_epilogue(ostream& o);
 
 	// symbol table methods
-	void add_to_symbol_table(std::string name, Type t);
+	void add_to_symbol_table(string name, Type t);
 
-        std::string create_new_tempvar(int t)
+        string create_new_tempvar(int t)
         {
                 int index= symbols->getNextOffset();
-                std::string var_name = "!tmp" + to_string(- index);
+                string var_name = "!tmp" + to_string(- index);
 
                 symbols->store(var_name, INT);
 
                 // Debug prints
-                std::cout<<"Creating new tempvar :"<<var_name<<std::endl;
+                cout<<"Creating new tempvar :"<<var_name<<endl;
                 return var_name;
         }
         int getsizebbs();
-	int get_var_index(std::string name);
-	Type get_var_type(std::string name);
+	int get_var_index(string name);
+	Type get_var_type(string name);
 
 	// basic block management
-	std::string new_BB_name();
+	string new_BB_name();
 	BasicBlock* current_bb;
 
         Symboltable* symbols;
 
 protected:
         /**< part of the symbol table  */
-	std::map <std::string, Type> SymbolType;
+	map <string, Type> SymbolType;
 
         /**< part of the symbol table  */
-        std::map <std::string, int> SymbolIndex;
+        map <string, int> SymbolIndex;
 
         /**< to allocate new symbols in the symbol table */
         int nextFreeSymbolIndex;
@@ -321,7 +317,7 @@ protected:
         int nextBBnumber;
 	
         /**< all the basic blocks of this CFG*/
-        std::vector <BasicBlock*> bbs;
+        vector <BasicBlock*> bbs;
 };
 
 #endif

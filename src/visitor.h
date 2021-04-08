@@ -11,6 +11,8 @@
 #include "node.h"
 #include "symb.h"
 
+using namespace std;
+
 /**
  * This class provides an empty implementation of ifccVisitor, which can be
  * extended to create a visitor which only needs to handle a subset of the available methods.
@@ -69,7 +71,7 @@ public:
 
 
         // Getters
-        std::vector<Node*> getNodes()
+        vector<Node*> getNodes()
         {
                 return this->ast_nodes;
         }
@@ -79,15 +81,15 @@ public:
                 return globalSymb;
         }
 
-        std::vector<Function*> getFunctions()
+        vector<Function*> getFunctions()
         {
                 return functions;
         }
 
 protected:
-        std::vector<Function*> functions;
+        vector<Function*> functions;
         Function* curfct;
-        std::vector<Node*> ast_nodes;
+        vector<Node*> ast_nodes;
         Symboltable * globalSymb;
         Symboltable * localSymb;
 };

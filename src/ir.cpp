@@ -1,10 +1,12 @@
 #include "ir.h"
 #include <iostream>
 
-void IRInstr::gen_asm(std::ostream &o)
+using namespace std;
+
+void IRInstr::gen_asm(ostream &o)
 {
-        //std::cout << "genrating asm for ir" << std::endl;
-        //std::cout << this->bb->cfg->symbols->getAddress("b") << std::endl;
+        //cout << "genrating asm for ir" << endl;
+        //cout << this->bb->cfg->symbols->getAddress("b") << endl;
         switch(this->op) {
         case ldconst: {
                 // load a constant (#1) in a variable (#0)
@@ -141,7 +143,7 @@ void IRInstr::gen_asm(std::ostream &o)
 
                 // Special case : return
                 if (params[0] == "!retval") {
-                        std::cout << "return " << std::endl;
+                        cout << "return " << endl;
                         int index = bb->cfg->symbols->getAddress(params[1]);
                         o<<"\tmovl\t"<<index<<"(%rbp),%eax\n";
                         return;
@@ -153,35 +155,35 @@ void IRInstr::gen_asm(std::ostream &o)
                 var_index= this->bb->cfg->symbols->getAddress(params[1]);
 
                 // Debug prints
-                std::cout << "addr : " << params[0] << " "<< addr <<" \n";
-                std::cout << "var  : " << params[1] << " "<<var_index;
-                std::cout << std::endl;
+                cout << "addr : " << params[0] << " "<< addr <<" \n";
+                cout << "var  : " << params[1] << " "<<var_index;
+                cout << endl;
 
                 o<<"\tmovl\t"<<var_index<<"(%rbp),%eax\n";
                 o<<"\tmovl\t%eax,"<<addr<<"(%rbp)\n";
                 return;
         }
         case call: {
-                std::cout << "One day we'll generate asm for function call" 
-                        << std::endl;
-                std::cout << "number of params  :" << this->params.size()-2 << std::endl;
+                cout << "One day we'll generate asm for function call" 
+                        << endl;
+                cout << "number of params  :" << this->params.size()-2 << endl;
                 
                 int nb_params = this->params.size() - 2;
                 if (nb_params > 6) {
-                        std::cout << "Too much parameters" << std::endl;
+                        cout << "Too much parameters" << endl;
                         exit(EXIT_FAILURE);
                 }
 
-                std::string name = this->params[1];
+                string name = this->params[1];
                 int exp = 
                 this->bb->cfg->symbols->fct_params.find(name)->second;
-                std::cout << "calling " << name << " who has "
-                        << exp << " paramerers" << std::endl;
+                cout << "calling " << name << " who has "
+                        << exp << " paramerers" << endl;
                 if (nb_params != exp ) {
-                        std::cout << "Error : function " << name <<
+                        cout << "Error : function " << name <<
                                 " called, expected "<< exp << " arguments"
                                 << " but found " << nb_params << "."
-                                << std::endl;
+                                << endl;
                         exit(EXIT_FAILURE);
                 }
 
@@ -197,7 +199,7 @@ void IRInstr::gen_asm(std::ostream &o)
                 o << "\tcall\t" << this->params[1] << "\n";
                 int index3 = bb->cfg->symbols->getAddress(params[0]);
                 o<<"\tmovl\t%eax," << index3 << "(%rbp)\n";
-                std::cout << "Fin de la generation ir pour call" << std::endl;
+                cout << "Fin de la generation ir pour call" << endl;
                 break;
         }
         case array_access: {
@@ -209,13 +211,13 @@ void IRInstr::gen_asm(std::ostream &o)
                 o<< "\tmovl\t" << index << "(%rbp), %eax\n";
                 o<< "\tcltq\n";
                 
-                std::string firstElement = "tab" + params[0] + "0";
-                std::cout << "Array starts at index " << firstElement << std::endl;
+                string firstElement = "tab" + params[0] + "0";
+                cout << "Array starts at index " << firstElement << endl;
                 int startIndex = bb->cfg->symbols->getAddress(firstElement);
                 o<< "\tmovl\t" << startIndex << "(%rbp,%rax,4), %eax\n";
 
                 
-                std::cout << params[2] << std::endl;
+                cout << params[2] << endl;
                 int dest = bb->cfg->symbols->getAddress(params[2]);
                 o<< "\tmovl\t%eax, " << dest << "(%rbp)\n";
 
@@ -229,7 +231,7 @@ void IRInstr::gen_asm(std::ostream &o)
         }
         case getchar:
         {
-                std::cout << "getchar gen asm " << std::endl;
+                cout << "getchar gen asm " << endl;
                 o<< "\tmovl\t$0,%eax\n";
                 o<< "\tcall\tgetchar\n";
                 int index = bb->cfg->symbols->getAddress(params[0]);
@@ -237,7 +239,7 @@ void IRInstr::gen_asm(std::ostream &o)
 
         } 
         default:
-                std::cout<<"gen_asm not implemented"<<std::endl;
+                cout<<"gen_asm not implemented"<<endl;
                 //exit(EXIT_FAILURE);
                 return;
         }
@@ -248,7 +250,7 @@ int CFG::getsizebbs()
         return bbs.size();
 }
 
-void writeBB(BasicBlock* bb, std::ostream& o) {
+void writeBB(BasicBlock* bb, ostream& o) {
         bb->gen_asm(o);
         if( bb->exit_true != nullptr) {
                 if(bb->exit_false != nullptr) {
@@ -258,7 +260,7 @@ void writeBB(BasicBlock* bb, std::ostream& o) {
                         //writeBB(bb->exit_true, o);    
                 }
         } else {
-                std::cout<<"basicBlock sans exitTrue ni exitFalse\n";
+                cout<<"basicBlock sans exitTrue ni exitFalse\n";
         }
         
 }
@@ -266,8 +268,8 @@ void writeBB(BasicBlock* bb, std::ostream& o) {
 
 
 
-void CFG::load_parameters(std::ostream& o, int nb_params) {
-        o << "\n\t# nb params " << nb_params << std::endl;
+void CFG::load_parameters(ostream& o, int nb_params) {
+        o << "\n\t# nb params " << nb_params << endl;
         if (nb_params == 0) {
                 return ;
         }
@@ -282,14 +284,14 @@ void CFG::load_parameters(std::ostream& o, int nb_params) {
 }
 
 
-void CFG::gen_asm(std::ostream& o)
+void CFG::gen_asm(ostream& o)
 {
-        std::cout << "call to CFG::gen_asm" << std::endl;
-        std::cout << "Number of bbs : " << bbs.size() << std::endl;
+        cout << "call to CFG::gen_asm" << endl;
+        cout << "Number of bbs : " << bbs.size() << endl;
 
         int exp = this->symbols->fct_params.find("f2")->second;
-        std::cout << " >> f2 expected numbers of parameters " << 
-                exp << std::endl;
+        cout << " >> f2 expected numbers of parameters " << 
+                exp << endl;
 
         o <<
                 ".global " << bbs.at(0)->label << "\n"

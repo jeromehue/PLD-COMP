@@ -13,7 +13,7 @@
 using namespace antlr4;
 using namespace std;
 
-static std::ofstream output;
+static ofstream output;
 
 /*
  * “Sometimes, the elegant implementation is just a function.
@@ -45,7 +45,7 @@ int main(int argn, const char **argv) {
                 in << lecture.rdbuf();
                 for(int i=2; i< argn; ++i) {
                         if (argv[2] == string("-v")) {
-                                std::cout << "Verbose on" << std::endl;
+                                cout << "Verbose on" << endl;
                         }
                 }
         }
@@ -56,7 +56,7 @@ int main(int argn, const char **argv) {
 
         tokens.fill();
         //  for (auto token : tokens.getTokens()) {
-        //    std::cout << token->toString() << std::endl;
+        //    cout << token->toString() << endl;
         //  }
 
         ifccParser parser(&tokens);
@@ -74,22 +74,22 @@ int main(int argn, const char **argv) {
         bool hasMain = false;
         int mainFuncIndex;
 
-        std::vector<Function *> functions = visitor.getFunctions();
+        vector<Function *> functions = visitor.getFunctions();
         for (int i = 0; i < functions.size(); ++i) {
-                cout << "------------" << std::endl;
+                cout << "------------" << endl;
                 cout << "Function n°" << i << " : "
                      << functions.at(i)->name << endl;
 
-                std::vector<Node *> n = functions.at(i)->funcInstr;
+                vector<Node *> n = functions.at(i)->funcInstr;
 
                 if (functions.at(i)->name == "main") {
                         hasMain = true;
                         mainFuncIndex = i;
                 }
 
-                std::cout
+                cout
                     << "\n### List of AST Nodes for function n° " << i
-                    << " ###" << std::endl;
+                    << " ###" << endl;
                 bool missingReturn = true;
                 for (int j = 0; j < n.size(); ++j) {
                         // Check for a return instruction
@@ -100,11 +100,11 @@ int main(int argn, const char **argv) {
                         // Display AST nodes
                         n.at(j)->display();
                 }
-                cout << std::endl;
+                cout << endl;
 
                 // Manually add a return 0 node
                 if (missingReturn) {
-                        std::cout << "\t\t!!! ADDING MISSING RETURN !!!" << std::endl;
+                        cout << "\t\t!!! ADDING MISSING RETURN !!!" << endl;
                         Node* returnNode = new Node(OP_RETURN, NULL, NULL, 0, 0);
                         Node* zeroNode = new Node(OP_CONST, NULL, NULL, 0, 0);
                         returnNode->ndlist.at(0) = zeroNode;
@@ -113,20 +113,20 @@ int main(int argn, const char **argv) {
         }
 
         if (!hasMain) {
-                std::cout << "No main function found " << std::endl;
+                cout << "No main function found " << endl;
                 exit(EXIT_FAILURE);
         }
 
         int mfi = mainFuncIndex;
 
-        std::vector<Node *> n = functions.at(mfi)->getInstr();
+        vector<Node *> n = functions.at(mfi)->getInstr();
 
         // Now generate the IR
-        std::cout << "\n### IR Generation ###\n" << std::endl;
+        cout << "\n### IR Generation ###\n" << endl;
 
         output.open("output.s");
         for (int i = 0; i < functions.size(); ++i) {
-                std::string name = functions.at(i)->name;
+                string name = functions.at(i)->name;
 
                 CFG *mainCFG = new CFG(functions.at(i)->getSymboltable());
 
@@ -147,11 +147,11 @@ int main(int argn, const char **argv) {
                 mainCFG->add_bb(BBoutput);
                 mainCFG->current_bb = BBbody;
 
-                std::vector<Node *> n = functions.at(i)->getInstr();
+                vector<Node *> n = functions.at(i)->getInstr();
                 for (int i = 0; i < n.size(); ++i) {
                         n[i]->buildIR(mainCFG);
                 }
-                std::cout<<" taille du maincfg : "<<mainCFG->getsizebbs()<<std::endl;
+                cout<<" taille du maincfg : "<<mainCFG->getsizebbs()<<endl;
                 mainCFG->gen_asm(output);
         }
         output.close();
@@ -207,7 +207,7 @@ int main(int argn, const char **argv) {
         }
 
         // WIP : To be removed from here
-        std::cout << "\n### ASM Generation ###" << std::endl;
+        cout << "\n### ASM Generation ###" << endl;
         output.open("output.s");
         prologue();
 

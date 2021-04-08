@@ -8,6 +8,8 @@
 #ifndef SYMB_H
 #define SYMB_H
 
+using namespace std;
+
 //---- Interface of the <Symboltable> class (symboltable.h file) ---------
 
 //-------------------------------------------------------- Interfaces Used
@@ -39,13 +41,13 @@ public:
         }
 
 
-        int store(std::string name, int type, bool isParam = false)
+        int store(string name, int type, bool isParam = false)
         {
                 // Has the variable already been declared ?
                 if(symbols.find(name) != symbols.end()) {
-                        std::cout
+                        cout
                         << "Erreur : la variable a déjà été déclarée"
-                        << std::endl;
+                        << endl;
                         exit(EXIT_FAILURE);
                 }
 
@@ -55,9 +57,9 @@ public:
                 v.defined       = false;
                 v.isParam       = isParam; 
 
-                symbols.insert(std::pair<std::string, Variable>(name, v));
-                std::cout << " >> New entry in symbol table : "
-                << name << " @"<< v.address<< std::endl;
+                symbols.insert(pair<string, Variable>(name, v));
+                cout << " >> New entry in symbol table : "
+                << name << " @"<< v.address<< endl;
 
                 // Let's not forget to update next offset
                 next_offset = next_offset - 4;
@@ -71,7 +73,7 @@ public:
                 return next_offset;
         }
 
-        bool find(std::string variable)
+        bool find(string variable)
         {
                 auto it = symbols.find(variable);
                 if (it == symbols.end())
@@ -79,23 +81,23 @@ public:
                 return true;
         }
 
-        std::string getName(int index)
+        string getName(int index)
         {
                 for (auto& it : symbols) {
                         if (it.second.address == index) {
                                 return it.first;
                         }
                 }
-                std::cout << "Nom de variable introuvable" <<std::endl;
+                cout << "Nom de variable introuvable" <<endl;
                 exit(EXIT_FAILURE);
         }
 
-        int getAddress(std::string name)
+        int getAddress(string name)
         {
                 auto it = symbols.find(name);
                 if (it == symbols.end()) {
-                        std::cout << "erreur, variable non déclarée"
-                                  << std::endl;
+                        cout << "erreur, variable non déclarée"
+                                  << endl;
                         exit(EXIT_FAILURE);
                 }
                 return it->second.address;
@@ -105,7 +107,7 @@ public:
         {
                 auto it = symbols.begin();
                 for (auto const& x : symbols) {
-                        std::cout << x.first << std::endl;
+                        cout << x.first << endl;
                 }
         }
 
@@ -120,9 +122,9 @@ public:
 
         int getOffset() {
                 int a = this->getNextOffset() - 4;
-                //std::cout << "ST True offset  : " << a << std::endl;
+                //cout << "ST True offset  : " << a << endl;
                 int round = (-a + 16) - (-a % 16);
-                //std::cout <<"Offset rounded to 16 : "<< round << std::endl;
+                //cout <<"Offset rounded to 16 : "<< round << endl;
                 return round;
         }
 
@@ -130,9 +132,9 @@ public:
                 next_offset = base  - 4*n;
         }
 
-        std::map<std::string, Variable> symbols;
+        map<string, Variable> symbols;
 
-        static std::map<std::string, int > fct_params; 
+        static map<string, int > fct_params; 
 protected:
         int next_offset;
 };
