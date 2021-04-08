@@ -25,7 +25,7 @@ function
 	TYPE ID '(' parameterlist? ')' '{'
 		declaration*
 		statement*
-		returnInstr
+		returnInstr?
         '}'
         ;
 
