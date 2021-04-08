@@ -5,6 +5,6 @@ int number()
 
 int main()
 {
-        int a = 2;
-        return number();
+        int result = number();
+        return result;
 }
