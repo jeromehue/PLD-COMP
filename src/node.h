@@ -53,6 +53,13 @@ public:
                 this->args[0] = arg0;
                 this->args[1] = arg1;
         }
+        
+        Node(int op, string str, int arg0) {
+                this->op = op;
+                this->args[0] = arg0;
+                this->strarg =str;
+        }
+
         Node(int op, int arg0, int arg1)
         {
                 this->op = op;
