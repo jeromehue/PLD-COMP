@@ -78,6 +78,7 @@ statement
 	: assignmentExpr ';'
 	| ifStatement
 	| whileStatement	
+        | functionCall ';'
 	;
 
 blockStatement
