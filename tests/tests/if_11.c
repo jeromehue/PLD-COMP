@@ -2,9 +2,8 @@ int main()
 {
     int a,b,c,d,e;
     a=8;
-    b=6;
+    b=8;
     c=4;
-    d=25;
     e=10;
     if(a<10)
     {

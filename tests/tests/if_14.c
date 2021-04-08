@@ -4,7 +4,6 @@ int main()
     a=8;
     b=6;
     c=4;
-    d=25;
     e=10;
     if(a<10)
     {
@@ -24,11 +23,38 @@ int main()
        {
            d=3;
        }
-       
+       e=26;
+       if(d==2)
+      {
+          d=d+e;
+      } 
+      else
+      {
+        d=10;
+      }
+      
+       e=4;
     }
     else
     {
         d=4;
+        if(e>4)
+       {
+           if(b<23)
+          {
+            d=13032;
+          } 
+          else
+          {
+              d=456;
+          }
+          e=e+5;
+       } 
+       else
+       {
+           d=d+2*e;
+       }
+       
     }
      e=e+6;
      return d;

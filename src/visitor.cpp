@@ -160,18 +160,43 @@ Any Visitor::visitIfStatement(ifccParser::IfStatementContext *ctx)
 {
         //Debug print
         std::cout << "Call to visit IF " << std::endl;
-       
-        visit(ctx->relationalExpression());
-        visit(ctx->thenBloc); 
-        visit(ctx->elseBloc);
-        int sizeStack = curfct->funcInstr.size();
-        Node* n = new Node(OP_IF, curfct->funcInstr[sizeStack-3], curfct->funcInstr[sizeStack-2], 0, 0);
-        n->pushBackToNdList(curfct->funcInstr[sizeStack-1]);
         
+        //conditionNode
+        visit(ctx->relationalExpression());
+        Node* conditionNode = curfct->funcInstr[curfct->funcInstr.size()-1];
         curfct->funcInstr.pop_back();
-        curfct->funcInstr.pop_back(); 
-        curfct->funcInstr.pop_back();
-        curfct->funcInstr.push_back(n);
+
+        //thenBlockNode
+        int startingStackSize = curfct->funcInstr.size();
+        visit(ctx -> thenBloc);
+        int afterThenSizeStack = curfct->funcInstr.size();
+
+        Node* thenBlocNode = new Node(OP_BLOCK,0, 0);
+        for(int i = startingStackSize; i < afterThenSizeStack; ++i){
+              thenBlocNode->pushBackToNdList(curfct->funcInstr[i]);
+        } 
+        for(int i = startingStackSize; i < afterThenSizeStack; ++i){
+              curfct->funcInstr.pop_back();
+        } 
+
+        //elseBlokNode
+        int beforeElseSizeStack = curfct->funcInstr.size();
+        visit(ctx -> elseBloc);
+        int afterElseSizeStack = curfct->funcInstr.size();
+
+        Node* elseBlocNode = new Node(OP_BLOCK,0, 0);
+        for(int j = beforeElseSizeStack ; j < afterElseSizeStack ; ++j){
+              elseBlocNode->pushBackToNdList(curfct->funcInstr[j]);
+        }
+        for(int j = beforeElseSizeStack ; j < afterElseSizeStack ; ++j){
+              curfct->funcInstr.pop_back();
+        } 
+
+        //ifelseBlock
+        Node* ifelseNode = new Node(OP_IF, conditionNode, thenBlocNode, 0, 0);
+        ifelseNode->pushBackToNdList(elseBlocNode);
+
+        curfct->funcInstr.push_back(ifelseNode);
 
 
         return 0;

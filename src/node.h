@@ -44,6 +44,12 @@ public:
                 this->args[0] = arg0;
                 this->args[1] = arg1;
         }
+        Node(int op, int arg0, int arg1)
+        {
+                this->op = op;
+                this->args[0] = arg0;
+                this->args[1] = arg1;
+        }
         void pushBackToNdList(Node * node) 
         {
                 this->ndlist.push_back(node);
@@ -122,6 +128,9 @@ public:
                         std::cout << "\telsebloc: ";
                         ndlist[2]->display();
                         std::cout << std::endl;
+                        break;
+                case OP_BLOCK:
+
                         break;
                 case OP_RETURN:
                         std::cout << "OP_RETURN" << std::endl;
@@ -273,6 +282,11 @@ public:
                         cfg->current_bb->add_IRInstr(
                             IRInstr::wmem, INT, retvector);
                         return sright;
+                        break;
+                case OP_BLOCK:
+                        for(Node* node : ndlist){
+                                node->buildIR(cfg);
+                        } 
                         break;
                 case OP_IF:
                        { 
