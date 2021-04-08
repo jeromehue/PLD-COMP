@@ -50,7 +50,9 @@ public:
 
         virtual antlrcpp::Any visitAssignFunction(ifccParser::AssignFunctionContext *ctx) override;
 
-        virtual antlrcpp::Any visitIfStatement(ifccParser::IfStatementContext *ctx) override;
+        virtual antlrcpp::Any visitIf(ifccParser::IfContext *ctx) override;
+
+        virtual antlrcpp::Any visitIfElse(ifccParser::IfElseContext *ctx) override;
 
         virtual antlrcpp::Any visitFunction(ifccParser::FunctionContext* ctx) override;
 

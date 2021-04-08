@@ -209,7 +209,7 @@ Any Visitor::visitBlockStatement(ifccParser::BlockStatementContext* ctx) {
 }
 
 
-Any Visitor::visitIfStatement(ifccParser::IfStatementContext *ctx)
+Any Visitor::visitIfElse(ifccParser::IfElseContext *ctx)
 {
         //Debug print
         std::cout << "Call to visit IF " << std::endl;
@@ -246,7 +246,7 @@ Any Visitor::visitIfStatement(ifccParser::IfStatementContext *ctx)
         } 
 
         //ifelseBlock
-        Node* ifelseNode = new Node(OP_IF, conditionNode, thenBlocNode, 0, 0);
+        Node* ifelseNode = new Node(OP_IFELSE, conditionNode, thenBlocNode, 0, 0);
         ifelseNode->pushBackToNdList(elseBlocNode);
 
         curfct->funcInstr.push_back(ifelseNode);
@@ -255,6 +255,36 @@ Any Visitor::visitIfStatement(ifccParser::IfStatementContext *ctx)
         return 0;
 }
 
+Any Visitor::visitIf(ifccParser::IfContext *ctx)
+{
+         //Debug print
+        std::cout << "Call to visit IF " << std::endl;
+        
+        //conditionNode
+        visit(ctx->relationalExpression());
+        Node* conditionNode = curfct->funcInstr[curfct->funcInstr.size()-1];
+        curfct->funcInstr.pop_back();
+
+        //thenBlockNode
+        int startingStackSize = curfct->funcInstr.size();
+        visit(ctx -> thenBloc);
+        int afterThenSizeStack = curfct->funcInstr.size();
+
+        Node* thenBlocNode = new Node(OP_BLOCK,0, 0);
+        for(int i = startingStackSize; i < afterThenSizeStack; ++i){
+              thenBlocNode->pushBackToNdList(curfct->funcInstr[i]);
+        } 
+        for(int i = startingStackSize; i < afterThenSizeStack; ++i){
+              curfct->funcInstr.pop_back();
+        } 
+
+        //ifBlock
+        Node* ifNode = new Node(OP_IF, conditionNode, thenBlocNode, 0, 0);
+
+        curfct->funcInstr.push_back(ifNode);
+
+        return 0;
+} 
 Any Visitor::visitAssignRelExpr(ifccParser::AssignRelExprContext *ctx)
 {
         // Debug print
