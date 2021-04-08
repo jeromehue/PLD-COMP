@@ -90,10 +90,26 @@ int main(int argn, const char **argv) {
                 std::cout
                     << "\n### List of AST Nodes for function n° " << i
                     << " ###" << std::endl;
-                for (int i = 0; i < n.size(); ++i) {
-                        n.at(i)->display();
+                bool missingReturn = true;
+                for (int j = 0; j < n.size(); ++j) {
+                        // Check for a return instruction
+                        if (n.at(j)->op == OP_RETURN) {
+                                missingReturn = false;
+                        }
+                        
+                        // Display AST nodes
+                        n.at(j)->display();
                 }
                 cout << std::endl;
+
+                // Manually add a return 0 node
+                if (missingReturn) {
+                        std::cout << "\t\t!!! ADDING MISSING RETURN !!!" << std::endl;
+                        Node* returnNode = new Node(OP_RETURN, NULL, NULL, 0, 0);
+                        Node* zeroNode = new Node(OP_CONST, NULL, NULL, 0, 0);
+                        returnNode->ndlist.at(0) = zeroNode;
+                        functions.at(i)->funcInstr.push_back(returnNode);
+                }
         }
 
         if (!hasMain) {
