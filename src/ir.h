@@ -49,7 +49,8 @@ public:
                 lower,
                 cmpl,
                 jmp,
-                label
+                label,
+
 	} Operation;
 
 	/** constructor */
@@ -184,9 +185,9 @@ public:
                 this->instrs.push_back(instr);
                 /*For debug only*/
 
-                //std::cout << "Current BB instructions : \n" ;
-                //for (int i = 0; i < (int)instrs.size(); i++)
-                //        std::cout << *(instrs.at(i));
+                std::cout << "Current BB instructions : \n" ;
+                for (int i = 0; i < (int)instrs.size(); i++)
+                        std::cout << *(instrs.at(i));
         }
 
 	// No encapsulation whatsoever here. Feel free to do better.

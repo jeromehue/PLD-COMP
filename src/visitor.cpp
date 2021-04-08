@@ -123,7 +123,9 @@ Any Visitor::visitInitDeclarator(ifccParser::InitDeclaratorContext *ctx)
 
         // Let'ts insert our var in the symbol table
         std::string var_name = ctx->ID()->getText();
+        if (!ctx->arrayInitialisation()) {
         curfct->symb->store(var_name, INT); // TODO: Could be CHAR
+        }
 
         if (ctx->arithExpr()) {
                 // If assign, we create an IDENT node that's going to
@@ -156,13 +158,17 @@ Any Visitor::visitInitDeclarator(ifccParser::InitDeclaratorContext *ctx)
                 // been added to the symbol table
                 for (int i = 0; i < arraySize; ++i) {
                         int value = stoi(arrayValues.at(i)->getText());
-                        std::cout << " >> "<<value << std::endl;
-                        
+                        std::cout << " >> "<<value << std::endl; 
                         Node* c = new Node(OP_CONST, NULL, NULL, value, 0);
                         array->addNode(c);
+
+                        std::string v_name = "tab" + var_name + 
+                                to_string(i);
+                        curfct->symb->store(v_name, INT); // TODO: Could be CHAR
                 }
                 std::cout << curfct->symb->getOffset() 
                                 << std::endl;
+                int base = - curfct->symb->getOffset();
                 array->display();
                 curfct->funcInstr.push_back(array);
         }
