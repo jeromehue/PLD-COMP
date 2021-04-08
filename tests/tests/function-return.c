@@ -1,8 +1,10 @@
-int number() {
-    return 4;
+int number()
+{
+        return 4;
 }
 
-int main() {
-    int a = 2;
-    return number();
+int main()
+{
+        int a = 2;
+        return number();
 }
