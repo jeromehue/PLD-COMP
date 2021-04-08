@@ -1,6 +1,12 @@
-int main(){
-    int tab[3] = {10, 11, 12};
-    int a = 4;
-    int c = tab[a];
-    return c;
-} 
+int multiply(int a, int b)
+{
+
+        return a * b;
+}
+
+int main()
+{
+        int a = 2;
+        int b = multiply(a, 5);
+        return b;
+}
