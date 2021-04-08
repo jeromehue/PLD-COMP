@@ -104,7 +104,7 @@ Any Visitor::visitDeclaration (ifccParser::DeclarationContext *ctx)
 {
         // Debug print
         std::cout << "Call to visitDeclaration" << std::endl;
-
+        // TODO: Handle variable type here, or change grammar
         return visitChildren(ctx);
 }
 
@@ -130,9 +130,9 @@ Any Visitor::visitInitDeclarator(ifccParser::InitDeclaratorContext *ctx)
         }
         std::cout << " of " << ctx->ID()->getText() << std::endl;
 
-        // Let'ts insert or var in the symbol table
+        // Let'ts insert our var in the symbol table
         std::string var_name = ctx->ID()->getText();
-        curfct->symb->store(var_name, 0);
+        curfct->symb->store(var_name, INT); // TODO: Could be CHAR
 
         if (ctx->arithExpr()) {
                 // If assign, we create an IDENT node that's going to
@@ -158,9 +158,12 @@ Any Visitor::visitInitDeclarator(ifccParser::InitDeclaratorContext *ctx)
                 auto arrayValues = ctx->arrayInitialisation()->INT_CONST();
                 assert(arraySize == arrayValues.size());
 
-                for (int i = 0; i < arraySize; ++i) {
+                // Start at 1 because array[0] has already
+                // been added to the symbol table
+                for (int i = 1; i < arraySize; ++i) {
                         int value = stoi(arrayValues.at(i)->getText());
                         // TODO
+                        // Is it like creating <arraySize> variables ?
                 }
         }
 
