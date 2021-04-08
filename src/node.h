@@ -33,7 +33,7 @@ enum nodeOp {
         OP_UNEQUAL,
         OP_IF
 };
-
+static int counter=0;
 class Node {
 public:
         Node(int op, Node *left, Node *right, int arg0, int arg1)
@@ -276,6 +276,7 @@ public:
                         break;
                 case OP_IF:
                        { 
+                        counter++;
                         std::cout << "---------------START OP_IF \n ";
 
                         //test
@@ -286,8 +287,8 @@ public:
                         std::cout << "---------------end TEST  \n ";
 
                         //then
-                        string elselabel="elseBB" + testBBAdressTostring.str();
-                        string afterlabel="afterBB"+testBBAdressTostring.str();
+                        string elselabel="elseBB" + to_string(counter);//testBBAdressTostring.str();
+                        string afterlabel="afterBB"+to_string(counter);//testBBAdressTostring.str();
                         retvector.push_back(var1);
                         retvector.push_back(elselabel);
                         retvector.push_back(afterlabel);
@@ -306,15 +307,13 @@ public:
                         elseBB->add_IRInstr(IRInstr::label, INT, retvector);
                         ndlist[2]->buildIR(cfg);
                         std::cout << "---------------end OELSEP_IF \n ";
-
+                        cfg->add_bb(elseBB);
 
                         //after
                         BasicBlock * afterBB = new BasicBlock(cfg, afterlabel);
                        
                         cfg->current_bb = afterBB;
                         std::cout << "---------------end AFTER \n ";
- 
-                        cfg->add_bb(elseBB);
                         cfg->add_bb(afterBB);
 
                         //liaison entre les if else avec le afterBB
