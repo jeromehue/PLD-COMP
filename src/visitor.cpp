@@ -149,13 +149,22 @@ Any Visitor::visitInitDeclarator(ifccParser::InitDeclaratorContext *ctx)
                 auto arrayValues = ctx->arrayInitialisation()->INT_CONST();
                 assert(arraySize == arrayValues.size());
 
+
+                Node* array = new Node(OP_ARRAY, 0, 0);
+                array->strarg = var_name;
                 // Start at 1 because array[0] has already
                 // been added to the symbol table
-                for (int i = 1; i < arraySize; ++i) {
+                for (int i = 0; i < arraySize; ++i) {
                         int value = stoi(arrayValues.at(i)->getText());
-                        // TODO
-                        // Is it like creating <arraySize> variables ?
+                        std::cout << " >> "<<value << std::endl;
+                        
+                        Node* c = new Node(OP_CONST, NULL, NULL, value, 0);
+                        array->addNode(c);
                 }
+                std::cout << curfct->symb->getOffset() 
+                                << std::endl;
+                array->display();
+                curfct->funcInstr.push_back(array);
         }
 
         return 0;

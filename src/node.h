@@ -9,9 +9,11 @@
 #define NODE_H
 
 #include <iostream>
+#include <memory>
 #include <string>
 #include "ir.h"
 #include "symb.h"
+
 
 using namespace std;
 
@@ -34,7 +36,8 @@ enum nodeOp {
         OP_UNEQUAL,
         OP_CALL,
         OP_IF,
-        OP_BLOCK
+        OP_BLOCK,
+        OP_ARRAY
 };
 static int counter=0;
 class Node {
@@ -146,8 +149,12 @@ public:
                          * this walue where the ABI tells it should go.
                          * */
                 case OP_CALL:
-                        std::cout << "OP CALL " << this->strarg << " with "
+                        cout << "OP CALL " << this->strarg << " with "
                                 << this->args[0] << " arguments" << std::endl;
+                        break;
+                case OP_ARRAY: 
+                        cout << "OP ARRAY "<< this->strarg;
+                        cout << ", size : " << ndlist.size() << endl;
                         break;
                 default:
                         std::cout << "Unknown Node" << std::endl;

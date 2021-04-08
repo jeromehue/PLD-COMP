@@ -120,9 +120,9 @@ public:
 
         int getOffset() {
                 int a = this->getNextOffset() - 4;
-                std::cout << "ST True offset  : " << a << std::endl;
+                //std::cout << "ST True offset  : " << a << std::endl;
                 int round = (-a + 16) - (-a % 16);
-                std::cout <<"Offset rounded to 16 : "<< round << std::endl;
+                //std::cout <<"Offset rounded to 16 : "<< round << std::endl;
                 return round;
         }
 
