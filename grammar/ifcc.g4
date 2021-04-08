@@ -59,7 +59,8 @@ primaryExpression
 	: INT_CONST     # number
 	| CHAR_CONST    # char
 	| ID            # var
-	;
+	| ID'['INT_CONST']' #tab 
+        ;
 
 relationalExpression
 	: left=primaryExpression

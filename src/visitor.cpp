@@ -83,6 +83,12 @@ Any Visitor::visitVar(ifccParser::VarContext *ctx)
         return visitChildren(ctx);
 }
 
+Any Visitor::visitTab(ifccParser::TabContext *ctx) 
+{
+        std::cout << "visit tab not implemented" << std::endl;
+        exit(EXIT_FAILURE);
+}
+
 Any Visitor::visitStatement(ifccParser::StatementContext *ctx)
 {
         // Debug print

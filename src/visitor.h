@@ -60,6 +60,8 @@ public:
 
         virtual antlrcpp::Any visitBlockStatement(ifccParser::BlockStatementContext* ctx) override;
 
+        virtual antlrcpp::Any visitTab(ifccParser::TabContext* ctx) override;
+
         // Getters
         std::vector<Node*> getNodes()
         {
