@@ -126,6 +126,10 @@ public:
                 return round;
         }
 
+        void allocate(int base, int n) {
+                next_offset = base  - 4*n;
+        }
+
         std::map<std::string, Variable> symbols;
 
         static std::map<std::string, int > fct_params; 

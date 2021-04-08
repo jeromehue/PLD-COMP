@@ -14,7 +14,6 @@
 #include "ir.h"
 #include "symb.h"
 
-
 using namespace std;
 
 /* Les différents types de noeuds */
@@ -486,6 +485,33 @@ public:
                         cfg->current_bb->add_IRInstr(IRInstr::call, 
                                                      INT, retvector);
                         return var3;
+                        break;
+                }
+                case OP_ARRAY: {
+                        std::cout << "Generating IR for OP_ARRAY" << 
+                                std::endl;
+                        for (int i = 0; i< ndlist.size(); ++i) {
+                                cout << "creating tempvar" << endl;
+                                //std::string tmp_var = 
+                                 //       ndlist.at(i)->buildIR(cfg);
+                                /*
+                                cout << "name to be written " <<
+                                        ("tab" + strarg + to_string(i))
+                                        << std::endl;
+                                cout << "Var to be written in adr "<<
+                                        ndlist.at(i)->args[0] << 
+                                        std::endl;
+                                */
+                                retvector.push_back("tab" + strarg + 
+                                                to_string(i));
+                                retvector.push_back(
+                                                to_string(ndlist.at(i)->args[0])
+                                                );
+                                cfg->current_bb->add_IRInstr(
+                                                IRInstr::ldconst,
+                                                INT, retvector);
+                                retvector.clear();
+                        }
                         break;
                 }
                 default:
