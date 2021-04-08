@@ -167,6 +167,8 @@ if args.debug:
 nbTests = len(jobs)
 nbSucces = 0
 
+jobs.sort()
+
 for jobname in jobs:
     os.chdir(orig_cwd)
     
