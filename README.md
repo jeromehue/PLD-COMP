@@ -1,6 +1,8 @@
 # C compiler with Antlr4/C++ (H4244)
 This is a long term project in 4th year in computer science at INSA Lyon.<br/>
-The goal is to create a compiler for a subset of the C programming language.
+The goal is to create a compiler for a subset of the C programming language.<br/>
+
+https://github.com/jeromehue/PLD-COMP
 
 `grammar/` contains the Antlr4 grammar for a subset of C (.g4 files)<br/>
 `src/` contains the source code (.cpp and .h files)<br/>
