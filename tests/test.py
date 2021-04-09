@@ -71,7 +71,7 @@ else:
     if not os.path.isdir('out'):
         os.mkdir('out')
     DEST='out'
-    
+
 ## Then we process the inputs arguments i.e. filenames or subtrees
 inputfilenames=[]
 for path in args.input:
@@ -124,7 +124,7 @@ if not os.path.isfile(wrapper):
 
 if args.debug:
     print("debug: wrapper path: "+wrapper)
-        
+
 ######################################################################################
 ## PREPARE step: copy all test-cases under DEST
 
@@ -171,11 +171,11 @@ jobs.sort()
 
 for jobname in jobs:
     os.chdir(orig_cwd)
-    
+
     teststr = 'Testing '+jobname[10:] +':'
     print(teststr.ljust(40,'.'), end='')
     os.chdir(jobname)
-    
+
     ## JEDI compiler, aka GCC
     gccstatus=command("gcc -S -o asm-gcc.s input.c", "gcc-compile.txt")
     if gccstatus == 0:
@@ -187,14 +187,14 @@ for jobname in jobs:
         exegccstatus=command("./exe-gcc", "gcc-execute.txt")
         if args.verbose >=2:
             dumpfile("gcc-execute.txt")
-            
+
     ## PADAWAN compiler
     pldstatus=command(wrapper+" asm-pld.s input.c", "compile.txt")
-    
+
     if gccstatus != 0 and pldstatus != 0:
         ## padawan correctly rejects invalid program -> test-case ok
         print("\033[92mOK\x1b[0m ".rjust(17, '.')+ "(rejects an invalid program)")
-        nbSucces = nbSucces + 1  
+        nbSucces = nbSucces + 1
         continue
     elif gccstatus != 0 and pldstatus == 0:
         ## padawan wrongly accepts invalid program -> error
@@ -217,7 +217,7 @@ for jobname in jobs:
 
     ## both compilers  did produce an  executable, so now we run both
     ## these executables and compare the results.
-        
+
     exepldstatus=command("./exe-pld","execute.txt")
     if open("gcc-execute.txt").read() != open("execute.txt").read() :
         print("\033[91mFAILED\x1b[0m ".rjust(17,'.')+"(different results at execution)")
@@ -233,7 +233,7 @@ for jobname in jobs:
 
 print("")
 print(" RESULTS ".center(40, '='))
-print( (str(nbSucces) + " out of " + str(nbTests) + 
+print( (str(nbSucces) + " out of " + str(nbTests) +
         " (" + str(round(  (nbSucces / nbTests) * 100,2))  +"%) tests passed.").center(40, ' '))
 print("".center(40,'='))
 print("")

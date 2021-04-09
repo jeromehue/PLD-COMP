@@ -8,11 +8,11 @@ The goal is to create a compiler for a subset of the C programming language.
 
 ## Prerequisites
 Make sure to create a `Makefile.local` file containing your local Antlr4 paths, e.g.:
-```
+```Makefile
 ANTLR4_BINDIR=/usr/bin
 ANTLR4_INCDIR=/usr/include/antlr4-runtime
 ANTLR4_LIBDIR=/usr/lib/x86_64-linux-gnu
-ANTLR4_RUNTIME=libantlr4-runtime.a
+ANTLR4_RUNTIME=libantlr4-runtime.a # or libantlr4-runtime.so
 ```
 
 ## Execution

@@ -1,19 +1,23 @@
 #include <string>
 #include <iostream>
 
-#pragma once
+#ifndef VERBOSE_H
+#define VERBOSE_H
 
-extern  bool Verbose;
- 
-static int verbose(std::string chaine) 
+using namespace std;
+
+extern bool Verbose;
+
+static int verbose(string chaine)
 {
-        if (!Verbose) 
-                return 1;
-        std::cout << chaine << std::endl;
+        if (!Verbose) return 1;
+        cout << chaine << endl;
         return 0;
 }
 
-static void setVerbose(bool setting) 
+static void setVerbose(bool setting)
 {
         Verbose = setting;
 }
+
+#endif

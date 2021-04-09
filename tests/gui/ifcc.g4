@@ -5,25 +5,25 @@ grammar ifcc;
     http://port70.net/~nsz/c/c11/
 */
 
-axiom           
-    : prog       
+axiom
+    : prog
     ;
 
-prog            
-    : 
-        'int' 'main' '(' ')' '{' 
+prog
+    :
+        'int' 'main' '(' ')' '{'
             declaration?
             statement*
-            RETURN primaryExpression ';' 
-        '}' 
+            RETURN primaryExpression ';'
+        '}'
     ;
 
-blockItem       
+blockItem
     : declaration
     | statement
     ;
 
-declaration     
+declaration
     : TYPE initDeclaratorList ';'
     ;
 
@@ -42,37 +42,37 @@ relationalExpression
     | relationalExpression '>=' relationalExpression   #RelExpr
     ;
 
-equalityExpression 
+equalityExpression
     : relationalExpression
-    | equalityExpression '==' relationalExpression     
-    | equalityExpression '!=' relationalExpression 
-    ;    
+    | equalityExpression '==' relationalExpression
+    | equalityExpression '!=' relationalExpression
+    ;
 
 initDeclaratorList
     :   initDeclarator (',' initDeclarator)*
     ;
 
-initDeclarator  
-    : ID 
+initDeclarator
+    : ID
     | ID '=' arithExpr
     ;
 
-statement       
-    : assignmentExpr+ 
+statement
+    : assignmentExpr+
     ;
 
-assignmentExpr  
+assignmentExpr
     : ID '=' arithExpr ';'
     ;
 
 
-arithExpr    
+arithExpr
     : primaryExpression                                 # prExpr
-    | left=arithExpr op=('*'|'/') right=arithExpr       # Expr 
-    | left=arithExpr op=('+'|'-') right=arithExpr       # Expr 
+    | left=arithExpr op=('*'|'/') right=arithExpr       # Expr
+    | left=arithExpr op=('+'|'-') right=arithExpr       # Expr
     ;
-            
-   
+
+
 
 
 
