@@ -17,7 +17,8 @@ ANTLR4_RUNTIME=libantlr4-runtime.a
 
 ## Execution
 Compile the project with `make`.<br/>
-Run `./ifcc main.c` to run our compiler on `main.c`.
+Run `./ifcc main.c` to run our compiler on `main.c`.<br/>
+Note: You can get a versbose output with `-v`.
 
 ## Tests
 Run tests with `make test`.<br/>

@@ -50,7 +50,7 @@ functionCall
         ;
 
 arrayInitialisation
-        : '{' (INT_CONST (',' INT_CONST)*)? '}'
+        : '{' ((INT_CONST (',' INT_CONST)*) | (CHAR_CONST (',' CHAR_CONST)*)) '}'
         ;
 
 returnInstr
