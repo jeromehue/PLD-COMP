@@ -90,10 +90,11 @@ Any Vis::visitVar(prs::VarContext *ctx)
 
 Any Vis::visitTab(prs::TabContext *ctx) 
 {       
-        string var_name = ctx->ID(0)->getText();
+        string var_name = ctx->ID()->getText();
         verbose(" >> VisitTab: " +  var_name);
 
         Node* n;
+        /*
         if (ctx->INT_CONST()) {
                 int value = stoi(ctx->INT_CONST()->getText());
                 n = new Node(OP_CONST, NULL, NULL, value, 0);
@@ -101,8 +102,14 @@ Any Vis::visitTab(prs::TabContext *ctx)
                 string id_name = ctx->ID(1)->getText();
                 int var_adr = curfct->symb->getAddress(id_name);
                 n = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
-        }
+        }*/
+        visit(ctx->arithExpr());
         
+        n = curfct->funcInstr.back();
+        curfct->funcInstr.pop_back();
+        
+        n->display(); 
+
         Node* arrayElement = new Node(OP_ARRAY_ELEMENT, n, NULL, 0, 0);
         arrayElement->strarg = var_name;
         curfct->funcInstr.push_back(arrayElement);
@@ -761,7 +768,30 @@ Any Vis::visitAssignFunction(prs::AssignFunctionContext* ctx)
 
 }
 
+Any Vis::visitAssignTabArithExpr(prs::AssignTabArithExprContext* ctx)
+{
+        verbose("Call to AssignTabArithExpr");
+        
+        cerr << "Not implemented yet";
+        exit(EXIT_FAILURE); 
+        string var_name = ctx->ID()->getText();
+        
+        visit(ctx->arithExpr(0));
+        Node* arrayElement = new Node(OP_ARRAY_ELEMENT, curfct->funcInstr.back(), NULL, 0, 0);
+        arrayElement->strarg = var_name;
+        curfct->funcInstr.pop_back();
+        
+        
+        visit(ctx->arithExpr(1)); 
+        Node* n = new Node(OP_ASSIGN, arrayElement, curfct->funcInstr.back(), 0, 0);
+        curfct->funcInstr.pop_back();
+        curfct->funcInstr.push_back(n);
+       
+        n->display(); 
 
+        return 0;
+
+}
 
 Any Vis::visitAssignGetchar(prs::AssignGetcharContext* ctx){
         verbose("Call to visitAssignGetChar");

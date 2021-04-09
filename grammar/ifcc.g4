@@ -61,7 +61,7 @@ primaryExpression
 	: INT_CONST     # number
 	| CHAR_CONST    # char
 	| ID            # var
-	| ID '[' (INT_CONST | ID) ']' #tab 
+	| ID '[' arithExpr ']' #tab 
         ;
 
 relationalExpression
@@ -107,7 +107,8 @@ assignmentExpr
         | ID '=' ID '(' primaryExpression 
         (',' primaryExpression)+ ')'            # assignFunction
         | ID '=' 'getchar()'                    # assignGetchar
-	;
+	| ID '[' arithExpr ']' '=' arithExpr    # assignTabArithExpr
+        ;
 
 arithExpr
 	: primaryExpression                                         # prExpr
