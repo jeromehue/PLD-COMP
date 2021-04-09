@@ -12,10 +12,11 @@ void display(char c) {
 }
 
 // Our main function
-int main() {
+int  main() {
 
-        int messageSize = 5;
-        char message[5] = {'H', 'e', 'l', 'l', 'o'};
+        int messageSize = 13;
+        char message[13] = {'H', 'e', 'l', 'l', 'o', ',',
+                            ' ', 'W', 'o', 'r', 'l', 'd', '!'};
 
         int i = 0;
         while (i < messageSize) {
@@ -25,5 +26,5 @@ int main() {
 
         display(10); // New line
 
-        return i;
+        return 0;
 }
