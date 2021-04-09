@@ -1,6 +1,8 @@
 #include "ir.h"
 #include <iostream>
 
+#include "verbose.h"
+
 using namespace std;
 
 void IRInstr::gen_asm(ostream &o)
@@ -143,7 +145,7 @@ void IRInstr::gen_asm(ostream &o)
 
                 // Special case : return
                 if (params[0] == "!retval") {
-                        cout << "return " << endl;
+                        verbose("return wmem");
                         int index = bb->cfg->symbols->getAddress(params[1]);
                         o<<"\tmovl\t"<<index<<"(%rbp),%eax\n";
                         return;
@@ -155,19 +157,21 @@ void IRInstr::gen_asm(ostream &o)
                 var_index= this->bb->cfg->symbols->getAddress(params[1]);
 
                 // Debug prints
-                cout << "addr : " << params[0] << " "<< addr <<" \n";
-                cout << "var  : " << params[1] << " "<<var_index;
-                cout << endl;
+                if (Verbose) {
+                        cout << "addr : "<< params[0] << " "<< addr<<" \n";
+                        cout << "var  : "<< params[1] << " "<<var_index;
+                        cout << endl;
+                }
 
                 o<<"\tmovl\t"<<var_index<<"(%rbp),%eax\n";
                 o<<"\tmovl\t%eax,"<<addr<<"(%rbp)\n";
                 return;
         }
         case call: {
-                cout << "One day we'll generate asm for function call" 
-                        << endl;
-                cout << "number of params  :" << this->params.size()-2 << endl;
-                
+                if (Verbose) {
+                cout << "number of params  :" 
+                        << this->params.size()-2 << endl;
+                }
                 int nb_params = this->params.size() - 2;
                 if (nb_params > 6) {
                         cout << "Too much parameters" << endl;
@@ -177,8 +181,10 @@ void IRInstr::gen_asm(ostream &o)
                 string name = this->params[1];
                 int exp = 
                 this->bb->cfg->symbols->fct_params.find(name)->second;
+                if (Verbose) {
                 cout << "calling " << name << " who has "
                         << exp << " paramerers" << endl;
+                }
                 if (nb_params != exp ) {
                         cout << "Error : function " << name <<
                                 " called, expected "<< exp << " arguments"
@@ -199,7 +205,6 @@ void IRInstr::gen_asm(ostream &o)
                 o << "\tcall\t" << this->params[1] << "\n";
                 int index3 = bb->cfg->symbols->getAddress(params[0]);
                 o<<"\tmovl\t%eax," << index3 << "(%rbp)\n";
-                cout << "Fin de la generation ir pour call" << endl;
                 break;
         }
         case array_access: {
@@ -212,12 +217,12 @@ void IRInstr::gen_asm(ostream &o)
                 o<< "\tcltq\n";
                 
                 string firstElement = "tab" + params[0] + "0";
-                cout << "Array starts at index " << firstElement << endl;
+                verbose( "Array starts at index " + firstElement);
                 int startIndex = bb->cfg->symbols->getAddress(firstElement);
                 o<< "\tmovl\t" << startIndex << "(%rbp,%rax,4), %eax\n";
 
                 
-                cout << params[2] << endl;
+                //   cout << params[2] << endl;
                 int dest = bb->cfg->symbols->getAddress(params[2]);
                 o<< "\tmovl\t%eax, " << dest << "(%rbp)\n";
 
@@ -287,12 +292,11 @@ void CFG::load_parameters(ostream& o, int nb_params) {
 
 void CFG::gen_asm(ostream& o)
 {
-        cout << "call to CFG::gen_asm" << endl;
-        cout << "Number of bbs : " << bbs.size() << endl;
+        verbose("call to CFG::gen_asm");
+        verbose("Number of bbs : "+ to_string(bbs.size()));
 
         int exp = this->symbols->fct_params.find("f2")->second;
-        cout << " >> f2 expected numbers of parameters " << 
-                exp << endl;
+        verbose(" >> func expected numbers of parameters "+ to_string(exp));
 
         o <<
                 ".global " << bbs.at(0)->label << "\n"

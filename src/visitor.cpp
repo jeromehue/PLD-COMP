@@ -3,53 +3,58 @@
 #include <vector>
 #include <string>
 
+#include "verbose.h"
 #include "visitor.h"
 #include "node.h"
 
+/* Static member of function param */
 map<string, int > Symboltable::fct_params;
 
-// Improving readability
+/*  Improving readability */
 using namespace antlrcpp;
 using namespace std;
 
-Any Visitor::visitAxiom(ifccParser::AxiomContext *ctx)
+typedef Visitor Vis;
+typedef ifccParser prs;
+
+Any Vis::visitAxiom(prs::AxiomContext *ctx)
 {
+        verbose("Call to visitAxiom");
         return visitChildren(ctx);
 }
 
-Any Visitor::visitProg(ifccParser::ProgContext *ctx)
+Any Vis::visitProg(prs::ProgContext *ctx)
 {
-        cout << "Call to visitProg" << endl;
+        verbose("Call to visitProg");
         return visitChildren(ctx);
 }
 
-Any Visitor::visitReturnInstr(ifccParser::ReturnInstrContext *ctx)
+Any Vis::visitReturnInstr(prs::ReturnInstrContext *ctx)
 {
-        // Debug print
-        cout << "Call to visitReturnInstr" << endl;
+        verbose("Call to visitReturnInstr");  
 
-        // Node definition
+        /* Node definition */
         Node* n = new Node(OP_RETURN, NULL, NULL,0, 0);
         curfct->funcInstr.push_back(n);
 
-        // Setting the return expression as a child for
-        // our return node
+        /* 
+         * Setting the return expression as a child for
+         * our return node
+         */
         int index = curfct->funcInstr.size() - 1;
         visitChildren(ctx);
         assert(curfct->funcInstr.size() == index+2);
         curfct->funcInstr[index]->ndlist[0] = curfct->funcInstr[index+1];
         curfct->funcInstr.pop_back();
 
-        // My job here is done
         return 0;
 }
 
-Any Visitor::visitNumber(ifccParser::NumberContext *ctx)
+Any Vis::visitNumber(prs::NumberContext *ctx)
 {
-        // Debug print
-        cout << "Call to visitNumber" << endl;
+        verbose("Call to visitNumber");
 
-        // Node definition
+        /* Node definition */
         int a = stoi(ctx->INT_CONST()->getText());
         Node* n = new Node(OP_CONST, NULL, NULL, a, 0);
         curfct->funcInstr.push_back(n);
@@ -57,12 +62,11 @@ Any Visitor::visitNumber(ifccParser::NumberContext *ctx)
         return visitChildren(ctx);
 }
 
-Any Visitor::visitChar(ifccParser::CharContext *ctx)
+Any Vis::visitChar(prs::CharContext *ctx)
 {
-        // Debug print
-        cout << "Call to visitChar" << endl;
+        verbose("Call to visitChar");
 
-        // Node definition
+        /*  Node definition */
         string charConst = ctx->CHAR_CONST()->getText();
         int value = charConst[1];
         Node* n = new Node(OP_CONST, NULL, NULL, value, 0);
@@ -71,11 +75,11 @@ Any Visitor::visitChar(ifccParser::CharContext *ctx)
         return visitChildren(ctx);
 }
 
-Any Visitor::visitVar(ifccParser::VarContext *ctx)
+Any Vis::visitVar(prs::VarContext *ctx)
 {
-        cout << "Call to visitVar" << endl;
+        verbose("Call to visitVar");
 
-        //Node definition
+        /* Node definition */
         string var_name = ctx->ID()->getText();
         int var_adr = curfct->symb->getAddress(var_name);
         Node* var = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
@@ -84,10 +88,10 @@ Any Visitor::visitVar(ifccParser::VarContext *ctx)
         return visitChildren(ctx);
 }
 
-Any Visitor::visitTab(ifccParser::TabContext *ctx) 
+Any Vis::visitTab(prs::TabContext *ctx) 
 {       
         string var_name = ctx->ID(0)->getText();
-        cout << " >> VisitTab: " << var_name << endl;
+        verbose(" >> VisitTab: " +  var_name);
 
         Node* n;
         if (ctx->INT_CONST()) {
@@ -103,136 +107,142 @@ Any Visitor::visitTab(ifccParser::TabContext *ctx)
         arrayElement->strarg = var_name;
         curfct->funcInstr.push_back(arrayElement);
         
-        arrayElement->display();
 
         return 0;
 }
 
-Any Visitor::visitStatement(ifccParser::StatementContext *ctx)
+
+
+Any Vis::visitStatement(prs::StatementContext *ctx)
 {
-        // Debug print
-        cout << "Call to visitStatement" << endl;
+        verbose("Call to visitStatement");
 
         return visitChildren(ctx);
 }
 
-Any Visitor::visitDeclaration (ifccParser::DeclarationContext *ctx)
+
+
+Any Vis::visitDeclaration (prs::DeclarationContext *ctx)
 {
-        // Debug print
-        cout << "Call to visitDeclaration" << endl;
-        // TODO: Handle variable type here, or change grammar
+        verbose("Call to visitDeclaration");
         return visitChildren(ctx);
 }
 
-Any Visitor::visitInitDeclaratorList(ifccParser::InitDeclaratorListContext *ctx)
-{
-        // Debug print
-        cout << "Call to visitInitDeclaratorList" << endl;
 
+
+Any Vis::visitInitDeclaratorList(prs::InitDeclaratorListContext *ctx)
+{
+        verbose("Call to visitInitDeclaratorList");
         return visitChildren(ctx);
 
 }
 
-Any Visitor::visitInitDeclarator(ifccParser::InitDeclaratorContext *ctx)
+
+
+Any Vis::visitInitDeclarator(prs::InitDeclaratorContext *ctx)
 {
-        cout << "Call to visitInitDeclarator" << endl;
+        verbose("Call to visitInitDeclarator");
 
         if(ctx->arithExpr()) {
-                cout << " >> Declaration and affectaion";
+                verbose(" >> Declaration and affectaion");
         } else if (ctx->arrayInitialisation()) {
-                cout << " >> Declaration and affectation (Array)";
+                verbose(" >> Declaration and affectation (Array)");
         } else {
-                cout << " >> Declaration w/o affectation";
+                verbose(" >> Declaration w/o affectation");
         }
-        cout << " of " << ctx->ID()->getText() << endl;
+        verbose(" >> of " + ctx->ID()->getText());
 
-        // Let'ts insert our var in the symbol table
+        /* Let'ts insert our var in the symbol table */
         string var_name = ctx->ID()->getText();
         if (!ctx->arrayInitialisation()) {
-        curfct->symb->store(var_name, INT); // TODO: Could be CHAR
+                curfct->symb->store(var_name, INT);
         }
 
         if (ctx->arithExpr()) {
-                // If assign, we create an IDENT node that's going to
-                // be the left child of out ASSIGN node
                 int var_adr = curfct->symb->getAddress(var_name);
                 Node* var = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
 
-                // Now let's deal with the ASSIGN node
+                /* Now let's deal with the ASSIGN node */
                 Node* n = new Node(OP_ASSIGN, var, NULL, 0, 0);
                 curfct->funcInstr.push_back(n);
 
-                // Finishing with the expr node
+                /* Finishing with the expr node */
                 int index = curfct->funcInstr.size() - 1;
                 visitChildren(ctx);
                 assert(curfct->funcInstr.size() == index+2);
-                curfct->funcInstr[index]->ndlist[1] = curfct->funcInstr[index+1];
+                curfct->funcInstr[index]->ndlist[1] = 
+                        curfct->funcInstr[index+1];
                 curfct->funcInstr.pop_back();
         } else if (ctx->arrayInitialisation()) {
-                // Array size
+
+                /* Array size */
                 int arraySize = stoi(ctx->INT_CONST()->getText());
 
-                // Array values
+                /* Array values */
                 auto arrayValues = ctx->arrayInitialisation()->INT_CONST();
-                assert(arraySize == arrayValues.size());
+                if(arraySize != arrayValues.size()) {
+                        cerr << "Error, array "
+                        << var_name << " was declared with a size of "
+                        << arraySize << " but found " 
+                        << arrayValues.size() << " elements."
+                        << endl;
+                        exit(EXIT_FAILURE);
+                }
 
 
                 Node* array = new Node(OP_ARRAY, 0, 0);
                 array->strarg = var_name;
-                // Start at 1 because array[0] has already
-                // been added to the symbol table
+                /* 
+                 * Start at 1 because array[0] has already
+                 * been added to the symbol table
+                 */ 
                 for (int i = 0; i < arraySize; ++i) {
                         int value = stoi(arrayValues.at(i)->getText());
-                        cout << " >> "<<value << endl; 
+                        verbose(" >> " + to_string(value)); 
                         Node* c = new Node(OP_CONST, NULL, NULL, value, 0);
                         array->addNode(c);
 
                         string v_name = "tab" + var_name + 
                                 to_string(arraySize - i - 1);
-                        curfct->symb->store(v_name, INT); // TODO: Could be CHAR
+                        curfct->symb->store(v_name, INT); 
                 }
-                cout << curfct->symb->getOffset() 
-                                << endl;
+                verbose(to_string(curfct->symb->getOffset()));
                 int base = - curfct->symb->getOffset();
-                array->display();
                 curfct->funcInstr.push_back(array);
         } else if (ctx->functionCall()) {
 
-                cout << "initializing with a function call" <<
-                endl;
+                verbose("initializing with a function call");
                 
-                // If assign, we create an IDENT node that's going to
-                // be the left child of out ASSIGN node
                 int var_adr = curfct->symb->getAddress(var_name);
                 Node* var = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
 
 
-                // Now let's deal with the ASSIGN node
+                /* Now let's deal with the ASSIGN node */
                 Node* n = new Node(OP_ASSIGN, var, NULL, 0, 0);
                 curfct->funcInstr.push_back(n);
 
-                // Finishing with the expr node
+                /* Finishing with the expr node */
                 int index = curfct->funcInstr.size() -1;
                 visitChildren(ctx);
                 assert(curfct->funcInstr.size() == index+2);
-                curfct->funcInstr[index]->ndlist[1] = curfct->funcInstr[index+1];
+                curfct->funcInstr[index]->ndlist[1] = 
+                        curfct->funcInstr[index+1];
                 curfct->funcInstr.pop_back();
 
-                cout << "initializing with a function call - Done" <<
-                endl;
+                verbose("initializing with a function call - Done");
         }
 
         return 0;
 }
 
-Any Visitor::visitAssignArithExpr(ifccParser::AssignArithExprContext *ctx)
-{
-        // Debug print
-        cout <<"Call to AssignArithExpr " << endl;
-        cout << " >> Assigning " << ctx->ID()->getText()
-        << " to " << ctx->arithExpr()->getText() << endl;
 
-        // Node definition
+
+Any Vis::visitAssignArithExpr(prs::AssignArithExprContext *ctx)
+{
+        verbose("Call to AssignArithExpr ");
+        verbose(" >> Assigning " +ctx->ID()->getText() +" to " 
+                        + ctx->arithExpr()->getText());
+
         /*
          * n->left is going to be the variable
          * n->right is going to be an expression
@@ -243,7 +253,7 @@ Any Visitor::visitAssignArithExpr(ifccParser::AssignArithExprContext *ctx)
         Node* o = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
 
         int ref = curfct->funcInstr.size();
-        // Expression
+        /*  Expression */
         visitChildren(ctx);
         assert(curfct->funcInstr.size()== ref+1);
 
@@ -253,22 +263,26 @@ Any Visitor::visitAssignArithExpr(ifccParser::AssignArithExprContext *ctx)
 
         return 0;
 }
-Any Visitor::visitBlockStatement(ifccParser::BlockStatementContext* ctx) {
+
+
+
+Any Vis::visitBlockStatement(prs::BlockStatementContext* ctx) {
         return visitChildren(ctx);
 }
 
 
-Any Visitor::visitIfElse(ifccParser::IfElseContext *ctx)
+
+Any Vis::visitIfElse(prs::IfElseContext *ctx)
 {
-        //Debug print
-        cout << "Call to visit IF " << endl;
+        /* Debug print */
+        verbose("Call to visit IF ");
         
-        //conditionNode
+        /* conditionNode */
         visit(ctx->relationalExpression());
         Node* conditionNode = curfct->funcInstr[curfct->funcInstr.size()-1];
         curfct->funcInstr.pop_back();
 
-        //thenBlockNode
+        /* thenBlockNode */
         int startingStackSize = curfct->funcInstr.size();
         visit(ctx -> thenBloc);
         int afterThenSizeStack = curfct->funcInstr.size();
@@ -281,7 +295,7 @@ Any Visitor::visitIfElse(ifccParser::IfElseContext *ctx)
               curfct->funcInstr.pop_back();
         } 
 
-        //elseBlokNode
+        /* elseBlokNode */
         int beforeElseSizeStack = curfct->funcInstr.size();
         visit(ctx -> elseBloc);
         int afterElseSizeStack = curfct->funcInstr.size();
@@ -294,8 +308,9 @@ Any Visitor::visitIfElse(ifccParser::IfElseContext *ctx)
               curfct->funcInstr.pop_back();
         } 
 
-        //ifelseBlock
-        Node* ifelseNode = new Node(OP_IFELSE, conditionNode, thenBlocNode, 0, 0);
+        /* ifelseBlock */
+        Node* ifelseNode = new Node(OP_IFELSE, conditionNode, 
+                                    thenBlocNode, 0, 0);
         ifelseNode->pushBackToNdList(elseBlocNode);
 
         curfct->funcInstr.push_back(ifelseNode);
@@ -304,17 +319,18 @@ Any Visitor::visitIfElse(ifccParser::IfElseContext *ctx)
         return 0;
 }
 
-Any Visitor::visitIf(ifccParser::IfContext *ctx)
+
+
+Any Vis::visitIf(prs::IfContext *ctx)
 {
-         //Debug print
-        cout << "Call to visit IF " << endl;
+        verbose("Call to visit IF ");
         
-        //conditionNode
+        /* conditionNode */
         visit(ctx->relationalExpression());
         Node* conditionNode = curfct->funcInstr[curfct->funcInstr.size()-1];
         curfct->funcInstr.pop_back();
 
-        //thenBlockNode
+        /* thenBlockNode */
         int startingStackSize = curfct->funcInstr.size();
         visit(ctx -> thenBloc);
         int afterThenSizeStack = curfct->funcInstr.size();
@@ -327,7 +343,7 @@ Any Visitor::visitIf(ifccParser::IfContext *ctx)
               curfct->funcInstr.pop_back();
         } 
 
-        //ifBlock
+        /* ifBlock */
         Node* ifNode = new Node(OP_IF, conditionNode, thenBlocNode, 0, 0);
 
         curfct->funcInstr.push_back(ifNode);
@@ -335,16 +351,17 @@ Any Visitor::visitIf(ifccParser::IfContext *ctx)
         return 0;
 } 
 
-Any Visitor::visitWhileStatement(ifccParser::WhileStatementContext *ctx){
-          //Debug print
-        cout << "Call to visit WHILE " << endl;
+Any Vis::visitWhileStatement(prs::WhileStatementContext *ctx){
+
+        /* Debug print */
+        verbose("Call to visit WHILE ");
         
-        //conditionNode
+        /* conditionNode */
         visit(ctx->relationalExpression());
         Node* conditionNode = curfct->funcInstr[curfct->funcInstr.size()-1];
         curfct->funcInstr.pop_back();
 
-        //whileBlockNode
+        /* whileBlockNode */
         int startingStackSize = curfct->funcInstr.size();
         visit(ctx -> whileBlockStatement);
         int afterWhileSizeStack = curfct->funcInstr.size();
@@ -357,8 +374,9 @@ Any Visitor::visitWhileStatement(ifccParser::WhileStatementContext *ctx){
               curfct->funcInstr.pop_back();
         } 
 
-        //whileBlockNode
-        Node* whileNode = new Node(OP_WHILE, conditionNode, whileBlockNode, 0, 0);
+        /* whileBlockNode */
+        Node* whileNode = new Node(OP_WHILE, conditionNode, 
+                                   whileBlockNode, 0, 0);
 
         curfct->funcInstr.push_back(whileNode);
 
@@ -366,25 +384,24 @@ Any Visitor::visitWhileStatement(ifccParser::WhileStatementContext *ctx){
 } 
 
 
-Any Visitor::visitAssignRelExpr(ifccParser::AssignRelExprContext *ctx)
+Any Vis::visitAssignRelExpr(prs::AssignRelExprContext *ctx)
 {
-        // Debug print
-        cout <<"Call to AssignRelExpr " << endl;
-        cout << " >> Assigning " << ctx->ID()->getText()
-        << " to " << ctx->relationalExpression()->getText() << endl;
+        /* Debug prints */
+        verbose("Call to AssignRelExpr ");
+        verbose(" >> Assigning " + ctx->ID()->getText() + " to " 
+                        + ctx->relationalExpression()->getText());
 
-        // Node definition
         /*
          * n->left is going to be the variable
          * n->right is going to be an expression
-        */
+         */
 
         string var_name = ctx->ID()->getText();
         int var_adr = curfct->symb->getAddress(var_name);
         Node* o = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
 
         int ref = curfct->funcInstr.size();
-        // Expression
+        /* Expression  */
         visitChildren(ctx);
         assert(curfct->funcInstr.size()== ref+1);
 
@@ -395,12 +412,15 @@ Any Visitor::visitAssignRelExpr(ifccParser::AssignRelExprContext *ctx)
         return 0;
 }
 
-Any Visitor::visitExpr(ifccParser::ExprContext* ctx)
+Any Vis::visitExpr(prs::ExprContext* ctx)
 {
-        cout << "Call to visit Expr" << endl;
+        verbose("Call to visit Expr");
 
+        /* Get operator */
         char op = ctx->op->getText().at(0);
         int ref = curfct->funcInstr.size();
+        
+        /* Visit children */
         visit(ctx->left);
         visit(ctx->right);
 
@@ -408,25 +428,25 @@ Any Visitor::visitExpr(ifccParser::ExprContext* ctx)
 
         switch(op) {
         case '+': {
-                cout << "Addition" << endl;
-                Node* nop = new Node(
-                    OP_ADD, curfct->funcInstr[ref+1], curfct->funcInstr[ref], 0, 0);
+                verbose("Addition");
+                Node* nop = new Node(OP_ADD, curfct->funcInstr[ref+1], 
+                                     curfct->funcInstr[ref], 0, 0);
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.push_back(nop);
                 break;
         }
         case '-': {
-                cout << "Subtraction" << endl;
-                Node* nop = new Node(
-                    OP_SUB, curfct->funcInstr[ref+1], curfct->funcInstr[ref], 0, 0);
+                verbose("Subtraction");
+                Node* nop = new Node(OP_SUB, curfct->funcInstr[ref+1], 
+                                     curfct->funcInstr[ref], 0, 0);
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.push_back(nop);
                 break;
         }
         case '*': {
-                cout << "Multiplication" << endl;
+                verbose("Multiplication");
                 Node* nop = new Node(OP_MUL, curfct->funcInstr[ref+1],
                                      curfct->funcInstr[ref], 0, 0);
                 curfct->funcInstr.pop_back();
@@ -435,7 +455,7 @@ Any Visitor::visitExpr(ifccParser::ExprContext* ctx)
                 break;
         }
         case '/': {
-                cout << "Division" << endl;
+                verbose("Division");
                 Node* nop = new Node(OP_DIV, curfct->funcInstr[ref+1],
                                      curfct->funcInstr[ref], 0, 0);
                 curfct->funcInstr.pop_back();
@@ -444,7 +464,7 @@ Any Visitor::visitExpr(ifccParser::ExprContext* ctx)
                 break;
         }
         case '&': {
-                cout << "Bitwise AND" << endl;
+                verbose("Bitwise AND");
                 Node* nop = new Node(OP_BIT_AND, curfct->funcInstr[ref+1],
                                      curfct->funcInstr[ref], 0, 0);
                 curfct->funcInstr.pop_back();
@@ -453,7 +473,7 @@ Any Visitor::visitExpr(ifccParser::ExprContext* ctx)
                 break;
         }
         case '^': {
-                cout << "Bitwise XOR" << endl;
+                verbose("Bitwise XOR");
                 Node* nop = new Node(OP_BIT_XOR, curfct->funcInstr[ref+1],
                                      curfct->funcInstr[ref], 0, 0);
                 curfct->funcInstr.pop_back();
@@ -462,7 +482,7 @@ Any Visitor::visitExpr(ifccParser::ExprContext* ctx)
                 break;
         }
         case '|': {
-                cout << "Bitwise OR" << endl;
+                verbose("Bitwise OR");
                 Node* nop = new Node(OP_BIT_OR, curfct->funcInstr[ref+1],
                                      curfct->funcInstr[ref], 0, 0);
                 curfct->funcInstr.pop_back();
@@ -471,106 +491,115 @@ Any Visitor::visitExpr(ifccParser::ExprContext* ctx)
                 break;
         }
         default:
-                cout << "Erreur, opérateur non reconnu" << endl;
+                verbose("Erreur, opérateur non reconnu");
                 exit(EXIT_FAILURE);
         }
 
         return 0;
 }
 
-Any Visitor::visitRelExpr(ifccParser::RelExprContext* ctx)
+Any Vis::visitRelExpr(prs::RelExprContext* ctx)
 {
-        cout << "Call to visit RelExpr" << endl;
+        verbose("Call to visit RelExpr");
 
+        /* Get operator */
         string relop = ctx->relOp->getText();
         int ref = curfct->funcInstr.size();
+
+        /* Visit Childrens */
         visit(ctx->left);
         visit(ctx->right);
 
         assert(curfct->funcInstr.size() == ref+2);
 
         if (relop == "<") {
-                cout << "inferieur" << endl;
-                Node* nop = new Node(
-                    OP_LOWER, curfct->funcInstr[ref+1], curfct->funcInstr[ref], 0, 0);
+                /* less than*/
+                Node* nop = new Node(OP_LOWER, 
+                                     curfct->funcInstr[ref+1], 
+                                      curfct->funcInstr[ref], 0, 0);
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.push_back(nop);
+
         } else if (relop == ">") {
-                cout << "superieur" << endl;
-                Node* nop = new Node(
-                    OP_GREATER, curfct->funcInstr[ref+1], curfct->funcInstr[ref], 0, 0);
+                /* greater than*/
+                Node* nop = new Node(OP_GREATER, 
+                                     curfct->funcInstr[ref+1], 
+                                     curfct->funcInstr[ref], 0, 0);
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.push_back(nop);
+
         } else if (relop == "==") {
-                cout << "égale à" << endl;
-                Node* nop = new Node(
-                OP_EQUAL, curfct->funcInstr[ref+1], curfct->funcInstr[ref], 0, 0);
+                /* equal */
+                Node* nop = new Node(OP_EQUAL, 
+                                     curfct->funcInstr[ref+1], 
+                                     curfct->funcInstr[ref], 0, 0);
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.push_back(nop);
-                nop->display();
+
         } else if (relop == "!=") {
-                cout << "superieur" << endl;
-                Node* nop = new Node(
-                OP_UNEQUAL, curfct->funcInstr[ref+1], curfct->funcInstr[ref], 0, 0);
+                /* different */
+                Node* nop = new Node(OP_UNEQUAL, 
+                                     curfct->funcInstr[ref+1], 
+                                     curfct->funcInstr[ref], 0, 0);
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.push_back(nop);
+
         } else {
-                cout << "Erreur, opérateur non reconnu" << endl;
+                verbose("Erreur, opérateur non reconnu");
                 exit(EXIT_FAILURE);
         }
 
         return 0;
 }
 
-Any Visitor::visitPrExpr(ifccParser::PrExprContext* ctx)
+Any Vis::visitPrExpr(prs::PrExprContext* ctx)
 {
-        cout << "Call to visit prExpression" << endl;
+        verbose("Call to visit prExpression");
         return visitChildren(ctx);
 }
 
-Any Visitor::visitFunction(ifccParser::FunctionContext* ctx)
+
+
+Any Vis::visitFunction(prs::FunctionContext* ctx)
 {
-        cout << "Call to visitFunction " << endl;
-        cout << ctx->getText() << endl;
+        /* Debug print */
+        verbose("Call to visitFunction ");
+
+        /* Creating function */
+        verbose(ctx->getText());
         string name = ctx->ID()->getText();
         Function * f = new Function(name);
+        
+        /* Setting it as out current function*/
         (this->functions).push_back(f);
         this->curfct = f;
+
+        /* Visiting instructions */
         visitChildren(ctx);
-        /*
-        cout << "Display curfct->funcInstr"<<endl;
-        for(int i=0; i < this->curfct->funcInstr.size(); ++i) {
-                this->curfct->funcInstr.at(i)->display();
-        }
-        cout <<"End display curfct->funcInstr"<<endl;
-        */
-        /*
-        cout << "Display funcInstr"<<endl;
-        for(int i=0; i < f->funcInstr.size(); ++i) {
-                f->funcInstr.at(i)->display();
-        }
-        */
+
+        /* Storing it in static part of symbol table */
         int nb = curfct->symb->getNbParams();
-        curfct->symb->fct_params.insert(
-                        pair<string,int>(name,nb));
-        //cout <<"End display funcInstr"<<endl;
+        curfct->symb->fct_params.insert(pair<string,int>(name,nb));
+        
         return 0;
 }
 
-Any Visitor::visitParameterlist(ifccParser::ParameterlistContext* ctx) 
+
+
+Any Vis::visitParameterlist(prs::ParameterlistContext* ctx) 
 {
-        cout << "Call to visit parameter list" << endl;
+        verbose("Call to visit parameter list");
         auto v = ctx->ID();
         auto vt = ctx->TYPE();
-        cout << "Number of parameters : " << v.size() << endl;
+        verbose("Number of parameters : " + to_string(v.size()));
         for (int i = 0; i < v.size(); ++i) {
                 
-                cout << " >> " << vt.at(i)->getText() 
-                          << " "<< v.at(i)->getText() << endl;
+                verbose(" >> " + vt.at(i)->getText() +  " "
+                                +  v.at(i)->getText());
                 int type = 0;
                 string strtype = vt.at(i)->getText();
                 if ( strtype  == "int") {
@@ -583,14 +612,14 @@ Any Visitor::visitParameterlist(ifccParser::ParameterlistContext* ctx)
         return 0;
 }
 
-Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext* ctx) 
+Any Vis::visitFunctionCall(prs::FunctionCallContext* ctx) 
 {
-        cout << "Call to FunctionCall " << endl;
+        verbose("Call to FunctionCall ");
       
         /* Putchar or Getchar special case*/ 
         if ( ctx->label ) {
                 
-                cout << ctx->label->getText() << endl;
+                verbose(ctx->label->getText());
                
                 /*Our function node */
                 Node* f = new Node(OP_CALL, NULL, NULL, 1, 0);
@@ -601,12 +630,12 @@ Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext* ctx)
                 Node* n;
 
                 if (ctx->CHAR_CONST()) {
-                        cout << "char const"<< endl;
+                        verbose("char const");
                 string charConst = ctx->CHAR_CONST()->getText();
                         int value = charConst[1];
                         n = new Node(OP_CONST, NULL, NULL, value, 0);
                 } else if (ctx->ID()) { 
-                        cout << "id " << endl;
+                        verbose("id ");
                         string var_name = ctx->ID()->getText();
                         int var_adr = curfct->symb->getAddress(var_name);
                         n = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
@@ -654,81 +683,58 @@ Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext* ctx)
 
 
 
-Any Visitor::visitAssignFunction(ifccParser::AssignFunctionContext* ctx) 
+Any Vis::visitAssignFunction(prs::AssignFunctionContext* ctx) 
 {
         int ref = curfct->funcInstr.size();
-        // Debug print
-        cout <<"Call to AssignFunction " << endl;
-        cout << " >> Assigning " << ctx->ID(0)->getText()
-        << " to function " << ctx->ID(1)->getText() << endl;
-
-        // Node definition
-        /*
-         * n->left is going to be the variable
-         * n->right is going to be the function
-        */
         
+        /* Debug print */
+        verbose("Call to AssignFunction ");
+        verbose(" >> Assigning " + ctx->ID(0)->getText()
+                + " to function " + ctx->ID(1)->getText());
+       
+        /* Fetching var info */ 
         string var_name = ctx->ID(0)->getText();
         int var_adr = curfct->symb->getAddress(var_name);
         
+        /* Creating ident and function call nodes */ 
         auto v = ctx->primaryExpression();
         Node* o = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
-        Node* f = new Node(OP_CALL, NULL, NULL, v.size(), 0);
-        f->strarg = ctx->ID(1)->getText();
-        // enleve les 2  NULL
-        f->ndlist.pop_back();
-        f->ndlist.pop_back();
+        Node* f = new Node(OP_CALL, ctx->ID(1)->getText(), v.size());
         
-
+        /* Filling function parameters */
         for (int i = 0; i< v.size(); ++i) {
                 visit(ctx->primaryExpression(i));
                 f->addNode(curfct->funcInstr.back());
                 curfct->funcInstr.pop_back();
         }
-        
 
-        cout << "decompte " << curfct->funcInstr.size() - ref 
-                << endl;
+        /* Creating assign node and pushing it to our instructions */ 
         assert(ref == curfct->funcInstr.size()); 
         Node* n = new Node(OP_ASSIGN, o, f, 0, 0);
         curfct->funcInstr.push_back(n);
-
-        /*
-        int ref = curfct->funcInstr.size();
-        // Function
-        // Si on a une varible, la transformer en const
-        // Passer la liste de parametres en const
-        Node* funcnode = new Node(OP_FUNCTION, NULL, NULL, 0, 0);
-
-        Node* n = new Node(OP_ASSIGN, o, curfct->funcInstr.back(), 0, 0);
-        curfct->funcInstr.pop_back();
-        curfct->funcInstr.push_back(n);
-        */
+        
         return 0;
 
 }
 
 
 
-Any Visitor::visitAssignGetchar(ifccParser::AssignGetcharContext* ctx){
-        cout << "Call to visitAssignGetChar" << endl;
+Any Vis::visitAssignGetchar(prs::AssignGetcharContext* ctx){
+        verbose("Call to visitAssignGetChar");
         
-        int ref = curfct->funcInstr.size();
-
-        
+        /* Fetch var info*/
         string var_name = ctx->ID()->getText();
         int var_adr = curfct->symb->getAddress(var_name);
         
+        /* 
+         * Create assign node by combining function call and
+         * ident node.
+         */
         Node* o = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
-        Node* f = new Node(OP_CALL, NULL, NULL, 0, 0);
-        f->strarg = "getchar";
-        // enleve les 2  NULL
-        f->ndlist.pop_back();
-        f->ndlist.pop_back();
-        
-        assert(ref == curfct->funcInstr.size()); 
-        
+        Node* f = new Node(OP_CALL, "getchar", 0); 
         Node* n = new Node(OP_ASSIGN, o, f, 0, 0);
+
+        /*Push assign node*/
         curfct->funcInstr.push_back(n);
 
         return 0;

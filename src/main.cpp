@@ -9,17 +9,14 @@
 #include "ifccBaseVisitor.h"
 #include "node.h"
 #include "visitor.h"
+#include "verbose.h"
 
 using namespace antlr4;
 using namespace std;
 
 static ofstream output;
 
-/*
- * “Sometimes, the elegant implementation is just a function.
- * Not a method. Not a class. Not a framework. Just a function.”
- *                                                      – John Carmack
- */
+bool Verbose;
 
 void prologue() {
         output << ".global main\n"
@@ -40,12 +37,14 @@ void epilogue() {
 
 int main(int argn, const char **argv) {
         stringstream in;
+        setVerbose(false);
         if (argn >= 2) {
                 ifstream lecture(argv[1]);
                 in << lecture.rdbuf();
                 for(int i=2; i< argn; ++i) {
                         if (argv[2] == string("-v")) {
-                                cout << "Verbose on" << endl;
+                                setVerbose(true);
+                                verbose("Verbose mode ON");
                         }
                 }
         }
@@ -73,13 +72,14 @@ int main(int argn, const char **argv) {
         /* temp */
         bool hasMain = false;
         int mainFuncIndex;
-
+        
         vector<Function *> functions = visitor.getFunctions();
         for (int i = 0; i < functions.size(); ++i) {
+                if(Verbose) {
                 cout << "------------" << endl;
                 cout << "Function n°" << i << " : "
                      << functions.at(i)->name << endl;
-
+                }
                 vector<Node *> n = functions.at(i)->funcInstr;
 
                 if (functions.at(i)->name == "main") {
@@ -87,9 +87,11 @@ int main(int argn, const char **argv) {
                         mainFuncIndex = i;
                 }
 
+                if(Verbose) {
                 cout
                     << "\n### List of AST Nodes for function n° " << i
                     << " ###" << endl;
+                }
                 bool missingReturn = true;
                 for (int j = 0; j < n.size(); ++j) {
                         // Check for a return instruction
@@ -98,13 +100,15 @@ int main(int argn, const char **argv) {
                         }
                         
                         // Display AST nodes
+                        if(Verbose) {
                         n.at(j)->display();
+                        }
                 }
-                cout << endl;
+                verbose("");
 
                 // Manually add a return 0 node
                 if (missingReturn) {
-                        cout << "\t\t!!! ADDING MISSING RETURN !!!" << endl;
+                        verbose("\t\t!!! ADDING MISSING RETURN !!!");
                         Node* returnNode = new Node(OP_RETURN, NULL, NULL, 0, 0);
                         Node* zeroNode = new Node(OP_CONST, NULL, NULL, 0, 0);
                         returnNode->ndlist.at(0) = zeroNode;
@@ -122,7 +126,7 @@ int main(int argn, const char **argv) {
         vector<Node *> n = functions.at(mfi)->getInstr();
 
         // Now generate the IR
-        cout << "\n### IR Generation ###\n" << endl;
+        verbose("\n### IR Generation ###\n");
 
         output.open("output.s");
         for (int i = 0; i < functions.size(); ++i) {
@@ -151,71 +155,11 @@ int main(int argn, const char **argv) {
                 for (int i = 0; i < n.size(); ++i) {
                         n[i]->buildIR(mainCFG);
                 }
-                cout<<" taille du maincfg : "<<mainCFG->getsizebbs()<<endl;
+                //cout<<"  maincfg size: "<<mainCFG->getsizebbs()<<endl;
+                verbose("gen asm");
                 mainCFG->gen_asm(output);
         }
         output.close();
-        /*
-        CFG* mainCFG = new CFG(functions.at(mfi)->getSymboltable());
-
-        // prologue
-        BasicBlock* BBinput =
-                new BasicBlock(mainCFG,functions.at(mfi)->name);
-
-        // body
-        BasicBlock* BBbody =
-                new BasicBlock(mainCFG, "body");
-
-        // epilogue
-        BasicBlock* BBoutput =
-                new BasicBlock(mainCFG, functions.at(mfi)->name+"Ouput");
-
-        // Default behaviour
-        BBbody->exit_true = BBoutput;
-
-        mainCFG->add_bb(BBinput);
-        mainCFG->add_bb(BBbody);
-        mainCFG->add_bb(BBoutput);
-        mainCFG->current_bb = BBbody;
-
-
-        for(int i=0; i<n.size(); ++i) {
-                n[i]->buildIR(mainCFG);
-        }
-
-        output.open("output.s");
-        mainCFG->gen_asm(output);
-        output.close();
-        */
-        /*
-        for(int i=0; i<n.size(); ++i) {
-                n[i]->buildIR(mainCFG);
-        }*/
-        /*
-        output.open("output.s");
-        functions.at(mfi)->computeOffset();
-
-        // One CFG for One Function
-        CFG* mainCFG = new CFG(visitor.getglobalSymb());
-        BasicBlock* inputBB;
-        BasicBlock* outputBB;
-        BasicBlock* mainBB = new BasicBlock(mainCFG, "main");
-        mainCFG->current_bb = mainBB;
-
-        for(int i=0; i<n.size(); ++i) {
-                n[i]->buildIR(mainCFG);
-        }
-
-        // WIP : To be removed from here
-        cout << "\n### ASM Generation ###" << endl;
-        output.open("output.s");
-        prologue();
-
-        // Now the real thing
-        mainBB->gen_asm(output);
-
-        epilogue();
-        output.close();
-        */
+        cout << "Compilation passed" << std::endl;
         return 0;
 }
