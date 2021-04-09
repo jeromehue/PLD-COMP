@@ -16,6 +16,7 @@ using namespace std;
 #include <map>
 #include <string>
 #include <algorithm>
+#include "verbose.h"
 
 //------------------------------------------------------------------ Types
 typedef  enum {
@@ -58,8 +59,11 @@ public:
                 v.isParam       = isParam; 
 
                 symbols.insert(pair<string, Variable>(name, v));
-                cout << " >> New entry in symbol table : "
-                << name << " @"<< v.address<< endl;
+                
+                if(Verbose) {
+                        cout << " >> New entry in symbol table : "
+                        << name << " @"<< v.address<< endl;
+                }
 
                 // Let's not forget to update next offset
                 next_offset = next_offset - 4;

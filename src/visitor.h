@@ -10,6 +10,7 @@
 #include "ifccBaseVisitor.h"
 #include "node.h"
 #include "symb.h"
+#include "verbose.h"
 
 using namespace std;
 

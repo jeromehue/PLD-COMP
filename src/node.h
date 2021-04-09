@@ -197,8 +197,10 @@ public:
         string buildIR(CFG *cfg)
         {
                 // Debug print
-                cout << "Generating IR for : ";
-                this->display();
+                if (Verbose) {
+                        cout << "Generating IR for : ";
+                        this->display();
+                }
 
                 // Avoid jumps that bypasses var init.
                 string sright, sleft;
@@ -356,9 +358,12 @@ public:
                         break;
 
                 case OP_IDENT:
-                        cout << "Generating IR for var @" << args[0] << " : "
-                                  << cfg->symbols->getName(args[0])
-                                  << endl;
+                        if (Verbose) {
+                                cout << "Generating IR for var @" 
+                                     << args[0] << " : "
+                                     << cfg->symbols->getName(args[0])
+                                     << endl;
+                        }
                         return cfg->symbols->getName(args[0]);
                         break;
 
@@ -367,8 +372,7 @@ public:
                         sright = ndlist[1]->buildIR(cfg); // adresse résultat expression
                         retvector.push_back(sleft);
                         retvector.push_back(sright);
-                        cout << "Assign node building ir " 
-                                << sleft << endl;
+                        verbose("Assign node building ir " +  sleft);
                         cfg->current_bb->add_IRInstr(
                             IRInstr::wmem, INT, retvector);
                         return sright;
@@ -515,10 +519,12 @@ public:
                         break;
                 case OP_CALL: 
                 {
+                        if (Verbose) {
                         cout << "Generating IR for function call" << endl;
                         cout << "function name : " << this->strarg;
                         cout << "; arguments : " << this->ndlist.size()
                         << endl;
+                        }
 
 
                         if (this->strarg == "putchar") {
@@ -535,8 +541,6 @@ public:
                                                 IRInstr::getchar, 
                                                 INT, retvector);
                                 return var3;
-
-                                exit(EXIT_FAILURE);
                         }
 
                         var3 = cfg->create_new_tempvar(INT);
@@ -544,9 +548,10 @@ public:
                         retvector.push_back(this->strarg);
 
                         for(int i = 0; i< this->ndlist.size(); ++i) {
-                                cout << "argi n°" << i <<  endl;
+                                verbose("argi n°" + to_string(i));
+                                if(Verbose) {
                                 this->ndlist.at(i)->display();
-                                cout << endl;
+                                }
 
                                 
                                 // Either a const or var
@@ -554,7 +559,7 @@ public:
 
                                 retvector.push_back(tmp_var);
                                 
-                                cout << "pushed : " << tmp_var << endl;
+                                verbose("pushed : " + tmp_var );
                         }
                         cfg->current_bb->add_IRInstr(IRInstr::call, 
                                                      INT, retvector);
@@ -651,7 +656,7 @@ public:
         Function(string name)
         {
                 this->name = name;
-                cout << "Creating Function named : " << this->name << endl;
+                verbose("Creating Function named : ");
                 symb = new Symboltable();
                 funcInstr = vector<Node *>();
         }

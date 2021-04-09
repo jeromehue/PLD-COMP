@@ -7,6 +7,7 @@
 #include <initializer_list>
 
 #include "symb.h"
+#include "verbose.h"
 
 using namespace std;
 
@@ -173,7 +174,7 @@ public:
         /* x86 assembly code generation for this basic block  */
         void gen_asm(ostream &o)
         {
-                cout << "Call to BB::gen_asm()" << endl;
+                verbose("Call to BB::gen_asm()");
                 for(int i = 0; i < (int)instrs.size(); ++i) {
                         instrs.at(i)->gen_asm(o);
                 }
@@ -182,14 +183,19 @@ public:
 	void add_IRInstr (IRInstr::Operation op, Type t,
                           vector<string> params )
         {
-                cout << "Writing IR instruction "<< op<<endl;
+                if(Verbose) {
+                        cout << "Writing IR instruction "<< op<<endl;
+                }
                 IRInstr* instr = new IRInstr(this, op, t, params);
                 this->instrs.push_back(instr);
                 /*For debug only*/
 
-                cout << "Current BB instructions : \n" ;
-                for (int i = 0; i < (int)instrs.size(); i++)
-                        cout << *(instrs.at(i));
+                if (Verbose) {
+                        cout << "Current BB instructions : \n" ;
+                        for (int i = 0; i < (int)instrs.size(); i++){
+                                cout << *(instrs.at(i));
+                        }
+                }
         }
 
 	// No encapsulation whatsoever here. Feel free to do better.
@@ -290,7 +296,7 @@ public:
                 symbols->store(var_name, INT);
 
                 // Debug prints
-                cout<<"Creating new tempvar :"<<var_name<<endl;
+                verbose("Creating new tempvar :" + var_name );
                 return var_name;
         }
         int getsizebbs();
