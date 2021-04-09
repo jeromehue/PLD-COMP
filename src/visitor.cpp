@@ -108,7 +108,7 @@ Any Vis::visitTab(prs::TabContext *ctx)
         n = curfct->funcInstr.back();
         curfct->funcInstr.pop_back();
 
-        n->display();
+        //n->display();
 
         Node *arrayElement = new Node(OP_ARRAY_ELEMENT, n, NULL, 0, 0);
         arrayElement->strarg = var_name;
