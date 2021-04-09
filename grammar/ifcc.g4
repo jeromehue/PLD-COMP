@@ -36,6 +36,7 @@ initDeclaratorList
 
 initDeclarator
 	: ID
+        | ID '=' assignmentExpr
         | ID '=' functionCall
 	| ID '=' arithExpr
 	| ID '[' INT_CONST ']' '=' arrayInitialisation
@@ -99,7 +100,8 @@ whileStatement
 	;
 
 assignmentExpr
-	: ID '=' arithExpr                      # assignArithExpr
+        : ID '=' assignmentExpr                 # assignAssign
+	| ID '=' arithExpr                      # assignArithExpr
 	| ID '=' relationalExpression           # assignRelExpr
         | ID '=' ID '(' primaryExpression? ')'  # assignFunction
         | ID '=' ID '(' primaryExpression 

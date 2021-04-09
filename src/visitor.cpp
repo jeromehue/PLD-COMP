@@ -144,9 +144,11 @@ Any Vis::visitInitDeclarator(prs::InitDeclaratorContext *ctx)
         verbose("Call to visitInitDeclarator");
 
         if(ctx->arithExpr()) {
-                verbose(" >> Declaration and affectaion");
+               verbose(" >> Declaration and affectaion");
         } else if (ctx->arrayInitialisation()) {
                 verbose(" >> Declaration and affectation (Array)");
+        } else if (ctx->assignmentExpr()) {
+                verbose(" >> chained assignment"); 
         } else {
                 verbose(" >> Declaration w/o affectation");
         }
@@ -173,6 +175,26 @@ Any Vis::visitInitDeclarator(prs::InitDeclaratorContext *ctx)
                 curfct->funcInstr[index]->ndlist[1] = 
                         curfct->funcInstr[index+1];
                 curfct->funcInstr.pop_back();
+        } else if (ctx->assignmentExpr()) {
+                verbose("not implemented yet");
+                
+                int var_adr = curfct->symb->getAddress(var_name);
+                Node* var = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
+
+                /* Now let's deal with the ASSIGN node */
+                Node* n = new Node(OP_ASSIGN, var, NULL, 0, 0);
+                curfct->funcInstr.push_back(n);
+
+                /* Finishing with the expr node */
+                int index = curfct->funcInstr.size() - 1;
+                /* assignmentExpr*/
+                visitChildren(ctx);
+                assert(curfct->funcInstr.size() == index+2);
+                curfct->funcInstr[index]->ndlist[1] = 
+                        curfct->funcInstr[index+1];
+                curfct->funcInstr.pop_back();
+
+                
         } else if (ctx->arrayInitialisation()) {
 
                 /* Array size */
@@ -235,6 +257,28 @@ Any Vis::visitInitDeclarator(prs::InitDeclaratorContext *ctx)
         return 0;
 }
 
+
+Any Vis::visitAssignAssign(prs::AssignAssignContext* ctx) 
+{
+        verbose("Call to AssignAssign ");
+       
+        int ref = curfct->funcInstr.size();
+        
+        string var_name = ctx->ID()->getText();
+        int var_adr = curfct->symb->getAddress(var_name);
+        Node* o = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
+       
+        visitChildren(ctx); 
+        
+        int addedAssign = curfct->funcInstr.size() - ref;
+        verbose("added assign (1) :"+to_string(addedAssign));
+        
+        Node* n = new Node(OP_ASSIGN, o, curfct->funcInstr.back(), 0, 0);
+        curfct->funcInstr.pop_back();
+        curfct->funcInstr.push_back(n);
+
+        return 0;
+}
 
 
 Any Vis::visitAssignArithExpr(prs::AssignArithExprContext *ctx)
