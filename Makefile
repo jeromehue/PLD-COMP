@@ -37,8 +37,8 @@ $(ANTLR_SOURCES): $(GRAMMAR)
 test: ifcc
 	@cd tests && ./test.sh
 
-maintest: ifcc
-	@./ifcc maintest.c &>/dev/null
+example: ifcc
+	@./ifcc example.c &>/dev/null
 	@echo 'Output produced : '
 	@cat output.s
 	gcc output.s && ./a.out; echo $$?
@@ -49,4 +49,4 @@ clean:
 	rm -rf tests/out
 	rm -rf output.s a.out
 
-.PHONY: all clean test maintest
+.PHONY: all clean test example
