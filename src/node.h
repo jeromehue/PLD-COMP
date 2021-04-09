@@ -196,13 +196,13 @@ public:
          */
         string buildIR(CFG *cfg)
         {
-                // Debug print
+                /* Debug print */
                 if (Verbose) {
                         cout << "Generating IR for : ";
                         this->display();
                 }
 
-                // Avoid jumps that bypasses var init.
+                /* Avoid jumps that bypasses var init. */
                 string sright, sleft;
                 string var1, var2, var3;
                 vector<string> retvector;
@@ -223,14 +223,14 @@ public:
 
                 case OP_SUB:
                         //TODO Factoriser '+'/'-'
-                        // Fetching data
+                        /* Fetching data */
                         var1 = ndlist[0]->buildIR(cfg);
                         var2 = ndlist[1]->buildIR(cfg);
                         var3 = cfg->create_new_tempvar(INT);
                         retvector.push_back(var3);
                         retvector.push_back(var1);
                         retvector.push_back(var2);
-                        // Actual instruction
+                        /* Actual instruction */
                         cfg->current_bb->add_IRInstr(IRInstr::sub, INT, retvector);
                         return var3;
                         break;
@@ -242,7 +242,7 @@ public:
                         retvector.push_back(var3);
                         retvector.push_back(var1);
                         retvector.push_back(var2);
-                        // Actual instruction
+                        /* Actual instruction */
                         cfg->current_bb->add_IRInstr(IRInstr::mul, INT, retvector);
                         return var3;
                         break;
@@ -254,7 +254,7 @@ public:
                         retvector.push_back(var3);
                         retvector.push_back(var2);
                         retvector.push_back(var1);
-                        // Actual instruction
+                        /* Actual instruction */
                         cfg->current_bb->add_IRInstr(IRInstr::div, INT, retvector);
                         return var3;
                         break;
@@ -266,7 +266,7 @@ public:
                         retvector.push_back(var3);
                         retvector.push_back(var2);
                         retvector.push_back(var1);
-                        // Actual instruction
+                        /* Actual instruction */
                         cfg->current_bb->add_IRInstr(IRInstr::bit_and, INT, retvector);
                         return var3;
                         break;
@@ -278,7 +278,7 @@ public:
                         retvector.push_back(var3);
                         retvector.push_back(var2);
                         retvector.push_back(var1);
-                        // Actual instruction
+                        /* Actual instruction */
                         cfg->current_bb->add_IRInstr(IRInstr::bit_xor, INT, retvector);
                         return var3;
                         break;
@@ -290,7 +290,7 @@ public:
                         retvector.push_back(var3);
                         retvector.push_back(var2);
                         retvector.push_back(var1);
-                        // Actual instruction
+                        /* Actual instruction */
                         cfg->current_bb->add_IRInstr(IRInstr::bit_or, INT, retvector);
                         return var3;
                         break;
@@ -386,54 +386,44 @@ public:
                        { 
                         counter++;
 
-                        //test
+                        /* test BasicBlock */
                         BasicBlock * testBB = cfg->current_bb;
-                        var1 = ndlist[0]->buildIR(cfg); // ir de l'expression
-                        stringstream testBBAdressTostring;  //give a different name to each basicBlock 
-                        testBBAdressTostring << &testBB; 
+                        var1 = ndlist[0]->buildIR(cfg); // result of comparaison is stored in var1  
 
-                        //then
-                        string elselabel="elseBB" + to_string(counter);//testBBAdressTostring.str();
-                        string afterlabel="afterBB"+to_string(counter);//testBBAdressTostring.str();
+                        /* then BasicBlock */
+                        string elselabel="elseBB" + to_string(counter);
+                        string afterlabel="afterBB"+to_string(counter);
                         retvector.push_back(var1);
                         retvector.push_back(elselabel);
                         retvector.push_back(afterlabel);
-                        BasicBlock * thenBB = new BasicBlock(cfg, "thenBB" + testBBAdressTostring.str());
+                        BasicBlock * thenBB = new BasicBlock(cfg, "thenBB" + to_string(counter));
                         cfg->add_bb(thenBB);
                         cfg->current_bb = thenBB;
                         ndlist[1]->buildIR(cfg);
                         cfg->current_bb->add_IRInstr(IRInstr::jmp, INT, retvector);
                         
-                        //else
+                        /* else BasicBlock */
                         BasicBlock * elseBB = new BasicBlock(cfg, elselabel);
                         cfg->current_bb = elseBB;
                         elseBB->add_IRInstr(IRInstr::label, INT, retvector);
                         cfg->add_bb(elseBB);
                         ndlist[2]->buildIR(cfg);
-                        
                         cfg->current_bb->add_IRInstr(IRInstr::jmp, INT, retvector);
-                        
 
-                        //after
+                        /* after BasicBlock */
                         BasicBlock * afterBB = new BasicBlock(cfg, afterlabel);
-                       
                         cfg->current_bb = afterBB;
-                        cout << "---------------end AFTER \n ";
                         cfg->add_bb(afterBB);
 
-                        //liaison entre les if else avec le afterBB
+                        /* link testBB thenBB elseBB and afterBB */
                         testBB->exit_false=elseBB;
                         testBB->exit_true=thenBB;
                         thenBB->exit_true=afterBB;
                         thenBB->exit_false=NULL;
                         elseBB->exit_false=NULL;
                         elseBB->exit_true=afterBB;
-
                         
-                        
-
                         testBB->add_IRInstr(IRInstr::cmpl, INT, retvector);
-                       // thenBB->add_IRInstr(IRInstr::jmp, INT, retvector);
                         afterBB->add_IRInstr(IRInstr::label, INT, retvector);
                         break;
                 } 
@@ -441,12 +431,12 @@ public:
                        { 
                         counter++;
 
-                        //test
+                        /* test BasicBlock */
                         BasicBlock * testBB = cfg->current_bb;
                         var1 = ndlist[0]->buildIR(cfg); // ir de l'expression
-                        string afterlabel="afterBB"+to_string(counter);//testBBAdressTostring.str();
+                        string afterlabel="afterBB"+to_string(counter);
 
-                        //then
+                        /* then BasicBlock */
                         retvector.push_back(var1);
                         retvector.push_back(afterlabel);
 
@@ -456,12 +446,12 @@ public:
                         ndlist[1]->buildIR(cfg);
                         cfg->current_bb->add_IRInstr(IRInstr::jmp, INT, retvector);
                         
-                        //after
+                        /* after BasicBlock */
                         BasicBlock * afterBB = new BasicBlock(cfg, afterlabel);
                         cfg->current_bb = afterBB;
                         cfg->add_bb(afterBB);
 
-                        //liaison entre les if else avec le afterBB
+                        /* link thenBB testBB and afterBB */
                         testBB->exit_false=afterBB;
                         testBB->exit_true=thenBB;
                         thenBB->exit_true=afterBB;
@@ -476,24 +466,20 @@ public:
                         counterWhile++;
                         BasicBlock * beforeWhileBB = cfg->current_bb;
 
-                        //test
+                        /* test BasicBlock */
                         string testLabel = "testWhileBB" + to_string(counterWhile);
                         string afterlabel="afterWhileBB"+to_string(counterWhile);
-
                         BasicBlock* testWhileBB = new BasicBlock(cfg, testLabel);
                         cfg->add_bb(testWhileBB);
-
                         BasicBlock* afterWhileBB = new BasicBlock(cfg, afterlabel);
-                       
                         testWhileBB->add_IRInstr(IRInstr::label,INT,retvector);                        
-
                         cfg->current_bb = testWhileBB;
                         var1 = ndlist[0]->buildIR(cfg); // ir de l'expression
                         retvector.push_back(var1);
                         retvector.push_back(afterlabel);
                         testWhileBB->add_IRInstr(IRInstr::cmpl, INT, retvector);
                         
-                        //body
+                        /* body BasicBlock */
                         BasicBlock* bodyBB = new BasicBlock(cfg, "bodyBB" + to_string(counterWhile));
                         cfg->add_bb(bodyBB);
                         cfg->current_bb = bodyBB;
@@ -501,7 +487,7 @@ public:
                         retvector.push_back(testLabel);
                         cfg->current_bb->add_IRInstr(IRInstr::jmp, INT, retvector);
 
-                        //after
+                        /* after BasicBlock */
                         cfg->current_bb = afterWhileBB;
                         afterWhileBB->add_IRInstr(IRInstr::label,INT,retvector);
                         cfg->add_bb(afterWhileBB);
