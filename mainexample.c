@@ -11,15 +11,14 @@ void display(char c) {
         putchar(c);
 }
 
-void test() {
-        int size = 0;
-}
-
 // Our main function
 int main() {
-        int message[5] = {72, 101, 108, 108, 111}; // "Hello"
+        
+        int messageSize = 5;
+        int message[5] = {'H', 'e', 'l', 'l', 'o'};
+        
         int i = 0;
-        while (i < 5) {
+        while (i < messageSize) {
                 display(message[i]);
                 i = i + 1;
         }

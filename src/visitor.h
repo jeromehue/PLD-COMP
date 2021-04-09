@@ -72,6 +72,8 @@ public:
         virtual antlrcpp::Any visitFunctionCall(ifccParser::FunctionCallContext* ctx) override;
         
         virtual antlrcpp::Any visitAssignAssign(ifccParser::AssignAssignContext* ctx) override;
+        
+        virtual antlrcpp::Any visitAssignTabArithExpr(ifccParser::AssignTabArithExprContext* ctx) override;
 
         // Getters
         vector<Node*> getNodes()

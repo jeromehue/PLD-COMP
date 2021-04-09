@@ -100,8 +100,9 @@ public:
         {
                 auto it = symbols.find(name);
                 if (it == symbols.end()) {
-                        cout << "erreur, variable non déclarée"
-                                  << endl;
+                        cout << "erreur, variable  '"
+                        << name << "'non déclarée"
+                        << endl;
                         exit(EXIT_FAILURE);
                 }
                 return it->second.address;
