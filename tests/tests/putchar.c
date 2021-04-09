@@ -5,6 +5,5 @@ int main()
         putchar('l');
         putchar('l');
         putchar('o');
-        putchar(10);
         return 0;
 }
