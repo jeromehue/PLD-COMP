@@ -42,11 +42,11 @@ initDeclarator
 	| ID '[' INT_CONST ']' '=' arrayInitialisation
 	;
 
-functionCall 
+functionCall
         : ID '(' primaryExpression? ')'
-        | ID '(' primaryExpression (',' primaryExpression)+ ')'            
+        | ID '(' primaryExpression (',' primaryExpression)+ ')'
         | label='putchar' '(' (CHAR_CONST|ID) ')'
-        | label='getchar()' 
+        | label='getchar()'
         ;
 
 arrayInitialisation
@@ -61,7 +61,7 @@ primaryExpression
 	: INT_CONST     # number
 	| CHAR_CONST    # char
 	| ID            # var
-	| ID '[' arithExpr ']' #tab 
+	| ID '[' arithExpr ']' #tab
         ;
 
 relationalExpression
@@ -78,7 +78,7 @@ statement
 	;
 
 blockStatement
-	:statement* 
+	:statement*
 	;
 
 ifStatement
@@ -86,11 +86,11 @@ ifStatement
 		thenBloc = blockStatement
     '}'
 	'else' '{'
-		elseBloc = blockStatement 
-	'}'#ifElse 
+		elseBloc = blockStatement
+	'}'#ifElse
 	| 'if' '(' relationalExpression  ')' '{'
 		thenBloc = blockStatement
-    '}'#if 
+    '}'#if
 	;
 
 whileStatement
@@ -104,7 +104,7 @@ assignmentExpr
 	| ID '=' arithExpr                      # assignArithExpr
 	| ID '=' relationalExpression           # assignRelExpr
         | ID '=' ID '(' primaryExpression? ')'  # assignFunction
-        | ID '=' ID '(' primaryExpression 
+        | ID '=' ID '(' primaryExpression
         (',' primaryExpression)+ ')'            # assignFunction
         | ID '=' 'getchar()'                    # assignGetchar
 	| ID '[' arithExpr ']' '=' arithExpr    # assignTabArithExpr

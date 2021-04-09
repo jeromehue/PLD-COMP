@@ -19,7 +19,7 @@ using namespace std;
 #include "verbose.h"
 
 //------------------------------------------------------------------ Types
-typedef  enum {
+typedef enum {
         INT = 0,
         CHAR = 1
 } Type;
@@ -33,36 +33,36 @@ struct Variable {
 
 //----------------------------------------------------------------- PUBLIC
 
-class Symboltable {
+class Symboltable
+{
 public:
-//--------------------------------------------------------- Public methods
+        //--------------------------------------------------------- Public methods
         Symboltable()
         {
                 next_offset = -4;
         }
 
-
         int store(string name, int type, bool isParam = false)
         {
                 // Has the variable already been declared ?
-                if(symbols.find(name) != symbols.end()) {
+                if (symbols.find(name) != symbols.end()) {
                         cout
-                        << "Erreur : la variable a déjà été déclarée"
-                        << endl;
+                            << "Error: variable was already declared"
+                            << endl;
                         exit(EXIT_FAILURE);
                 }
 
                 Variable v;
-                v.address       = next_offset;
-                v.type          = type;
-                v.defined       = false;
-                v.isParam       = isParam; 
+                v.address = next_offset;
+                v.type = type;
+                v.defined = false;
+                v.isParam = isParam;
 
                 symbols.insert(pair<string, Variable>(name, v));
-                
-                if(Verbose) {
+
+                if (Verbose) {
                         cout << " >> New entry in symbol table : "
-                        << name << " @"<< v.address<< endl;
+                             << name << " @" << v.address << endl;
                 }
 
                 // Let's not forget to update next offset
@@ -87,12 +87,12 @@ public:
 
         string getName(int index)
         {
-                for (auto& it : symbols) {
+                for (auto &it : symbols) {
                         if (it.second.address == index) {
                                 return it.first;
                         }
                 }
-                cout << "Nom de variable introuvable" <<endl;
+                cout << "Variable not found" << endl;
                 exit(EXIT_FAILURE);
         }
 
@@ -100,9 +100,9 @@ public:
         {
                 auto it = symbols.find(name);
                 if (it == symbols.end()) {
-                        cout << "erreur, variable  '"
-                        << name << "'non déclarée"
-                        << endl;
+                        cout << "Error: undeclared variable  '"
+                             << name << "'"
+                             << endl;
                         exit(EXIT_FAILURE);
                 }
                 return it->second.address;
@@ -111,35 +111,37 @@ public:
         void printSymbols()
         {
                 auto it = symbols.begin();
-                for (auto const& x : symbols) {
+                for (auto const &x : symbols) {
                         cout << x.first << endl;
                 }
         }
 
-        int getNbParams() {
+        int getNbParams()
+        {
                 int nb_params = 0;
-                for (auto const& x : symbols) {
+                for (auto const &x : symbols) {
                         if (x.second.isParam)
                                 nb_params++;
                 }
                 return nb_params;
         }
 
-        int getOffset() {
+        int getOffset()
+        {
                 int a = this->getNextOffset() - 4;
-                //cout << "ST True offset  : " << a << endl;
                 int round = (-a + 16) - (-a % 16);
-                //cout <<"Offset rounded to 16 : "<< round << endl;
                 return round;
         }
 
-        void allocate(int base, int n) {
-                next_offset = base  - 4*n;
+        void allocate(int base, int n)
+        {
+                next_offset = base - 4 * n;
         }
 
         map<string, Variable> symbols;
 
-        static map<string, int > fct_params; 
+        static map<string, int> fct_params;
+
 protected:
         int next_offset;
 };

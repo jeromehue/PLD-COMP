@@ -18,7 +18,7 @@ int main()
                                 c = c + 25;
                                 c = c + 30;
                                 c = c + 30;
-                                
+
                         }
                         else
                         {

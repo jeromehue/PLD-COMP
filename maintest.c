@@ -1,7 +1,29 @@
-int main()
-{
-        int a[3] = {10,11,12}, c;
-        c = a[1*5 - 3];
-        return c;
+#include <string.h>
+#include <stdio.h>
 
+#define SOMETHING 5
+
+/**
+ * Function that displays a character
+ * onto the screen.
+ */
+void display(char c) {
+        putchar(c);
+}
+
+// Our main function
+int main() {
+
+        int messageSize = 5;
+        char message[5] = {'H', 'e', 'l', 'l', 'o'};
+
+        int i = 0;
+        while (i < messageSize) {
+                display(message[i]);
+                i = i + 1;
+        }
+
+        display(10); // New line
+
+        return i;
 }
