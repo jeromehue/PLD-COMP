@@ -11,6 +11,10 @@ void display(char c) {
         putchar(c);
 }
 
+void test() {
+        int size = 0;
+}
+
 // Our main function
 int main() {
         int message[5] = {72, 101, 108, 108, 111}; // "Hello"
