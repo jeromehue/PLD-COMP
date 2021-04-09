@@ -16,7 +16,7 @@
 
 DESTNAME=$1
 SOURCENAME=$2
-$(dirname $0)/../ifcc $SOURCENAME
+$(dirname $0)/../bin/ifcc $SOURCENAME
 retcode=$?
 mv output.s $DESTNAME
 

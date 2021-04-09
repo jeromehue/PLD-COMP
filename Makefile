@@ -16,12 +16,13 @@ OBJECTS := $(OBJECTS:src/%=build/%)
 GRAMMAR := grammar/ifcc.g4
 
 # Default target
-all: ifcc
+all: bin/ifcc
 
-# .o => ifcc
-ifcc: $(ANTLR_SOURCES) $(HEADERS) $(OBJECTS)
+# .o => bin/ifcc
+bin/ifcc: $(ANTLR_SOURCES) $(HEADERS) $(OBJECTS)
 	@echo "Édition des liens"
-	@$(CC) $(LDARGS) $(OBJECTS) $(ANTLR4_LIBDIR)/$(ANTLR4_RUNTIME) -o ifcc
+	@mkdir -p bin
+	@$(CC) $(LDARGS) $(OBJECTS) $(ANTLR4_LIBDIR)/$(ANTLR4_RUNTIME) -o bin/ifcc
 
 # .cpp => .o
 build/%.o: src/%.cpp
@@ -34,19 +35,22 @@ $(ANTLR_SOURCES): $(GRAMMAR)
 	@echo "Génération du code Antlr4"
 	@$(ANTLR4_BINDIR)/antlr4 -visitor -no-listener -Dlanguage=Cpp -o src $(GRAMMAR)
 
-test: ifcc
+test: bin/ifcc
 	@cd tests && ./test.sh
 
-example: ifcc
-	@./ifcc example.c &>/dev/null
-	@echo 'Output produced : '
+example: bin/ifcc
+	@./bin/ifcc example.c &>/dev/null
+	@echo 'Output produced: '
 	@cat output.s
-	gcc output.s && ./a.out; echo $$?
+	gcc output.s -o example && ./example; echo $$?
 
 clean:
+	rm -rf bin/
 	rm -rf build/
 	rm -rf src/grammar/
 	rm -rf tests/out
 	rm -rf output.s a.out
+# Old files (Keep this for now)
+	rm -rf ifcc
 
 .PHONY: all clean test example

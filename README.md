@@ -19,7 +19,7 @@ ANTLR4_RUNTIME=libantlr4-runtime.a # or libantlr4-runtime.so
 
 ## Execution
 Compile the project by running `make`.<br/>
-Execute our compiler on `example.c` by running `./ifcc example.c`.<br/>
+Execute our compiler on `example.c` by running `./bin/ifcc example.c`.<br/>
 You can use `-v` for a verbose output.
 
 ## Tests
