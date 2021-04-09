@@ -14,9 +14,11 @@ void display(char c) {
 // Our main function
 int main() {
         
-        int messageSize = 5;
-        char message[5] = {'H', 'e', 'l', 'l', 'o'};
-        
+        int messageSize = 13;
+        char message[13] = 
+        {'H', 'e', 'l', 'l', 'o', ',', ' ', 'W', 'o', 'r', 'l', 'd' ,'!'};
+        char message2[5] = {'W', 'o' , 'r', 'l', 'd'};
+                
         int i = 0;
         while (i < messageSize) {
                 display(message[i]);

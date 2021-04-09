@@ -124,7 +124,7 @@ arithExpr
 RETURN          : 'return' ;
 TYPE            : 'int' | 'char';
 INT_CONST       : [-]?[0-9]+;
-CHAR_CONST      : '\'' [a-zA-Z0-9] '\'' ;
+CHAR_CONST      : '\'' . '\'' ;
 ID              : [_a-zA-Z][_a-zA-Z0-9]* ;
 MULTINE_COMMENT : ('/*' .*? '*/') -> skip ;
 INLINE_COMMENT  : '//' ~[\r\n]* [\r\n] -> skip ;
