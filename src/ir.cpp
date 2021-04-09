@@ -217,12 +217,12 @@ void IRInstr::gen_asm(ostream &o)
                 o<< "\tcltq\n";
                 
                 string firstElement = "tab" + params[0] + "0";
-                cout << "Array starts at index " << firstElement << endl;
+                verbose( "Array starts at index " + firstElement);
                 int startIndex = bb->cfg->symbols->getAddress(firstElement);
                 o<< "\tmovl\t" << startIndex << "(%rbp,%rax,4), %eax\n";
 
                 
-                cout << params[2] << endl;
+                //   cout << params[2] << endl;
                 int dest = bb->cfg->symbols->getAddress(params[2]);
                 o<< "\tmovl\t%eax, " << dest << "(%rbp)\n";
 

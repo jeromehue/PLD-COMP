@@ -5,8 +5,8 @@ int parameters(int a, int b) {
 int main()
 {
         int a = 2, b, c;
-        b = 1+2*3;
-        a = parameters(a, 5);
+        int t[4] = {1,2,3,4};
+        a = parameters(t[1], 5);
         return a;
 
 }

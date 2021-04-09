@@ -567,10 +567,9 @@ public:
                         break;
                 }
                 case OP_ARRAY: {
-                        cout << "Generating IR for OP_ARRAY" << 
-                                endl;
+                        verbose("Generating IR for OP_ARRAY");
                         for (int i = 0; i < ndlist.size(); ++i) {
-                                cout << "creating tempvar" << endl;
+                                verbose("creating tempvar");
                                 //string tmp_var = 
                                  //       ndlist.at(i)->buildIR(cfg);
                                 /*
@@ -594,10 +593,9 @@ public:
                         break;
                 }
                 case OP_ARRAY_ELEMENT: {
-                        cout << "Generating IR for OP_ARRAY_ELEMENT" << 
-                                endl;
+                        verbose("Generating IR for OP_ARRAY_ELEMENT");
                         string var_name = ndlist.at(0)->buildIR(cfg);
-                        cout << ">>>>>" << var_name << endl;
+                        verbose(" >> " + var_name );
 
                         retvector.push_back(this->strarg);
                         retvector.push_back(var_name);

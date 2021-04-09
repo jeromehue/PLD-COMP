@@ -107,7 +107,6 @@ Any Vis::visitTab(prs::TabContext *ctx)
         arrayElement->strarg = var_name;
         curfct->funcInstr.push_back(arrayElement);
         
-        arrayElement->display();
 
         return 0;
 }
@@ -181,7 +180,14 @@ Any Vis::visitInitDeclarator(prs::InitDeclaratorContext *ctx)
 
                 /* Array values */
                 auto arrayValues = ctx->arrayInitialisation()->INT_CONST();
-                assert(arraySize == arrayValues.size());
+                if(arraySize != arrayValues.size()) {
+                        cerr << "Error, array "
+                        << var_name << " was declared with a size of "
+                        << arraySize << " but found " 
+                        << arrayValues.size() << " elements."
+                        << endl;
+                        exit(EXIT_FAILURE);
+                }
 
 
                 Node* array = new Node(OP_ARRAY, 0, 0);
@@ -202,7 +208,6 @@ Any Vis::visitInitDeclarator(prs::InitDeclaratorContext *ctx)
                 }
                 verbose(to_string(curfct->symb->getOffset()));
                 int base = - curfct->symb->getOffset();
-                array->display();
                 curfct->funcInstr.push_back(array);
         } else if (ctx->functionCall()) {
 
