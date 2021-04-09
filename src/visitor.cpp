@@ -41,9 +41,7 @@ Any Vis::visitReturnInstr(prs::ReturnInstrContext *ctx)
          * Setting the return expression as a child for
          * our return node
          */
-        int index = curfct->funcInstr.size() - 1;
         visitChildren(ctx);
-        assert(curfct->funcInstr.size() == index + 2);
         curfct->funcInstr[index]->ndlist[0] = curfct->funcInstr[index + 1];
         curfct->funcInstr.pop_back();
 
@@ -141,17 +139,22 @@ Any Vis::visitInitDeclarator(prs::InitDeclaratorContext *ctx)
 
         if (ctx->arithExpr()) {
                 verbose(" >> Declaration and affectaion");
+
         } else if (ctx->arrayInitialisation()) {
                 verbose(" >> Declaration and affectation (Array)");
+
         } else if (ctx->assignmentExpr()) {
                 verbose(" >> chained assignment");
+
         } else {
                 verbose(" >> Declaration w/o affectation");
         }
+
         verbose(" >> of " + ctx->ID()->getText());
 
         /* Let'ts insert our var in the symbol table */
         string var_name = ctx->ID()->getText();
+
         if (!ctx->arrayInitialisation()) {
                 curfct->symb->store(var_name, INT);
         }
@@ -168,12 +171,12 @@ Any Vis::visitInitDeclarator(prs::InitDeclaratorContext *ctx)
                 int index = curfct->funcInstr.size() - 1;
                 visitChildren(ctx);
                 assert(curfct->funcInstr.size() == index + 2);
-                curfct->funcInstr[index]->ndlist[1] =
-                    curfct->funcInstr[index + 1];
-                curfct->funcInstr.pop_back();
-        } else if (ctx->assignmentExpr()) {
-                verbose("Not implemented yet");
 
+                curfct->funcInstr[index]->ndlist[1] =
+                        curfct->funcInstr[index + 1];
+                curfct->funcInstr.pop_back();
+
+        } else if (ctx->assignmentExpr()) {
                 int var_adr = curfct->symb->getAddress(var_name);
                 Node *var = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
 
@@ -183,73 +186,92 @@ Any Vis::visitInitDeclarator(prs::InitDeclaratorContext *ctx)
 
                 /* Finishing with the expr node */
                 int index = curfct->funcInstr.size() - 1;
+
                 /* assignmentExpr*/
                 visitChildren(ctx);
                 assert(curfct->funcInstr.size() == index + 2);
                 curfct->funcInstr[index]->ndlist[1] =
-                    curfct->funcInstr[index + 1];
+                        curfct->funcInstr[index + 1];
                 curfct->funcInstr.pop_back();
+
         } else if (ctx->arrayInitialisation()) {
 
                 /* Array size */
                 int arraySize = stoi(ctx->INT_CONST()->getText());
-                int type = ctx->arrayInitialisation()->INT_CONST().size() > 0 ? INT : CHAR;
+                int type =
+                        ctx->arrayInitialisation()->INT_CONST().size() > 0
+                        ? INT : CHAR;
 
                 /* Array values */
                 if (type == INT) {
-                        auto arrayValues = ctx->arrayInitialisation()->INT_CONST();
+                        auto arrayValues =
+                                ctx->arrayInitialisation()->INT_CONST();
+
                         if (arraySize != arrayValues.size()) {
-                                cerr << "Error, array "
-                                     << var_name << " was declared with a size of "
+                                cerr << "Error, array " << var_name
+                                     << " was declared with a size of "
                                      << arraySize << " but found "
                                      << arrayValues.size() << " elements."
                                      << endl;
                                 exit(EXIT_FAILURE);
                         }
+
                         Node *array = new Node(OP_ARRAY, 0, 0);
                         array->strarg = var_name;
 
                         for (int i = 0; i < arraySize; ++i) {
-                                int value = stoi(arrayValues.at(i)->getText());
+                                int value =
+                                        stoi(arrayValues.at(i)->getText());
                                 verbose(" >> " + to_string(value));
-                                Node *c = new Node(OP_CONST, NULL, NULL, value, 0);
+                                Node *c = new Node(OP_CONST, NULL,
+                                                   NULL, value, 0);
                                 array->addNode(c);
 
                                 string v_name = "tab" + var_name +
-                                                to_string(arraySize - i - 1);
+                                                to_string(arraySize -i-1);
+
                                 curfct->symb->store(v_name, INT);
                         }
+
                         verbose(to_string(curfct->symb->getOffset()));
                         int base = -curfct->symb->getOffset();
                         curfct->funcInstr.push_back(array);
+
                 } else if (type == CHAR) {
-                        auto arrayValues = ctx->arrayInitialisation()->CHAR_CONST();
+                        auto arrayValues =
+                                ctx->arrayInitialisation()->CHAR_CONST();
+
                         if (arraySize != arrayValues.size()) {
-                                cerr << "Error, array "
-                                     << var_name << " was declared with a size of "
+                                cerr << "Error, array " << var_name
+                                     << " was declared with a size of "
                                      << arraySize << " but found "
                                      << arrayValues.size() << " elements."
                                      << endl;
                                 exit(EXIT_FAILURE);
                         }
+
                         Node *array = new Node(OP_ARRAY, 0, 0);
                         array->strarg = var_name;
 
                         for (int i = 0; i < arraySize; ++i) {
-                                string charConst = arrayValues.at(i)->getText();
+                                string charConst =
+                                        arrayValues.at(i)->getText();
                                 int charValue = charConst[1];
                                 verbose(" >> " + to_string(charValue));
-                                Node *c = new Node(OP_CONST, NULL, NULL, charValue, 0);
+                                Node *c = new Node(OP_CONST, NULL,
+                                                   NULL, charValue, 0);
                                 array->addNode(c);
 
                                 string v_name = "tab" + var_name +
-                                                to_string(arraySize - i - 1);
+                                                to_string(arraySize -i-1);
                                 curfct->symb->store(v_name, CHAR);
                         }
+
                         verbose(to_string(curfct->symb->getOffset()));
                         int base = -curfct->symb->getOffset();
                         curfct->funcInstr.push_back(array);
                 }
+
         } else if (ctx->functionCall()) {
 
                 verbose("initializing with a function call");
@@ -266,7 +288,7 @@ Any Vis::visitInitDeclarator(prs::InitDeclaratorContext *ctx)
                 visitChildren(ctx);
                 assert(curfct->funcInstr.size() == index + 2);
                 curfct->funcInstr[index]->ndlist[1] =
-                    curfct->funcInstr[index + 1];
+                        curfct->funcInstr[index + 1];
                 curfct->funcInstr.pop_back();
 
                 verbose("initializing with a function call - Done");
@@ -300,7 +322,8 @@ Any Vis::visitAssignAssign(prs::AssignAssignContext *ctx)
 Any Vis::visitAssignArithExpr(prs::AssignArithExprContext *ctx)
 {
         verbose("Call to AssignArithExpr ");
-        verbose(" >> Assigning " + ctx->ID()->getText() + " to " + ctx->arithExpr()->getText());
+        verbose(" >> Assigning " + ctx->ID()->getText()
+                + " to " + ctx->arithExpr()->getText());
 
         /*
          * n->left is going to be the variable
@@ -335,7 +358,8 @@ Any Vis::visitIfElse(prs::IfElseContext *ctx)
 
         /* conditionNode */
         visit(ctx->relationalExpression());
-        Node *conditionNode = curfct->funcInstr[curfct->funcInstr.size() - 1];
+        Node *conditionNode =
+                curfct->funcInstr[curfct->funcInstr.size() - 1];
         curfct->funcInstr.pop_back();
 
         /* thenBlockNode */
@@ -344,9 +368,11 @@ Any Vis::visitIfElse(prs::IfElseContext *ctx)
         int afterThenSizeStack = curfct->funcInstr.size();
 
         Node *thenBlocNode = new Node(OP_BLOCK, 0, 0);
+
         for (int i = startingStackSize; i < afterThenSizeStack; ++i) {
                 thenBlocNode->pushBackToNdList(curfct->funcInstr[i]);
         }
+
         for (int i = startingStackSize; i < afterThenSizeStack; ++i) {
                 curfct->funcInstr.pop_back();
         }
@@ -357,9 +383,11 @@ Any Vis::visitIfElse(prs::IfElseContext *ctx)
         int afterElseSizeStack = curfct->funcInstr.size();
 
         Node *elseBlocNode = new Node(OP_BLOCK, 0, 0);
+
         for (int j = beforeElseSizeStack; j < afterElseSizeStack; ++j) {
                 elseBlocNode->pushBackToNdList(curfct->funcInstr[j]);
         }
+
         for (int j = beforeElseSizeStack; j < afterElseSizeStack; ++j) {
                 curfct->funcInstr.pop_back();
         }
@@ -380,7 +408,8 @@ Any Vis::visitIf(prs::IfContext *ctx)
 
         /* conditionNode */
         visit(ctx->relationalExpression());
-        Node *conditionNode = curfct->funcInstr[curfct->funcInstr.size() - 1];
+        Node *conditionNode =
+                curfct->funcInstr[curfct->funcInstr.size() - 1];
         curfct->funcInstr.pop_back();
 
         /* thenBlockNode */
@@ -389,9 +418,11 @@ Any Vis::visitIf(prs::IfContext *ctx)
         int afterThenSizeStack = curfct->funcInstr.size();
 
         Node *thenBlocNode = new Node(OP_BLOCK, 0, 0);
+
         for (int i = startingStackSize; i < afterThenSizeStack; ++i) {
                 thenBlocNode->pushBackToNdList(curfct->funcInstr[i]);
         }
+
         for (int i = startingStackSize; i < afterThenSizeStack; ++i) {
                 curfct->funcInstr.pop_back();
         }
@@ -411,7 +442,8 @@ Any Vis::visitWhileStatement(prs::WhileStatementContext *ctx)
 
         /* conditionNode */
         visit(ctx->relationalExpression());
-        Node *conditionNode = curfct->funcInstr[curfct->funcInstr.size() - 1];
+        Node *conditionNode =
+                curfct->funcInstr[curfct->funcInstr.size() - 1];
         curfct->funcInstr.pop_back();
 
         /* whileBlockNode */
@@ -442,7 +474,8 @@ Any Vis::visitAssignRelExpr(prs::AssignRelExprContext *ctx)
 {
         /* Debug prints */
         verbose("Call to AssignRelExpr ");
-        verbose(" >> Assigning " + ctx->ID()->getText() + " to " + ctx->relationalExpression()->getText());
+        verbose(" >> Assigning " + ctx->ID()->getText()
+                + " to " + ctx->relationalExpression()->getText());
 
         /*
          * n->left is going to be the variable
@@ -489,6 +522,7 @@ Any Vis::visitExpr(prs::ExprContext *ctx)
                 curfct->funcInstr.push_back(nop);
                 break;
         }
+
         case '-': {
                 verbose("Subtraction");
                 Node *nop = new Node(OP_SUB, curfct->funcInstr[ref + 1],
@@ -498,6 +532,7 @@ Any Vis::visitExpr(prs::ExprContext *ctx)
                 curfct->funcInstr.push_back(nop);
                 break;
         }
+
         case '*': {
                 verbose("Multiplication");
                 Node *nop = new Node(OP_MUL, curfct->funcInstr[ref + 1],
@@ -507,6 +542,7 @@ Any Vis::visitExpr(prs::ExprContext *ctx)
                 curfct->funcInstr.push_back(nop);
                 break;
         }
+
         case '/': {
                 verbose("Division");
                 Node *nop = new Node(OP_DIV, curfct->funcInstr[ref + 1],
@@ -516,6 +552,7 @@ Any Vis::visitExpr(prs::ExprContext *ctx)
                 curfct->funcInstr.push_back(nop);
                 break;
         }
+
         case '&': {
                 verbose("Bitwise AND");
                 Node *nop = new Node(OP_BIT_AND, curfct->funcInstr[ref + 1],
@@ -525,6 +562,7 @@ Any Vis::visitExpr(prs::ExprContext *ctx)
                 curfct->funcInstr.push_back(nop);
                 break;
         }
+
         case '^': {
                 verbose("Bitwise XOR");
                 Node *nop = new Node(OP_BIT_XOR, curfct->funcInstr[ref + 1],
@@ -534,6 +572,7 @@ Any Vis::visitExpr(prs::ExprContext *ctx)
                 curfct->funcInstr.push_back(nop);
                 break;
         }
+
         case '|': {
                 verbose("Bitwise OR");
                 Node *nop = new Node(OP_BIT_OR, curfct->funcInstr[ref + 1],
@@ -543,6 +582,7 @@ Any Vis::visitExpr(prs::ExprContext *ctx)
                 curfct->funcInstr.push_back(nop);
                 break;
         }
+
         default:
                 verbose("Erreur, opérateur non reconnu");
                 exit(EXIT_FAILURE);
@@ -573,6 +613,7 @@ Any Vis::visitRelExpr(prs::RelExprContext *ctx)
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.push_back(nop);
+
         } else if (relop == ">") {
                 /* greater than*/
                 Node *nop = new Node(OP_GREATER,
@@ -581,6 +622,7 @@ Any Vis::visitRelExpr(prs::RelExprContext *ctx)
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.push_back(nop);
+
         } else if (relop == "==") {
                 /* equal */
                 Node *nop = new Node(OP_EQUAL,
@@ -589,6 +631,7 @@ Any Vis::visitRelExpr(prs::RelExprContext *ctx)
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.push_back(nop);
+
         } else if (relop == "!=") {
                 /* different */
                 Node *nop = new Node(OP_UNEQUAL,
@@ -597,6 +640,7 @@ Any Vis::visitRelExpr(prs::RelExprContext *ctx)
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.pop_back();
                 curfct->funcInstr.push_back(nop);
+
         } else {
                 verbose("Error: Unknown operator");
                 exit(EXIT_FAILURE);
@@ -641,18 +685,24 @@ Any Vis::visitParameterlist(prs::ParameterlistContext *ctx)
         auto v = ctx->ID();
         auto vt = ctx->TYPE();
         verbose("Number of parameters : " + to_string(v.size()));
+
         for (int i = 0; i < v.size(); ++i) {
 
-                verbose(" >> " + vt.at(i)->getText() + " " + v.at(i)->getText());
+                verbose(" >> " + vt.at(i)->getText()
+                        + " " + v.at(i)->getText());
                 int type = 0;
                 string strtype = vt.at(i)->getText();
+
                 if (strtype == "int") {
                         type = 0;
+
                 } else if (strtype == "char") {
                         type = 1;
                 }
+
                 curfct->symb->store(v.at(i)->getText(), type, true);
         }
+
         return 0;
 }
 
@@ -678,6 +728,7 @@ Any Vis::visitFunctionCall(prs::FunctionCallContext *ctx)
                         string charConst = ctx->CHAR_CONST()->getText();
                         int value = charConst[1];
                         n = new Node(OP_CONST, NULL, NULL, value, 0);
+
                 } else if (ctx->ID()) {
                         verbose("id ");
                         string var_name = ctx->ID()->getText();
@@ -727,7 +778,8 @@ Any Vis::visitAssignFunction(prs::AssignFunctionContext *ctx)
 
         /* Debug print */
         verbose("Call to AssignFunction ");
-        verbose(" >> Assigning " + ctx->ID(0)->getText() + " to function " + ctx->ID(1)->getText());
+        verbose(" >> Assigning " + ctx->ID(0)->getText()
+                + " to function " + ctx->ID(1)->getText());
 
         /* Fetching var info */
         string var_name = ctx->ID(0)->getText();
@@ -762,12 +814,15 @@ Any Vis::visitAssignTabArithExpr(prs::AssignTabArithExprContext *ctx)
         string var_name = ctx->ID()->getText();
 
         visit(ctx->arithExpr(0));
-        Node *arrayElement = new Node(OP_ARRAY_ELEMENT, curfct->funcInstr.back(), NULL, 0, 0);
+        Node *arrayElement = new Node(OP_ARRAY_ELEMENT,
+                                      curfct->funcInstr.back(),
+                                      NULL, 0, 0);
         arrayElement->strarg = var_name;
         curfct->funcInstr.pop_back();
 
         visit(ctx->arithExpr(1));
-        Node *n = new Node(OP_ASSIGN, arrayElement, curfct->funcInstr.back(), 0, 0);
+        Node *n = new Node(OP_ASSIGN, arrayElement,
+                           curfct->funcInstr.back(), 0, 0);
         curfct->funcInstr.pop_back();
         curfct->funcInstr.push_back(n);
 
