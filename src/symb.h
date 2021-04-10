@@ -36,7 +36,7 @@ struct Variable {
 class Symboltable
 {
 public:
-        //--------------------------------------------------------- Public methods
+//--------------------------------------------------------- Public methods
         Symboltable()
         {
                 next_offset = -4;
@@ -46,9 +46,8 @@ public:
         {
                 // Has the variable already been declared ?
                 if (symbols.find(name) != symbols.end()) {
-                        cout
-                            << "Error: variable was already declared"
-                            << endl;
+                        cerr << "Error: variable was already declared"
+                             << endl;
                         exit(EXIT_FAILURE);
                 }
 
@@ -80,8 +79,10 @@ public:
         bool find(string variable)
         {
                 auto it = symbols.find(variable);
+
                 if (it == symbols.end())
                         return false;
+
                 return true;
         }
 
@@ -92,6 +93,7 @@ public:
                                 return it.first;
                         }
                 }
+
                 cout << "Variable not found" << endl;
                 exit(EXIT_FAILURE);
         }
@@ -99,18 +101,21 @@ public:
         int getAddress(string name)
         {
                 auto it = symbols.find(name);
+
                 if (it == symbols.end()) {
                         cout << "Error: undeclared variable  '"
                              << name << "'"
                              << endl;
                         exit(EXIT_FAILURE);
                 }
+
                 return it->second.address;
         }
 
         void printSymbols()
         {
                 auto it = symbols.begin();
+
                 for (auto const &x : symbols) {
                         cout << x.first << endl;
                 }
@@ -119,10 +124,12 @@ public:
         int getNbParams()
         {
                 int nb_params = 0;
+
                 for (auto const &x : symbols) {
                         if (x.second.isParam)
                                 nb_params++;
                 }
+
                 return nb_params;
         }
 

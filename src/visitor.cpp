@@ -41,6 +41,7 @@ Any Vis::visitReturnInstr(prs::ReturnInstrContext *ctx)
          * Setting the return expression as a child for
          * our return node
          */
+        int index = curfct->funcInstr.size() - 1;
         visitChildren(ctx);
         curfct->funcInstr[index]->ndlist[0] = curfct->funcInstr[index + 1];
         curfct->funcInstr.pop_back();
