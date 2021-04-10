@@ -1,16 +1,27 @@
+/*************************************************************************
+                           ir  -  description
+                             -------------------
+    début                : ${date}
+    copyright            : (C) ${year} par ${user}
+*************************************************************************/
+
+//-------------------- <ir> class interface (ir.h file) ------------------
 #ifndef IR_H
 #define IR_H
 
-#include <vector>
-#include <string>
-#include <iostream>
+//-------------------------------------------------------- Interfaces used
 #include <initializer_list>
+#include <iostream>
+#include <string>
+#include <vector>
 
 #include "symb.h"
 #include "verbose.h"
 
 using namespace std;
 
+
+//------------------------------------------------------------------ Types
 class BasicBlock;
 class CFG;
 class DefFonction;
@@ -22,11 +33,11 @@ class DefFonction;
  * - Control Flow Graph : a graph of basic blocks
  */
 
-//! The class for one 3-address instruction
+// The class for one 3-address instruction
 class IRInstr
 {
 public:
-        /** The instructions themselves -- feel free to subclass instead */
+        /* The instructions themselves -- feel free to subclass instead */
         typedef enum {
                 ldconst,
                 copy,
@@ -53,7 +64,7 @@ public:
                 getchar
         } Operation;
 
-        /** constructor */
+        /* constructor */
         IRInstr(BasicBlock *bb_, Operation op,
                 Type t, vector<string> params)
         {
@@ -63,7 +74,7 @@ public:
                 this->params = params;
         }
 
-        /**< Helper function */
+        /* Helper function */
         static const string getOpByIndex(int index)
         {
                 switch (index) {
@@ -96,9 +107,9 @@ public:
                 }
         }
 
-        /** Actual code generation */
+        /* Actual code generation */
 
-        /**< x86 assembly code generation for this IR instruction */
+        /* x86 assembly code generation for this IR instruction */
         void gen_asm(ostream &o);
 
         inline friend ostream &operator<<(ostream &os, IRInstr &instr)
@@ -111,8 +122,10 @@ public:
         }
 
 private:
-        /**< The BB this instruction belongs to, which provides
-        a pointer to the CFG this instruction belong to */
+        /* 
+         * The BB this instruction belongs to, which provides 
+         * a pointer to the CFG this instruction belong to 
+         */
         BasicBlock *bb;
 
         Operation op;
@@ -132,7 +145,7 @@ private:
          */
 };
 
-/**  The class for a basic block */
+/* The class for a basic block */
 
 /* A few important comments.
  *
@@ -198,25 +211,30 @@ public:
                 }
         }
 
-        // No encapsulation whatsoever here. Feel free to do better.
 
-        /**< pointer to the next basic block, true branch.
-        If nullptr, return from procedure */
+        /*
+         * pointer to the next basic block, true branch.
+         * If nullptr, return from procedure 
+         */
         BasicBlock *exit_true;
 
-        /**< pointer to the next basic block, false branch.
-        If null_ptr, the basic block ends with
-        an unconditional jump */
+        /* 
+         * pointer to the next basic block, false branch.
+         * If null_ptr, the basic block ends with
+         * an unconditional jump 
+         */
         BasicBlock *exit_false;
 
-        /**< label of the BB, also will be the label
-        in the generated code */
+        /*
+         * label of the BB, also will be the label
+         * in the generated code 
+         */
         string label;
 
-        /** < the CFG where this block belongs */
+        /* the CFG where this block belongs */
         CFG *cfg;
 
-        /** < the instructions themselves. */
+        /* the instructions themselves. */
         vector<IRInstr *> instrs;
 
         /*
@@ -255,7 +273,7 @@ class CFG
 public:
         CFG(Symboltable *st) : symbols(st){};
 
-        /**< The AST this CFG comes from */
+        /* The AST this CFG comes from */
         DefFonction *ast;
 
         void add_bb(BasicBlock *bb)
@@ -286,7 +304,7 @@ public:
         void gen_asm_prologue(ostream &o);
         void gen_asm_epilogue(ostream &o);
 
-        // symbol table methods
+        /* symbol table methods */
         void add_to_symbol_table(string name, Type t);
 
         string create_new_tempvar(int t)
@@ -302,26 +320,26 @@ public:
         int get_var_index(string name);
         Type get_var_type(string name);
 
-        // basic block management
+        /* basic block management */
         string new_BB_name();
         BasicBlock *current_bb;
 
         Symboltable *symbols;
 
 protected:
-        /**< part of the symbol table  */
+        /* part of the symbol table  */
         map<string, Type> SymbolType;
 
-        /**< part of the symbol table  */
+        /* part of the symbol table  */
         map<string, int> SymbolIndex;
 
-        /**< to allocate new symbols in the symbol table */
+        /* to allocate new symbols in the symbol table */
         int nextFreeSymbolIndex;
 
-        /**< just for naming */
+        /* just for naming */
         int nextBBnumber;
 
-        /**< all the basic blocks of this CFG*/
+        /* all the basic blocks of this CFG*/
         vector<BasicBlock *> bbs;
 };
 
