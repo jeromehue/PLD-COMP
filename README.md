@@ -16,10 +16,13 @@ ANTLR4_INCDIR=/usr/include/antlr4-runtime
 ANTLR4_LIBDIR=/usr/lib/x86_64-linux-gnu
 ANTLR4_RUNTIME=libantlr4-runtime.a # or libantlr4-runtime.so
 ```
+The above example should work with computers of IF rooms 208 and 219.
 
-## Execution
+## Usage
 Compile the project by running `make`.<br/>
 Execute our compiler on `example.c` by running `./bin/ifcc example.c`.<br/>
+The assembly produced will go into `output.s` file.  
+
 You can use `-v` for a verbose output.
 
 ## Tests
