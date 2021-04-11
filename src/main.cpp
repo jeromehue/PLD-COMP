@@ -69,6 +69,8 @@ int main(int argn, const char **argv)
         Visitor visitor;
         visitor.visit(tree);
 
+
+        verbose("visit ended");
         /* temp */
         bool hasMain = false;
         int mainFuncIndex;

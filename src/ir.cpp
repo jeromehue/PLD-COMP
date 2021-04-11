@@ -254,6 +254,38 @@ void IRInstr::gen_asm(ostream &o)
                 break;
         }
 
+        case ldindex: {
+                verbose("ldindex");
+                int index = bb->cfg->symbols->getAddress(params[0]);
+                o << "\tmovl\t" << index << "(%rbp), %eax\n";
+                o << "\tcltq\n";
+                break;
+        }
+
+        case warray: {
+                verbose("warray");
+                string firstElement = "tab" + params[0] + "0";
+                verbose("Array starts at index " + firstElement);
+                int startIndex = bb->cfg->symbols->getAddress(firstElement);
+                o << "\tmovl\t" << startIndex << "(%rbp,%rax,4), %eax\n";
+                int dest = bb->cfg->symbols->getAddress(params[1]);
+                o << "\tmovl\t%eax, " << dest << "(%rbp)\n";
+                break;
+
+        }
+
+        case rarray: {
+                verbose("warray");
+                string firstElement = "tab" + params[0] + "0";
+                verbose("Array starts at index " + firstElement);
+
+                int startIndex = bb->cfg->symbols->getAddress(firstElement);
+                int var = bb->cfg->symbols->getAddress(params[1]);
+                o << "\tmovl\t" << var << "(%rbp), %edx\n";
+                o << "\tmovl\t" << "%edx," <<startIndex<< "(%rbp,%rax,4)\n";
+                break;
+        }
+
         default:
                 cout << "gen_asm not implemented" << endl;
                 break;

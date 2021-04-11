@@ -61,7 +61,10 @@ public:
                 label,
                 array_access,
                 putchar,
-                getchar
+                getchar,
+                ldindex,
+                warray,
+                rarray
         } Operation;
 
         /* constructor */
@@ -101,6 +104,9 @@ public:
                 case 20: return " >> array_access";
                 case 21: return " >> putchar";
                 case 22: return " >> getchar";
+                case 23: return " >> ldindex [index]";
+                case 24: return " >> warray [tab, var]";
+                case 25: return " >> rarray [tab, var]";
                 default:
                         cout << "Erreur : Opérateur inconnu" << endl;
                         exit(EXIT_FAILURE);

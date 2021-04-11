@@ -378,6 +378,46 @@ public:
                         return cfg->symbols->getName(args[0]);
 
                 case OP_ASSIGN:
+                        if(ndlist[1]->op == OP_ARRAY_ELEMENT) {
+                                /* load index*/
+                                string index = 
+                                        ndlist[1]->ndlist[0]->buildIR(cfg);
+                                retvector.push_back(index);
+                                cfg->current_bb->add_IRInstr(
+                                        IRInstr::ldindex, INT, retvector);
+                                retvector.clear();
+
+                                /* Write to array*/
+                                string tab = ndlist[1]->strarg;
+
+                                string var = ndlist[0]->buildIR(cfg);
+                                retvector.push_back(tab);
+                                retvector.push_back(var);
+                                cfg->current_bb->add_IRInstr(
+                                        IRInstr::warray, INT, retvector);
+                                return var;
+                        } else if (ndlist[0]->op == OP_ARRAY_ELEMENT) {
+                                /* load index*/
+                                string index = 
+                                        ndlist[0]->ndlist[0]->buildIR(cfg);
+                                retvector.push_back(index);
+                                cfg->current_bb->add_IRInstr(
+                                        IRInstr::ldindex, INT, retvector);
+                                retvector.clear();
+                                
+                                /* Read from  array*/
+                                string tab = ndlist[0]->strarg;
+                                string var = ndlist[1]->buildIR(cfg);
+                                retvector.push_back(tab);
+                                retvector.push_back(var);
+                                cfg->current_bb->add_IRInstr(
+                                        IRInstr::rarray, INT, retvector);
+                                return var;
+
+
+                        }
+                        
+                        
                         /* Variable address */
                         sleft = ndlist[0]->buildIR(cfg);
                         /* Result address */

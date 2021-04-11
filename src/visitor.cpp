@@ -810,8 +810,6 @@ Any Vis::visitAssignTabArithExpr(prs::AssignTabArithExprContext *ctx)
 {
         verbose("Call to AssignTabArithExpr");
 
-        cerr << "Not implemented yet";
-        exit(EXIT_FAILURE);
         string var_name = ctx->ID()->getText();
 
         visit(ctx->arithExpr(0));
@@ -826,8 +824,6 @@ Any Vis::visitAssignTabArithExpr(prs::AssignTabArithExprContext *ctx)
                            curfct->funcInstr.back(), 0, 0);
         curfct->funcInstr.pop_back();
         curfct->funcInstr.push_back(n);
-
-        n->display();
 
         return 0;
 }
