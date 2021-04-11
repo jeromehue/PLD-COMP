@@ -1,9 +1,11 @@
 /*************************************************************************
-                           ir  -  description
+                                     ir  
                              -------------------
-    début                : ${date}
-    copyright            : (C) ${year} par ${user}
+    start                : 2021-03-01
+    copyright            : (C) 2021 by H4244
 *************************************************************************/
+
+/* This file was created by the PLD teaching team. */
 
 //-------------------- <ir> class interface (ir.h file) ------------------
 #ifndef IR_H

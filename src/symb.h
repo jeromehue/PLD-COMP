@@ -1,8 +1,8 @@
 /*************************************************************************
                                 Symboltable
                              -------------------
-        start                   : 2021-03
-        copyright               : (C) 2021 by H4244
+    start                   : 2021-03-01
+    copyright               : (C) 2021 by H4244
 *************************************************************************/
 
 #ifndef SYMB_H
@@ -10,7 +10,7 @@
 
 using namespace std;
 
-//---- Interface of the <Symboltable> class (symboltable.h file) ---------
+//---- Interface of the <Symboltable> class (symb.h file) ----------------
 
 //-------------------------------------------------------- Interfaces Used
 #include <map>
@@ -31,12 +31,9 @@ struct Variable {
         bool isParam;
 };
 
-//----------------------------------------------------------------- PUBLIC
-
 class Symboltable
 {
 public:
-//--------------------------------------------------------- Public methods
         Symboltable()
         {
                 next_offset = -4;

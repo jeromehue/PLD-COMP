@@ -1,3 +1,21 @@
+/*************************************************************************
+                                   main.cpp 
+                             -------------------
+    start                : 2021-03-01
+    copyright            : (C) 2021 by H4244
+*************************************************************************/
+
+/*
+ *      H4244 members :
+ *
+ *      - Aziz Kanoun
+ *      - Charly Poirier
+ *      - Jérôme Hue
+ *      - Lucie Clémenceau
+ *      - Quentin Regaud
+ *      - Sylvain de Joannis de Verclos
+ */
+
 #include <iostream>
 #include <fstream>
 #include <sstream>

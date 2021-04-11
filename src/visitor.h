@@ -1,4 +1,11 @@
-// Generatedgfrom ifcc.g4 by ANTLR 4.7.2
+/*************************************************************************
+                                    visitor  
+                             -------------------
+    start                : 2021-03-01
+    copyright            : (C) 2021 by H4244
+*************************************************************************/
+
+//------------- <visitor> class interface (visitor.h file) ---------------
 
 #ifndef VISITOR_H
 #define VISITOR_H
@@ -14,7 +21,7 @@
 
 using namespace std;
 
-/**
+/*
  * This class provides an empty implementation of ifccVisitor, which can be
  * extended to create a visitor which only needs to handle a subset of the available methods.
  */

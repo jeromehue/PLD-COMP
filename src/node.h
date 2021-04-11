@@ -1,8 +1,8 @@
 /************************************************************************
-
+                                   node
                              -------------------
-    début                : 2021-02-27
-    copyright            : (C) 2021 par H4244
+    start                : 2021-02-27
+    copyright            : (C) 2021 by  H4244
 *************************************************************************/
 
 #ifndef NODE_H
@@ -249,7 +249,6 @@ public:
                         return var3;
 
                 case OP_SUB:
-                        //TODO Factoriser '+'/'-'
                         /* Fetching data */
                         var1 = ndlist[0]->buildIR(cfg);
                         var2 = ndlist[1]->buildIR(cfg);
