@@ -47,6 +47,7 @@ static int counterWhile = 0;
 class Node
 {
 public:
+        /* Basic constructor */
         Node(int op, Node *left, Node *right, int arg0, int arg1)
         {
                 this->op = op;
@@ -56,6 +57,7 @@ public:
                 this->args[1] = arg1;
         }
 
+        /* Constructor */
         Node(int op, string str, int arg0)
         {
                 this->op = op;
@@ -63,12 +65,26 @@ public:
                 this->strarg = str;
         }
 
+        /* Constructor */
         Node(int op, int arg0, int arg1)
         {
                 this->op = op;
                 this->args[0] = arg0;
                 this->args[1] = arg1;
         }
+        
+        /* Constructor for BinOp */
+        Node(int op, Node* left, Node* right) 
+        {
+                this->op = op;
+                this->ndlist.push_back(left);
+                this->ndlist.push_back(right);
+                this->args[0] = 0;
+                this->args[1] = 0;
+
+        }
+
+
         void pushBackToNdList(Node *node)
         {
                 this->ndlist.push_back(node);

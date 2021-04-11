@@ -93,21 +93,12 @@ Any Vis::visitTab(prs::TabContext *ctx)
         verbose(" >> VisitTab: " + var_name);
 
         Node *n;
-        /*
-        if (ctx->INT_CONST()) {
-                int value = stoi(ctx->INT_CONST()->getText());
-                n = new Node(OP_CONST, NULL, NULL, value, 0);
-        } else {
-                string id_name = ctx->ID(1)->getText();
-                int var_adr = curfct->symb->getAddress(id_name);
-                n = new Node(OP_IDENT, NULL, NULL, var_adr, 0);
-        }*/
+
         visit(ctx->arithExpr());
 
         n = curfct->funcInstr.back();
         curfct->funcInstr.pop_back();
 
-        //n->display();
 
         Node *arrayElement = new Node(OP_ARRAY_ELEMENT, n, NULL, 0, 0);
         arrayElement->strarg = var_name;
@@ -196,14 +187,17 @@ Any Vis::visitInitDeclarator(prs::InitDeclaratorContext *ctx)
                 curfct->funcInstr.pop_back();
 
         } else if (ctx->arrayInitialisation()) {
-                
+
                 /* Array size */
                 int arraySize;
+
                 if (ctx->INT_CONST()) {
                         arraySize = stoi(ctx->INT_CONST()->getText());
+
                 } else {
                         arraySize = -1;
                 }
+
                 int type =
                         ctx->arrayInitialisation()->INT_CONST().size() > 0
                         ? INT : CHAR;
@@ -212,9 +206,9 @@ Any Vis::visitInitDeclarator(prs::InitDeclaratorContext *ctx)
                 if (type == INT) {
                         auto arrayValues =
                                 ctx->arrayInitialisation()->INT_CONST();
-                        
+
                         if (arraySize == -1) {
-                                arraySize = arrayValues.size(); 
+                                arraySize = arrayValues.size();
                         }
 
                         if (arraySize != arrayValues.size()) {
@@ -252,7 +246,7 @@ Any Vis::visitInitDeclarator(prs::InitDeclaratorContext *ctx)
                                 ctx->arrayInitialisation()->CHAR_CONST();
 
                         if (arraySize == -1) {
-                                arraySize = arrayValues.size(); 
+                                arraySize = arrayValues.size();
                         }
 
                         if (arraySize != arrayValues.size()) {
@@ -526,81 +520,55 @@ Any Vis::visitExpr(prs::ExprContext *ctx)
 
         assert(curfct->funcInstr.size() == ref + 2);
 
+        Node* nop;
+        Node* left  = curfct->funcInstr[ref+1];
+        Node* right = curfct->funcInstr[ref];
+
         switch (op) {
-        case '+': {
+        case '+':
                 verbose("Addition");
-                Node *nop = new Node(OP_ADD, curfct->funcInstr[ref + 1],
-                                     curfct->funcInstr[ref], 0, 0);
-                curfct->funcInstr.pop_back();
-                curfct->funcInstr.pop_back();
-                curfct->funcInstr.push_back(nop);
+                nop = new Node(OP_ADD, left, right, 0, 0);
                 break;
-        }
 
-        case '-': {
+        case '-':
                 verbose("Subtraction");
-                Node *nop = new Node(OP_SUB, curfct->funcInstr[ref + 1],
-                                     curfct->funcInstr[ref], 0, 0);
-                curfct->funcInstr.pop_back();
-                curfct->funcInstr.pop_back();
-                curfct->funcInstr.push_back(nop);
+                nop = new Node(OP_SUB, left, right, 0, 0);
                 break;
-        }
 
-        case '*': {
+        case '*':
                 verbose("Multiplication");
-                Node *nop = new Node(OP_MUL, curfct->funcInstr[ref + 1],
-                                     curfct->funcInstr[ref], 0, 0);
-                curfct->funcInstr.pop_back();
-                curfct->funcInstr.pop_back();
-                curfct->funcInstr.push_back(nop);
+                nop = new Node(OP_MUL, left, right);
                 break;
-        }
 
-        case '/': {
+        case '/':
                 verbose("Division");
-                Node *nop = new Node(OP_DIV, curfct->funcInstr[ref + 1],
-                                     curfct->funcInstr[ref], 0, 0);
-                curfct->funcInstr.pop_back();
-                curfct->funcInstr.pop_back();
-                curfct->funcInstr.push_back(nop);
+                nop = new Node(OP_DIV, left, right);
                 break;
-        }
 
-        case '&': {
+        case '&':
                 verbose("Bitwise AND");
-                Node *nop = new Node(OP_BIT_AND, curfct->funcInstr[ref + 1],
-                                     curfct->funcInstr[ref], 0, 0);
-                curfct->funcInstr.pop_back();
-                curfct->funcInstr.pop_back();
-                curfct->funcInstr.push_back(nop);
+                nop = new Node(OP_BIT_AND, left, right);
                 break;
-        }
 
-        case '^': {
+        case '^':
                 verbose("Bitwise XOR");
-                Node *nop = new Node(OP_BIT_XOR, curfct->funcInstr[ref + 1],
-                                     curfct->funcInstr[ref], 0, 0);
-                curfct->funcInstr.pop_back();
-                curfct->funcInstr.pop_back();
-                curfct->funcInstr.push_back(nop);
+                nop = new Node(OP_BIT_XOR, left, right);
                 break;
-        }
 
-        case '|': {
+        case '|':
                 verbose("Bitwise OR");
-                Node *nop = new Node(OP_BIT_OR, curfct->funcInstr[ref + 1],
-                                     curfct->funcInstr[ref], 0, 0);
-                curfct->funcInstr.pop_back();
-                curfct->funcInstr.pop_back();
-                curfct->funcInstr.push_back(nop);
+                nop = new Node(OP_BIT_OR, left, right);
                 break;
-        }
 
         default:
                 verbose("Erreur, opérateur non reconnu");
                 exit(EXIT_FAILURE);
         }
+
+        /* Assuming we recognized operator  */
+        curfct->funcInstr.pop_back();
+        curfct->funcInstr.pop_back();
+        curfct->funcInstr.push_back(nop);
 
         return 0;
 }
@@ -619,46 +587,35 @@ Any Vis::visitRelExpr(prs::RelExprContext *ctx)
 
         assert(curfct->funcInstr.size() == ref + 2);
 
+        Node* nop;
+        Node* left  = curfct->funcInstr[ref+1];
+        Node* right = curfct->funcInstr[ref];
+
         if (relop == "<") {
                 /* less than*/
-                Node *nop = new Node(OP_LOWER,
-                                     curfct->funcInstr[ref + 1],
-                                     curfct->funcInstr[ref], 0, 0);
-                curfct->funcInstr.pop_back();
-                curfct->funcInstr.pop_back();
-                curfct->funcInstr.push_back(nop);
+                nop = new Node(OP_LOWER,left, right);
 
         } else if (relop == ">") {
                 /* greater than*/
-                Node *nop = new Node(OP_GREATER,
-                                     curfct->funcInstr[ref + 1],
-                                     curfct->funcInstr[ref], 0, 0);
-                curfct->funcInstr.pop_back();
-                curfct->funcInstr.pop_back();
-                curfct->funcInstr.push_back(nop);
+                nop = new Node(OP_GREATER,left, right);
 
         } else if (relop == "==") {
                 /* equal */
-                Node *nop = new Node(OP_EQUAL,
-                                     curfct->funcInstr[ref + 1],
-                                     curfct->funcInstr[ref], 0, 0);
-                curfct->funcInstr.pop_back();
-                curfct->funcInstr.pop_back();
-                curfct->funcInstr.push_back(nop);
+                nop = new Node(OP_EQUAL,left, right);
 
         } else if (relop == "!=") {
                 /* different */
-                Node *nop = new Node(OP_UNEQUAL,
-                                     curfct->funcInstr[ref + 1],
-                                     curfct->funcInstr[ref], 0, 0);
-                curfct->funcInstr.pop_back();
-                curfct->funcInstr.pop_back();
-                curfct->funcInstr.push_back(nop);
+                nop = new Node(OP_UNEQUAL, left, right);
 
         } else {
                 verbose("Error: Unknown operator");
                 exit(EXIT_FAILURE);
         }
+
+        /* Assuming we recognized op */
+        curfct->funcInstr.pop_back();
+        curfct->funcInstr.pop_back();
+        curfct->funcInstr.push_back(nop);
 
         return 0;
 }
