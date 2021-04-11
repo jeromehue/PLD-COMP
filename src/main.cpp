@@ -18,32 +18,16 @@ static ofstream output;
 
 bool Verbose;
 
-void prologue()
-{
-        output << ".global main\n"
-                  "main:\n"
-                  "\t# Prologue\n"
-                  "\tpushq %rbp\n"
-                  "\tmovq %rsp, %rbp\n"
-                  "\n"
-                  "\t# Body\n";
-}
-
-void epilogue()
-{
-        output << "\n"
-                  "\t# Epilogue\n"
-                  "\tpopq %rbp\n"
-                  "\tret\n";
-}
 
 int main(int argn, const char **argv)
 {
         stringstream in;
         setVerbose(false);
+
         if (argn >= 2) {
                 ifstream lecture(argv[1]);
                 in << lecture.rdbuf();
+
                 for (int i = 2; i < argn; ++i) {
                         if (argv[2] == string("-v")) {
                                 setVerbose(true);
@@ -76,12 +60,14 @@ int main(int argn, const char **argv)
         int mainFuncIndex;
 
         vector<Function *> functions = visitor.getFunctions();
+
         for (int i = 0; i < functions.size(); ++i) {
                 if (Verbose) {
                         cout << "------------" << endl;
                         cout << "Function n°" << i << " : "
                              << functions.at(i)->name << endl;
                 }
+
                 vector<Node *> n = functions.at(i)->funcInstr;
 
                 if (functions.at(i)->name == "main") {
@@ -90,11 +76,14 @@ int main(int argn, const char **argv)
                 }
 
                 if (Verbose) {
-                        cout
-                            << "\n### List of AST Nodes for function n° " << i
-                            << " ###" << endl;
+                        cout << "\n### List of AST Nodes for function n° "
+                             << i
+                             << " ###"
+                             << endl;
                 }
+
                 bool missingReturn = true;
+
                 for (int j = 0; j < n.size(); ++j) {
                         // Check for a return instruction
                         if (n.at(j)->op == OP_RETURN) {
@@ -106,13 +95,19 @@ int main(int argn, const char **argv)
                                 n.at(j)->display();
                         }
                 }
+
                 verbose("");
 
-                // Manually add a return 0 node
+                /* Manually add a return 0 node id missing return */
                 if (missingReturn) {
                         verbose("Adding missing return node");
-                        Node *returnNode = new Node(OP_RETURN, NULL, NULL, 0, 0);
-                        Node *zeroNode = new Node(OP_CONST, NULL, NULL, 0, 0);
+
+                        Node *returnNode =
+                                new Node(OP_RETURN, NULL, NULL, 0, 0);
+
+                        Node *zeroNode =
+                                new Node(OP_CONST, NULL, NULL, 0, 0);
+
                         returnNode->ndlist.at(0) = zeroNode;
                         functions.at(i)->funcInstr.push_back(returnNode);
                 }
@@ -131,6 +126,7 @@ int main(int argn, const char **argv)
         verbose("\n### IR Generation ###\n");
 
         output.open("output.s");
+
         for (int i = 0; i < functions.size(); ++i) {
                 string name = functions.at(i)->name;
 
@@ -143,7 +139,8 @@ int main(int argn, const char **argv)
                 BasicBlock *BBbody = new BasicBlock(mainCFG, name + "Body");
 
                 // epilogue
-                BasicBlock *BBoutput = new BasicBlock(mainCFG, name + "Output");
+                BasicBlock *BBoutput = new BasicBlock(mainCFG,
+                                                      name + "Output");
 
                 // Default behaviour
                 BBbody->exit_true = BBoutput;
@@ -154,13 +151,16 @@ int main(int argn, const char **argv)
                 mainCFG->current_bb = BBbody;
 
                 vector<Node *> n = functions.at(i)->getInstr();
+
                 for (int i = 0; i < n.size(); ++i) {
                         n[i]->buildIR(mainCFG);
                 }
+
                 //cout<<"  maincfg size: "<<mainCFG->getsizebbs()<<endl;
                 verbose("gen asm");
                 mainCFG->gen_asm(output);
         }
+
         output.close();
         cout << "Compilation passed" << std::endl;
         return 0;

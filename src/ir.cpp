@@ -246,7 +246,7 @@ void IRInstr::gen_asm(ostream &o)
         }
 
         case getchar: {
-                cout << "getchar gen asm " << endl;
+                verbose("getchar gen asm ");
                 o << "\tmovl\t$0,%eax\n";
                 o << "\tcall\tgetchar\n";
                 int index = bb->cfg->symbols->getAddress(params[0]);
