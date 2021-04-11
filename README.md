@@ -32,17 +32,15 @@ Detailed test results will go into `tests/out/`.
 As the time of writing, the **codeblocks** and **unary-operators** tests fail, because they cover unimplemented features.
 
 You can run a 'graphical' test to visualize the derivation tree produced by antlr.
-* Download antlr complete java tool from https://www.antlr.org/download.html , place it undee `tests/gui`.  
-* Edit `launch.sh` to specify the CLASSPATH (for instance with antlr-4-9-complete.jar :) 
+* Download antlr complete java tool from https://www.antlr.org/download.html, place it under `tests/gui`.  
+* Edit `launch.sh` to specify the CLASSPAT, for instance with antlr-4-9-complete.jar: 
   ```sh
   export CLASSPATH=".:./antlr-4.9-complete.jar:$CLASSPATH" 
   alias antlr4="java -jar ./antlr-4.9-complete.jar"
   ```
 * Run launch.sh   
 
-You can also modify the grammar and .c file used. By default, it uses main.c as source code and ifcc.g4 as grammar, but the 
+You can also modify the grammar and .c file used. By default, it uses `main.c` as source code and `ifcc.g4` as grammar, but the 
 'official' C grammar is also available in `tests/gui`.
 
 ![antlr_parse](https://user-images.githubusercontent.com/57839770/114313738-ff8d9300-9af7-11eb-89dd-64a34ab3b5b3.png)
-
-
