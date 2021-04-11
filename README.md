@@ -27,4 +27,6 @@ You can use `-v` for a verbose output.
 
 ## Tests
 Run tests with `make test`.<br/>
-Detailed test results will go into `tests/out/`.
+Detailed test results will go into `tests/out/`.   
+As the time of writing, the 'codeblocks' and 'unary-operators' tests fail,  
+because they cover unimplemented features.
