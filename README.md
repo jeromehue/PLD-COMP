@@ -12,8 +12,8 @@ https://github.com/jeromehue/PLD-COMP
 Make sure to create a `Makefile.local` file containing your local Antlr4 paths, e.g.:
 ```Makefile
 ANTLR4_BINDIR=/usr/bin
-ANTLR4_INCDIR=/usr/include/antlr4-runtime
-ANTLR4_LIBDIR=/usr/lib/x86_64-linux-gnu
+ANTLR4_INCDIR=/shares/public/tp/ANTLR4-CPP/antlr4-runtime
+ANTLR4_LIBDIR=/shares/public/tp/ANTLR4-CPP/lib
 ANTLR4_RUNTIME=libantlr4-runtime.a # or libantlr4-runtime.so
 ```
 The above example should work with computers of IF rooms 208 and 219.
