@@ -50,7 +50,5 @@ clean:
 	rm -rf src/grammar/
 	rm -rf tests/out
 	rm -rf output.s a.out
-# Old files (Keep this for now)
-	rm -rf ifcc
 
 .PHONY: all clean test example
