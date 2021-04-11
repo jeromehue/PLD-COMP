@@ -39,7 +39,7 @@ initDeclarator
         | ID '=' assignmentExpr
         | ID '=' functionCall
 	| ID '=' arithExpr
-	| ID '[' INT_CONST ']' '=' arrayInitialisation
+	| ID '[' INT_CONST? ']' '=' arrayInitialisation
 	;
 
 functionCall

@@ -196,9 +196,14 @@ Any Vis::visitInitDeclarator(prs::InitDeclaratorContext *ctx)
                 curfct->funcInstr.pop_back();
 
         } else if (ctx->arrayInitialisation()) {
-
+                
                 /* Array size */
-                int arraySize = stoi(ctx->INT_CONST()->getText());
+                int arraySize;
+                if (ctx->INT_CONST()) {
+                        arraySize = stoi(ctx->INT_CONST()->getText());
+                } else {
+                        arraySize = -1;
+                }
                 int type =
                         ctx->arrayInitialisation()->INT_CONST().size() > 0
                         ? INT : CHAR;
@@ -207,6 +212,10 @@ Any Vis::visitInitDeclarator(prs::InitDeclaratorContext *ctx)
                 if (type == INT) {
                         auto arrayValues =
                                 ctx->arrayInitialisation()->INT_CONST();
+                        
+                        if (arraySize == -1) {
+                                arraySize = arrayValues.size(); 
+                        }
 
                         if (arraySize != arrayValues.size()) {
                                 cerr << "Error, array " << var_name
@@ -241,6 +250,10 @@ Any Vis::visitInitDeclarator(prs::InitDeclaratorContext *ctx)
                 } else if (type == CHAR) {
                         auto arrayValues =
                                 ctx->arrayInitialisation()->CHAR_CONST();
+
+                        if (arraySize == -1) {
+                                arraySize = arrayValues.size(); 
+                        }
 
                         if (arraySize != arrayValues.size()) {
                                 cerr << "Error, array " << var_name
