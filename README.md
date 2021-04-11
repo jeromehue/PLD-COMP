@@ -21,12 +21,12 @@ The above example should work with computers of IF rooms 208 and 219.
 ## Usage
 Compile the project by running `make`.<br/>
 Execute our compiler on `example.c` by running `./bin/ifcc example.c`.<br/>
-The assembly produced will go into `output.s` file.  
+The assembly output will go into `output.s`.  
 
 You can use `-v` for a verbose output.
 
 ## Tests
 Run tests with `make test`.<br/>
-Detailed test results will go into `tests/out/`.   
-As the time of writing, the 'codeblocks' and 'unary-operators' tests fail,  
-because they cover unimplemented features.
+Detailed test results will go into `tests/out/`.
+
+As the time of writing, the **codeblocks** and **unary-operators** tests fail, because they cover unimplemented features.
