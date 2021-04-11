@@ -16,7 +16,7 @@ int  main() {
         int length = 13;
         char message[13] = {'H', 'e', 'l', 'l', 'o', ',',
                             ' ', 'W', 'o', 'r', 'l', 'd', '!'};
-
+        int tab[3] = {1,2,3};
         int i = 0;
         while (i < length) {
                 display(message[i]);
@@ -25,6 +25,6 @@ int  main() {
 
         // Add a new line
         display(10);
-
-        return 0;
+        
+        return i;
 }

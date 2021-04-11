@@ -10,4 +10,4 @@ antlr4 ifcc.g4
 javac *.java
 
 # lauch gui with main.c file
-grun bin/ifcc prog -gui < main.c
+grun ifcc prog -gui < main.c
